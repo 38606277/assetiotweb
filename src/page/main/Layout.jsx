@@ -5,7 +5,7 @@ import Loadable from 'react-loadable';
 import loading from '../../util/loading.jsx'
 import './Layout.scss';
 const SiderBar = Loadable({
-    loader: () => import(/* webpackChunkName: "Topbar" */ './Sidebar.jsx'),
+    loader: () => import(/* webpackChunkName: "Sidebar" */ './Sidebar.jsx'),
     loading: loading,
     delay:3000
 });
@@ -36,23 +36,12 @@ export default class MainLoyout extends React.Component {
             <div id="wrapper">
                 <TopBar callbackParent={this.onChildChanged}/>
                 <SiderBar collapsed={this.state.collapsed}/>
-                <div id="page-wrapperNew" style={{marginLeft:this.state.windthleft}}> {this.props.children}</div>
+                
+                <div id="page-wrapperNew" style={{marginLeft:this.state.windthleft}}>
+                     {this.props.children}
+                </div>
             </div>
-            // <Layout style={{ minHeight: '100vh' }}>
-            //     <Layout.Header style={{ background: '#4b9adf', color: '#FFFF', padding: 0, height: "50px", lineHeight: "50px" }} >
-                    
-            //         <TopBar callbackParent={this.onChildChanged}/>
-            //     </Layout.Header>
-
-            //     <Layout>
-            //         <SiderBar collapsed={this.state.collapsed}/>
-            //         <Layout.Content>
-            //             {/* <Card bodyStyle={{ padding: "10px", marginLeft: 2, background: '#ececec', minHeight: 900 }}> */}
-            //                 {this.props.children}
-            //             {/* </Card> */}
-            //         </Layout.Content>
-            //     </Layout>
-            // </Layout>
+          
         );
     }
 }

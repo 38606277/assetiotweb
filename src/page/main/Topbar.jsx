@@ -19,7 +19,7 @@ export default class TopBar extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            title: "数据中台",
+            title: "河北移动蓝牙资产监控系统",
             collapsed: false,
             visible: false,
             ishow: '0',
@@ -452,16 +452,7 @@ export default class TopBar extends React.Component {
                                 <Avatar size="{32}" icon="user" />
                             </Button>
                         </Popover>
-                        {/* <Widget
-                                    handleNewUserMessage={newMessage=>this.sendMessage(newMessage)}
-                                    senderPlaceHolder="输入想要做什么"
-                                    profileAvatar={ai}
-                                    titleAvatar={this.state.userIcon==''?my:this.state.userIcon}
-                                    ShowCloseButton={true} 
-                                    title="智能机器人"
-                                    subtitle=""
-                                    fullScreenMode={false}
-                                />   */}
+                       
                     </Tooltip>
 
                 </div>

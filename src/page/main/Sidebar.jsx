@@ -201,20 +201,10 @@ export default class SiderBar extends React.Component {
     render() {
         let html=this.state.categoryList.map((obj,index)=> {
             if ("undefined"!=typeof(obj.children)) {
-                if(obj.func_id=='1001'){
-                   return this.fourformSubmenusChild(obj,index);
-                }else if(obj.func_id=='1006'){
-                    return this.cubeformSubmenusChild(obj,index);
-                }else if(obj.func_id=='1007'){
-                    return this.dashboardformSubmenusChild(obj,index);
-                }else if(obj.func_id=='1008'){
-                    return this.baoBiaoSubmenus(obj,index);
+                if("undefined"!=typeof(obj.children) &&obj.children.length>0){
+                    return this.formSubmenusChild(obj);
                 }else{
-                    if("undefined"!=typeof(obj.children) &&obj.children.length>0){
-                        return this.formSubmenusChild(obj);
-                    }else{
-                        return <Menu.Item key={"sub"+index} id="atitle"><Link  target="_blank" to={obj.func_url}><Icon type={obj.func_icon} /><span>{obj.func_name}</span></Link></Menu.Item>
-                    }
+                    return <Menu.Item key={"sub"+index} id="atitle"><Link  target="_blank" to={obj.func_url}><Icon type={obj.func_icon} /><span>{obj.func_name}</span></Link></Menu.Item>
                 }
             } else {
                 //这里的routeurl是路由地址，是自定义的一个属性
