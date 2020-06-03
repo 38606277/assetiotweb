@@ -82,9 +82,37 @@ const dashboardRouter = Loadable({
 const assetmap = Loadable({
     loader: () => import(/* webpackChunkName: "assetmap" */ './page/map/assetmap.jsx'),
     loading: loading,
-    delay:3000
+    delay: 3000
 });
 
+
+const assetList = Loadable({
+    loader: () => import(/* webpackChunkName: "assetList" */ './page/asset/assetList.jsx'),
+    loading: loading,
+    delay: 3000
+});
+const gatewayManagementOld = Loadable({
+    loader: () => import(/* webpackChunkName: "gatewayManagementOld" */ './page/asset/gatewayManagementOld.jsx'),
+    loading: loading,
+    delay: 3000
+});
+const assetInventory = Loadable({
+    loader: () => import(/* webpackChunkName: "assetInventory" */ './page/asset/assetInventory.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
+const assetMonitoring = Loadable({
+    loader: () => import(/* webpackChunkName: "assetMonitoring" */ './page/asset/assetMonitoring.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
+const gatewayManagement = Loadable({
+    loader: () => import(/* webpackChunkName: "gatewayManagement" */ './page/asset/gatewayManagement.jsx'),
+    loading: loading,
+    delay: 3000
+});
 
 const LayoutRouter = (nextState, replace) => {
     if (undefined != localStorge.getStorage('userInfo') && '' != localStorge.getStorage('userInfo')) {
@@ -99,7 +127,12 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/Auth" component={Auth} />
                     <Route path="/role" component={RoleRouter} />
                     <Route path="/authType" component={AuthTypeRouter} />
-                    <Route path="/assetmap" component={assetmap}/> 
+                    <Route path="/assetmap" component={assetmap} />
+                    <Route path="/assetList" component={assetList} />
+                    <Route path="/gatewayManagementOld" component={gatewayManagementOld} />
+                    <Route path="/assetInventory" component={assetInventory} />
+                    <Route path="/assetMonitoring" component={assetMonitoring} />
+                    <Route path="/gatewayManagement" component={gatewayManagement} />
                 </Switch>
             </Layout>
         );
@@ -111,7 +144,7 @@ const LayoutRouter = (nextState, replace) => {
 
 class App extends React.Component {
     render() {
-        
+
         return (
             <Router>
                 <Switch>
