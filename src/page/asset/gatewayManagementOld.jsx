@@ -9,7 +9,9 @@ import echarts from 'echarts'
 import ReactEcharts from 'echarts-for-react'
 
 import GatewayService from '../../service/GatewayService.jsx'
+import AreaService from '../../service/AreaService.jsx'
 const _gatewayService = new GatewayService();
+const _areaService = new AreaService();
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -115,24 +117,82 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
     },
 );
 
-
-
-
-
-
 class TreeTest extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             confirmDirty: false,
-            _name: this.props.match.params.name
+            _name: this.props.match.params.name,
+            treeData: [
+
+            ]
         };
     }
+    componentDidMount() {
+        this.loadAreaData('CHN');
+    }
+
+    loadAreaData(code) {
+        let param = {
+            parentCode: code,
+            maxLevel: 3
+        }
+        _areaService.getArea(param).then(response => {
+            this.setState({
+                treeData: response,
+            });
+        }, errMsg => {
+            localStorge.errorTips(errMsg);
+        });
+    }
+
+    onLoadData = treeNode =>
+        new Promise(resolve => {
+            if (treeNode.props.children) {
+                resolve();
+                return;
+            }
+
+            console.log(treeNode);
+            let param = {
+                parentCode: treeNode.props.dataRef.value,
+                maxLevel: 3
+            }
+            _areaService.getArea(param).then(response => {
+                treeNode.props.dataRef.children = response;
+                this.setState({
+                    treeData: [...this.state.treeData],
+                });
+                resolve();
+            }, errMsg => {
+                localStorge.errorTips(errMsg);
+            });
 
 
-    state = {
-        visible: false,
-    };
+            // setTimeout(() => {
+            //     treeNode.props.dataRef.children = [
+            //         { label: 'Child Node', value: `${treeNode.props.eventKey}-0` },
+            //         { label: 'Child Node', value: `${treeNode.props.eventKey}-1` },
+            //     ];
+            //     this.setState({
+            //         treeData: [...this.state.treeData],
+            //     });
+            //     resolve();
+            // }, 1000);
+        });
+
+    renderTreeNodes = data =>
+        data.map(item => {
+            if (item.children) {
+                return (
+                    <TreeNode title={item.label} key={item.value} dataRef={item}>
+                        {this.renderTreeNodes(item.children)}
+                    </TreeNode>
+                );
+            }
+            return <TreeNode key={item.value} title={item.label} {...item} dataRef={item} />;
+        });
+
 
     showModal = () => {
         console.log('点击新增')
@@ -279,123 +339,16 @@ class TreeTest extends React.Component {
             },
         };
 
-        // const columns = [
-        //     { title: '网关编号', dataIndex: 'code', key: 'code' },
-        //     { title: '网关地址', dataIndex: 'address', key: 'address' },
-        //     { title: '经度', dataIndex: 'longitude', key: 'longitude' },
-        //     { title: '纬度', dataIndex: 'latitude', key: 'latitude' },
-        //     { title: '资产数量', dataIndex: 'count', key: 'count' },
-        //     {
-        //         title: '网关状态',
-        //         key: 'state',
-        //         render: (text, record, index) => {
-        //             let status = 'success'
-        //             let desc = '正常'
-        //             if (record.state % 3 == 0) {
-        //                 status = 'success'
-        //                 desc = '正常'
-        //             } else if (record.state % 3 == 1) {
-        //                 status = 'warning'
-        //                 desc = '警告'
-        //             } else if (record.state % 3 == 2) {
-        //                 status = 'error'
-        //                 desc = '错误'
-        //             }
-        //             return (
-        //                 <span>
-        //                     <Badge status={status} />
-        //                     {desc}
-        //                 </span>
-        //             )
-        //         }
-        //     },
-        //     { title: '操作', key: 'operation', render: () => <a>编辑</a> },
-        // ];
 
-        // const data = [];
-        // //for (let i = 0; i < 9; ++i) {
-        // data.push({
-        //     key: 1,
-        //     code: 'WG000011',
-        //     address: '故宫博物院',
-        //     longitude: '116.397854',
-        //     latitude: '39.711121',
-        //     count: '9',
-        //     state: '0'
-        // });
-        // data.push({
-        //     key: 2,
-        //     code: 'WG000012',
-        //     address: '北京市东城区景山前街4号',
-        //     longitude: '115.328150',
-        //     latitude: '39.378381',
-        //     count: '5',
-        //     state: '0'
-        // });
-        // data.push({
-        //     key: 3,
-        //     code: 'WG00001' + 3,
-        //     address: '前门',
-        //     longitude: '116.397851',
-        //     latitude: '39.911922',
-        //     count: '11',
-        //     state: '0'
-        // });
-        // data.push({
-        //     key: 4,
-        //     code: 'WG00001' + 4,
-        //     address: '国家博物馆',
-        //     longitude: '116.408854',
-        //     latitude: '39.923191',
-        //     count: '21',
-        //     state: '0'
-        // });
-        // data.push({
-        //     key: 5,
-        //     code: 'WG00001' + 5,
-        //     address: '人民大会堂',
-        //     longitude: '116.412354',
-        //     latitude: '39.801281',
-        //     count: '4',
-        //     state: '0'
-        // });
-        // // }
 
-        const city = [
-            { name: '北京市', district: [{ name: "东城区", addressList: [{ name: '天安门' }, { name: '王府井' }] }, { name: "海定区" }] },
-        ];
+
 
         return (
             <div id="page-wrapper">
                 <Row>
                     <Col xs={24} sm={4}>
                         <div class="ant-card-head"><div class="ant-card-head-wrapper"><div class="ant-card-head-title">设备位置</div></div></div>
-                        <Tree
-                        >
-                            <TreeNode title="河北省" key="0-0">
-                                <TreeNode title="石家庄" key="0-0-0" >
-
-                                    <TreeNode title="长安区" key="0-0-0-0" >
-                                        <TreeNode title="裕华路1号仓库" key="0-0-0-0-0" ></TreeNode>
-                                        <TreeNode title="裕华路2号仓库" key="0-0-0-0-1" ></TreeNode>
-                                    </TreeNode>
-
-                                    <TreeNode title="鹿泉区" key="0-0-0-1" >
-
-                                    </TreeNode>
-                                    <TreeNode title="无极县" key="0-0-0-2" >  </TreeNode>
-                                    <TreeNode title="裕华区" key="0-0-0-3" >
-
-                                    </TreeNode>
-                                </TreeNode>
-                                <TreeNode title="雄安" key="0-0-1">
-                                    {/* <TreeNode title={<span style={{ color: '#1890ff' }}></span>} key="0-0-1-0" /> */}
-                                </TreeNode>
-                                <TreeNode title="邯郸" key="0-0-2">
-                                    {/* <TreeNode title={<span style={{ color: '#1890ff' }}></span>} key="0-0-1-0" /> */}
-                                </TreeNode>
-                            </TreeNode>
-                        </Tree>
+                        <Tree loadData={this.onLoadData}>{this.renderTreeNodes(this.state.treeData)}</Tree>
                     </Col>
                     <Col xs={24} sm={20}>
                         <Card title="裕华路1号仓库设备信息">

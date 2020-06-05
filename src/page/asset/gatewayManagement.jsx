@@ -1,144 +1,21 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Select, Row, Col, Table, Divider, Button, Card, Input, Tree, Dropdown, Badge, Menu, Icon, message, Modal, Radio, DatePicker } from 'antd';
+import { Form, Select, Row, Col, Table, Button, Card, Input, Tree, Badge, Pagination, Modal } from 'antd';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
 import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import echarts from 'echarts'
 import ReactEcharts from 'echarts-for-react'
 
+import GatewayService from '../../service/GatewayService.jsx'
+const _gatewayService = new GatewayService();
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { TreeNode } = Tree;
 
-
-const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
-
-    class extends React.Component {
-
-        componentDidMount() {
-            // To disable submit button at the beginning.
-            this.props.form.validateFields();
-        }
-
-        addGateway() {
-            let param = {
-                gatewayNumber: '1319100003'
-            }
-
-            _gatewayService.addGateway(JSON.stringify(param)).then((response) => {
-                console.log(response.data)
-            }, (errMsg) => {
-                console.log(errMsg)
-            });
-
-        }
-
-        handleSubmit = e => {
-            e.preventDefault();
-            this.props.form.validateFields((err, values) => {
-                if (!err) {
-                    this.setState({
-                        visible: false
-                    });
-                    console.log('Received values of form: ', values);
-                }
-            });
-        };
-
-
-        render() {
-            const { visible, onCancel, onCreate, form } = this.props;
-            const { getFieldDecorator } = form;
-
-            const formItemLayout2 = {
-                labelCol: {
-                    xs: { span: 24 },
-                    sm: { span: 4 },
-                },
-                wrapperCol: {
-                    xs: { span: 24 },
-                    sm: { span: 16 },
-                },
-            };
-
-            const formItemLayout = {
-                labelCol: {
-                    xs: { span: 24 },
-                    sm: { span: 4 },
-                },
-                wrapperCol: {
-                    xs: { span: 24 },
-                    sm: { span: 20 },
-                },
-            };
-            const tailFormItemLayout = {
-                wrapperCol: {
-                    xs: {
-                        span: 24,
-                        offset: 0,
-                    },
-                    sm: {
-                        span: 16,
-                        offset: 8,
-                    },
-                },
-            };
-            return (
-                <Modal
-                    visible={visible}
-                    title="新增网关"
-                    okText="确认"
-                    cancelText="取消"
-                    onCancel={onCancel}
-                    type="primary"
-                    htmlType="submit"
-                >
-                    <Form layout="vertical" onSubmit={this.handleSubmit}>
-                        <FormItem {...formItemLayout} label="网关编号">
-                            {getFieldDecorator('gatewayId', {
-                                rules: [{ required: false, message: '请输入网关编号!' }],
-                            })(
-                                <Input type='text' name='gatewayId' placeholder='请输入网关编号' />
-                            )}
-                        </FormItem>
-
-                        <FormItem {...formItemLayout} label="网关位置">
-                            {getFieldDecorator('gatewayPostion', {
-                                rules: [{ required: false, message: '请选择网关位置' }],
-                            })(
-                                <Input.Search type='text' name='gatewayPostion' placeholder='请选择网关位置' enterButton="选择" />
-                            )}
-                        </FormItem>
-
-                        <FormItem {...formItemLayout} label="扫描间隔">
-                            <Select name='scanTime' style={{ width: 200 }} placeholder="请选择扫描间隔">
-                                <Option value='60' >1分钟</Option>
-                                <Option value='180' >3分钟</Option>
-                                <Option value='300' >5分钟</Option>
-                                <Option value='600' >10分钟</Option>
-                                <Option value='1800' >30分钟</Option>
-                                <Option value='3600' >1小时</Option>
-                                <Option value='7200' >2小时</Option>
-                                <Option value='14400' >4小时</Option>
-                                <Option value='18000' >5小时</Option>
-                                <Option value='28800' >8小时</Option>
-                                <Option value='36000' >10小时</Option>
-                                <Option value='43200' >12小时</Option>
-                            </Select>
-                        </FormItem>
-                        <div style={{ marginBottom: "10px" }}>注：网关经纬度，状态等信息自动获取</div>
-                    </Form>
-                </Modal>
-            );
-        }
-    },
-);
-
-
-
-
+const { confirm } = Modal;
 
 
 class TreeTest extends React.Component {
@@ -146,14 +23,40 @@ class TreeTest extends React.Component {
         super(props);
         this.state = {
             confirmDirty: false,
-            _name: this.props.match.params.name
+            _name: this.props.match.params.name,
+            visible: false,
+            pageNum: 1,
+            perPage: 6,
+            dataList: []
         };
     }
+    componentDidMount() {
+        // To disable submit button at the beginning.
+        this.loadGatewayList();
+    }
 
+    // 页数发生变化的时候
+    onPageNumChange(pageNum) {
+        this.setState({
+            pageNum: pageNum
+        }, () => {
+            this.loadGatewayList();
+        });
+    }
+    loadGatewayList() {
+        let param = {};
+        param.pageNum = this.state.pageNum;
+        param.perPage = this.state.perPage;
+        _gatewayService.getGatewayList(param).then(response => {
+            this.setState({
+                dataList: response.data.list,
+                total: response.data.total
+            });
+        }, errMsg => {
+            localStorge.errorTips(errMsg);
+        });
+    }
 
-    state = {
-        visible: false,
-    };
 
     showModal = () => {
         console.log('点击新增')
@@ -213,98 +116,68 @@ class TreeTest extends React.Component {
         return option;
     }
 
+    showConfirm(gatewayId) {
+        let _this = this;
+        confirm({
+            title: '温馨提示',
+            content: '确认删除网关？',
+            cancelText: '取消',
+            okText: '确定',
+            onOk() {
+                _this.deleteGateway(gatewayId);
+            },
+            onCancel() { },
+        });
+    }
+
+    deleteGateway(gatewayId) {
+        let param = { gateway_id: gatewayId };
+        _gatewayService.deleteGateway(param).then(response => {
+            this.loadGatewayList();
+        }, errMsg => {
+            localStorge.errorTips(errMsg);
+        });
+    }
+
 
     render() {
 
-
         const columns = [
-            { title: '网关编号', dataIndex: 'code', key: 'code' },
+            { title: '网关编号', dataIndex: 'gateway_id', key: 'gateway_id' },
             { title: '网关地址', dataIndex: 'address', key: 'address' },
-            { title: '经度', dataIndex: 'longitude', key: 'longitude' },
-            { title: '纬度', dataIndex: 'latitude', key: 'latitude' },
-            { title: '资产数量', dataIndex: 'count', key: 'count' },
-            {
-                title: '上次扫描时间', dataIndex: 'date', key: 'date', render: (text, record, index) => {
-
-                    return (
-                        <div>2020-05-13 05:22:12</div>
-                    )
-                }
-            },
+            { title: '经度', dataIndex: 'lng', key: 'lng' },
+            { title: '纬度', dataIndex: 'rng', key: 'rng' },
             {
                 title: '网关状态',
                 key: 'state',
                 render: (text, record, index) => {
-                    let status = 'success'
-                    let desc = '正常'
-                    if (record.state % 3 == 0) {
-                        status = 'success'
-                        desc = '正常'
-                    } else if (record.state % 3 == 1) {
-                        status = 'warning'
-                        desc = '警告'
-                    } else if (record.state % 3 == 2) {
-                        status = 'error'
-                        desc = '错误'
-                    }
+
+                    // if (record.state % 3 == 0) {
+                    //     status = 'success'
+                    //     desc = '正常'
+                    // } else if (record.state % 3 == 1) {
+                    //     status = 'warning'
+                    //     desc = '警告'
+                    // } else if (record.state % 3 == 2) {
+                    //     status = 'error'
+                    //     desc = '错误'
+                    // }
                     return (
                         <span>
                             <Badge status={status} />
-                            {desc}
+                            {record.state}
                         </span>
                     )
                 }
             },
-            { title: '操作', key: 'operation', render: () => <a>编辑</a> },
+            {
+                title: '操作', key: 'operation', render: (text, record, index) => {
+                    return (
+                        <a onClick={() => this.showConfirm(record.gateway_id)}>删除</a>
+                    )
+                }
+            },
         ];
-
-        const data = [];
-        //for (let i = 0; i < 9; ++i) {
-        data.push({
-            key: 1,
-            code: 'WG000011',
-            address: '故宫博物院',
-            longitude: '116.397854',
-            latitude: '39.711121',
-            count: '9',
-            state: '0'
-        });
-        data.push({
-            key: 2,
-            code: 'WG000012',
-            address: '北京市东城区景山前街4号',
-            longitude: '115.328150',
-            latitude: '39.378381',
-            count: '5',
-            state: '0'
-        });
-        data.push({
-            key: 3,
-            code: 'WG00001' + 3,
-            address: '前门',
-            longitude: '116.397851',
-            latitude: '39.911922',
-            count: '11',
-            state: '0'
-        });
-        data.push({
-            key: 4,
-            code: 'WG00001' + 4,
-            address: '国家博物馆',
-            longitude: '116.408854',
-            latitude: '39.923191',
-            count: '21',
-            state: '0'
-        });
-        data.push({
-            key: 5,
-            code: 'WG00001' + 5,
-            address: '人民大会堂',
-            longitude: '116.412354',
-            latitude: '39.801281',
-            count: '4',
-            state: '0'
-        });
 
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
@@ -379,10 +252,15 @@ class TreeTest extends React.Component {
                         </Row>
                     </Form>
 
-                    <Button href="#/authType/authTypeInfo/null" type="primary" icon="database" style={{ marginBottom: '10px' }}>新增网关</Button>
+                    <Button href="#/addGateway/null" type="primary" icon="database" style={{ marginBottom: '10px' }}>新增网关</Button>
 
-                    <Table columns={columns} dataSource={data} pagination={false} />
-
+                    <Table columns={columns} dataSource={this.state.dataList} pagination={false} />
+                    <Pagination
+                        style={{ marginTop: '10px' }}
+                        current={this.state.pageNum}
+                        total={this.state.total}
+                        defaultPageSize={this.state.perPage}
+                        onChange={(pageNum) => this.onPageNumChange(pageNum)} />
                 </Card>
 
             </div >

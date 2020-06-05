@@ -114,6 +114,12 @@ const gatewayManagement = Loadable({
     delay: 3000
 });
 
+const addGateway = Loadable({
+    loader: () => import(/* webpackChunkName: "addGateway" */ './page/asset/addGateway.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
 const LayoutRouter = (nextState, replace) => {
     if (undefined != localStorge.getStorage('userInfo') && '' != localStorge.getStorage('userInfo')) {
         return (
@@ -133,6 +139,7 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/assetInventory" component={assetInventory} />
                     <Route path="/assetMonitoring" component={assetMonitoring} />
                     <Route path="/gatewayManagement" component={gatewayManagement} />
+                    <Route path="/addGateway/:name" component={addGateway} />
                 </Switch>
             </Layout>
         );

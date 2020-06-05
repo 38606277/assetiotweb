@@ -1,12 +1,15 @@
 import React from 'react';
-import AuthType from '../../../service/AuthTypeService.jsx'
-import { Form, Input, Select, Button, Card, Row, Col } from 'antd';
-import LocalStorge from '../../../util/LogcalStorge.jsx';
+import { Form, Input, Select, Button, Card, Row, Col, Cascader } from 'antd';
+import LocalStorge from '../../util/LogcalStorge.jsx';
 import TextArea from 'antd/lib/input/TextArea';
 const localStorge = new LocalStorge();
 const FormItem = Form.Item;
 const Option = Select.Option;
-const db = new AuthType();
+
+import GatewayService from '../../service/GatewayService.jsx'
+import AreaService from '../../service/AreaService.jsx'
+const _gatewayService = new GatewayService();
+const _areaService = new AreaService();
 
 class AuthTypeInfo extends React.Component {
     constructor(props) {
@@ -14,7 +17,7 @@ class AuthTypeInfo extends React.Component {
         this.state = {
             confirmDirty: false,
             authtype_id: this.props.match.params.name,
-            dbList: []
+            options: []
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleConfirmBlur = this.handleConfirmBlur.bind(this);
@@ -22,49 +25,35 @@ class AuthTypeInfo extends React.Component {
 
     //初始化加载调用方法
     componentDidMount() {
-        db.getDbList().then(response => {
-            const children = [];
-            for (let i = 0; i < response.length; i++) {
-                children.push(<Option key={response[i].name}>{response[i].name}</Option>);
-            }
-            this.setState({ dbList: children });
-        });
-        if (null != this.state.authtype_id && '' != this.state.authtype_id && 'null' != this.state.authtype_id) {
-            db.getAuthType(this.state.authtype_id).then(response => {
-                this.setState({ authtype_id: response.data.authtype_id });
-                this.props.form.setFieldsValue(response.data);
+        //初始化地址信息
+        this.loadAreaData('CHN');
 
-            }, errMsg => {
-                this.setState({});
-                localStorge.errorTips(errMsg);
-            });
+    }
+
+    loadAreaData(code) {
+        let param = {
+            parentCode: code,
+            maxLevel: 3
         }
-
+        _areaService.getArea(param).then(response => {
+            this.setState({
+                options: response,
+            });
+        }, errMsg => {
+            localStorge.errorTips(errMsg);
+        });
     }
 
-    //编辑字段对应值
-    onSelectChange(name, value) {
-        this.props.form.setFieldsValue({ [name]: value });
-
-    }
-    //编辑字段对应值
-    onValueChange(e) {
-        let name = e.target.name,
-            value = e.target.value.trim();
-        //this.setState({[name]:value});  
-        this.props.form.setFieldsValue({ [name]: value });
-
-    }
 
     //提交
     handleSubmit(e) {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                values.authtype_id = this.state.authtype_id;
-                db.saveAuthType(values).then(response => {
+                values.address_id = values.address_array[2];
+                _gatewayService.addGateway(values).then(response => {
                     alert("保存成功");
-                    window.location.href = "#/authType";
+                    window.location.href = "#/gatewayManagement";
                 }, errMsg => {
                     this.setState({});
                     localStorge.errorTips(errMsg);
@@ -78,13 +67,37 @@ class AuthTypeInfo extends React.Component {
         this.setState({ confirmDirty: this.state.confirmDirty || !!value });
     }
 
-    //编辑字段对应值
-    onValueChange(e) {
-        let name = e.target.name,
-            value = e.target.value.trim();
-        this.props.form.setFieldsValue({ [name]: value });
+    onChange = (value, selectedOptions) => {
+        console.log(value, selectedOptions);
+    };
 
-    }
+
+    loadData = selectedOptions => {
+        const targetOption = selectedOptions[selectedOptions.length - 1];
+        targetOption.loading = true;
+
+        let param = {
+            parentCode: targetOption.value,
+            maxLevel: 3
+        }
+        _areaService.getArea(param).then(response => {
+            targetOption.loading = false;
+            targetOption.children = response;
+            this.setState({
+                options: [...this.state.options],
+            });
+        }, errMsg => {
+            localStorge.errorTips(errMsg);
+        });
+    };
+
+    handleSelectChange = value => {
+        console.log(value);
+        this.props.form.setFieldsValue({
+            scanInterval: value,
+        });
+    };
+
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
@@ -112,95 +125,60 @@ class AuthTypeInfo extends React.Component {
 
         return (
             <div id="page-wrapper">
-                <Card title={this.state.authtype_id == 'null' ? '新增权限类型' : '编辑权限类型'}>
+                <Card title={this.state.authtype_id == 'null' ? '新增网关' : '编辑网关'}>
                     <Form onSubmit={this.handleSubmit}>
                         <Row>
                             <Col xs={24} sm={12}>
-                                <FormItem {...formItemLayout} label="权限类型名称">
-                                    {getFieldDecorator('authtype_name', {
-                                        rules: [{ required: true, message: '请输入权限类型名称!' }],
+                                <FormItem {...formItemLayout} label="网关编号">
+                                    {getFieldDecorator('gateway_id', {
+                                        rules: [{ required: true, message: '请输入网关编号!' }],
                                     })(
-                                        <Input type='text' name='authtype_name' />
+                                        <Input type='text' name='gateway_id' />
                                     )}
                                 </FormItem>
                             </Col>
                             <Col xs={24} sm={12}>
-                                <FormItem {...formItemLayout} label='权限类型描述' >
-                                    {getFieldDecorator('authtype_desc', {
-                                        rules: [{ required: true, message: '请输入权限类型描述!', whitespace: true }],
-                                    })(
-                                        <Input type='text' name='authtype_desc' />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={24} sm={12}>
-                                <FormItem {...formItemLayout} label='权限类型分类' >
-                                    {getFieldDecorator('authtype_class', {
-                                        rules: [{ required: true, message: '请输入权限类型分类!', whitespace: true }],
-                                    })(
-                                        <Input type='text' name='authtype_class' />
-                                    )}
-                                </FormItem>
-                            </Col>
-
-
-                            <Col xs={24} sm={12}>
-                                <FormItem {...formItemLayout} label='用户实体'>
-                                    {getFieldDecorator('use_object', {
-                                        rules: [{ required: true, message: '请输入用户实体!', whitespace: true }],
-                                    })(
-                                        <Input type='text' name='use_object' />
-                                    )}
+                                <FormItem {...formItemLayout} label='网关位置' >
+                                    {getFieldDecorator('address_array', {
+                                        rules: [
+                                            { type: 'array', required: true, message: '请选择网关位置' },
+                                        ],
+                                    })(<Cascader
+                                        options={this.state.options}
+                                        loadData={this.loadData}
+                                        onChange={this.onChange}
+                                        changeOnSelect
+                                    />)}
                                 </FormItem>
                             </Col>
                         </Row>
                         <Row>
                             <Col xs={24} sm={12}>
-                                <FormItem {...formItemLayout} label='数据库'>
-                                    {getFieldDecorator('auth_db', {
-                                        rules: [{ required: true, message: '请输入数据库!', whitespace: true }],
+                                <FormItem {...formItemLayout} label='扫描间隔' >
+                                    {getFieldDecorator('scanInterval', {
+                                        rules: [{ required: true, message: '请输入扫描间隔!', whitespace: true }],
                                     })(
-                                        <Select style={{ width: '120px' }}
-                                            placeholder="请选择"
-                                            name='auth_db'
-
-                                            onChange={(value) => this.onSelectChange('auth_db', value)}
-                                        >
-                                            {this.state.dbList}
+                                        <Select name='scanInterval' style={{ width: 200 }} placeholder="请选择扫描间隔" onChange={this.handleSelectChange}>
+                                            <Option value='60' >1分钟</Option>
+                                            <Option value='180' >3分钟</Option>
+                                            <Option value='300' >5分钟</Option>
+                                            <Option value='600' >10分钟</Option>
+                                            <Option value='1800' >30分钟</Option>
+                                            <Option value='3600' >1小时</Option>
+                                            <Option value='7200' >2小时</Option>
+                                            <Option value='14400' >4小时</Option>
+                                            <Option value='18000' >5小时</Option>
+                                            <Option value='28800' >8小时</Option>
+                                            <Option value='36000' >10小时</Option>
+                                            <Option value='43200' >12小时</Option>
                                         </Select>
                                     )}
-
                                 </FormItem>
-                            </Col>
-                            <Col xs={24} sm={12} >
-
-                                <FormItem {...formItemLayout} label='权限名称'>
-                                    {getFieldDecorator('auth_name', {
-                                        rules: [{ required: true, message: '请输入权限名称!', whitespace: true }],
-                                    })(
-                                        <Input type='text' name='auth_name' />
-                                    )}
-                                </FormItem>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col xs={24} sm={12}>
-                                <FormItem {...formItemLayout} label='Sql'>
-                                    {getFieldDecorator('auth_sql', {
-                                        rules: [{ required: true, message: '请输入Sql!', whitespace: true }],
-                                    })(
-                                        <TextArea type='text' name='auth_sql' onChange={(e) => this.onValueChange(e)}></TextArea>
-                                    )}
-                                </FormItem>
-
-
                             </Col>
                         </Row>
                         <FormItem {...tailFormItemLayout}>
                             <Button type="primary" htmlType="submit" style={{ marginLeft: '30px' }}>保存</Button>
-                            <Button href="#/authType" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
+                            <Button href="#/gatewayManagement" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
                         </FormItem>
                     </Form>
                 </Card>
