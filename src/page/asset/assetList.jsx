@@ -1,227 +1,241 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Form, Select, Row, Col, Table, Divider, Button, Card, Input, Tree, Dropdown, Badge, Menu, Icon, message, Modal, Radio } from 'antd';
-import { PlusCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
-import { DownOutlined } from '@ant-design/icons';
+import { Table, Input, InputNumber, Popconfirm, Form, Pagination, Card } from 'antd';
 import 'antd/dist/antd.css';
+import LocalStorge from '../../util/LogcalStorge.jsx';
+const localStorge = new LocalStorge();
 
-const FormItem = Form.Item;
-const Option = Select.Option;
-const { TreeNode } = Tree;
+import AssetService from '../../service/AssetService.jsx';
+const _assetService = new AssetService();
 
-const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
-    // eslint-disable-next-line
-    class extends React.Component {
-        getItemLayout = (props) => {
-            return (
-                <Input.Search style={{ marginBottom: '6px' }} addonBefore={props.code} type='text' name='name' placeholder='请输入物联网编号' enterButton="扫描" />
-            );
+
+const EditableContext = React.createContext();
+
+class EditableCell extends React.Component {
+    getInput = () => {
+        if (this.props.inputType === 'number') {
+            return <InputNumber />;
         }
-        render() {
-            const ItemLayout = this.getItemLayout;
-            const { visible, onCancel, onCreate, form } = this.props;
+        return <Input />;
+    };
 
-            const data = [];
-            for (let i = 0; i < 9; ++i) {
-                data.push(<ItemLayout code={"303724G00056570" + i + " -> "} />);
-            }
-            return (
-                <Modal
-                    visible={visible}
-                    title="绑定物联网标签"
-                    okText="确认"
-                    cancelText="取消"
-                    onCancel={onCancel}
-                    onOk={onCreate}
-                >
-                    {data}
-                </Modal>
-            );
-        }
-    },
-);
+    renderCell = ({ getFieldDecorator }) => {
+        const {
+            editing,
+            dataIndex,
+            title,
+            inputType,
+            record,
+            index,
+            children,
+            ...restProps
+        } = this.props;
+        return (
+            <td {...restProps}>
+                {editing ? (
+                    <Form.Item style={{ margin: 0 }}>
+                        {getFieldDecorator(dataIndex, {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: `Please Input ${title}!`,
+                                },
+                            ],
+                            initialValue: record[dataIndex],
+                        })(this.getInput())}
+                    </Form.Item>
+                ) : (
+                        children
+                    )}
+            </td>
+        );
+    };
 
+    render() {
+        return <EditableContext.Consumer>{this.renderCell}</EditableContext.Consumer>;
+    }
+}
 
-class TreeTest extends React.Component {
+class EditableTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedRowKeys: [], // Check here to configure the default column
-            loading: false,
-            confirmDirty: false,
-            _name: this.props.match.params.name
+            pageNum: 1,
+            perPage: 6,
+            dataList: [],
+            editingKey: ''
         };
+        this.columns = [
+            {
+                title: '资产Id',
+                dataIndex: 'asset_id',
+                width: '15%',
+                editable: true,
+            },
+            {
+                title: '资产编号',
+                dataIndex: 'asset_num',
+                width: '15%',
+                editable: true,
+            },
+            {
+                title: '资产名称',
+                dataIndex: 'asset_name',
+                editable: true,
+            },
+            {
+                title: '操作',
+                dataIndex: 'operation',
+                width: '15%',
+                render: (text, record) => {
+                    const { editingKey } = this.state;
+                    const editable = this.isEditing(record);
+                    return editable ? (
+                        <span>
+                            <EditableContext.Consumer>
+                                {form => (
+                                    <a
+                                        onClick={() => this.save(form, record.asset_id)}
+                                        style={{ marginRight: 8 }}
+                                    >
+                                        保存
+                                    </a>
+                                )}
+                            </EditableContext.Consumer>
+                            <Popconfirm title="确定取消?" onConfirm={() => this.cancel(record.asset_id)}>
+                                <a>取消</a>
+                            </Popconfirm>
+                        </span>
+                    ) : (
+                            <a disabled={editingKey !== ''} onClick={() => this.edit(record.asset_id)}>
+                                编辑
+                            </a>
+                        );
+                },
+            },
+        ];
     }
 
-    start = () => {
-        this.setState({ loading: true });
-        // ajax request after empty completing
-        setTimeout(() => {
+    componentDidMount() {
+        // To disable submit button at the beginning.
+        this.loadAssetList();
+    }
+
+    // 页数发生变化的时候
+    onPageNumChange(pageNum) {
+        this.setState({
+            pageNum: pageNum
+        }, () => {
+            this.loadAssetList();
+        });
+    }
+    loadAssetList() {
+        let param = {};
+        param.pageNum = this.state.pageNum;
+        param.perPage = this.state.perPage;
+        _assetService.getAssetList(param).then(response => {
             this.setState({
-                selectedRowKeys: [],
-                loading: false,
+                dataList: response.data.list,
+                total: response.data.total
             });
-        }, 1000);
+        }, errMsg => {
+            localStorge.errorTips(errMsg);
+        });
+    }
+
+    isEditing = record => record.asset_id === this.state.editingKey;
+
+    cancel = () => {
+        this.setState({ editingKey: '' });
     };
 
-
-
-    showModal = () => {
-        console.log('点击新增')
-        this.setState({ visible: true });
-    };
-
-    handleCancel = () => {
-        this.setState({ visible: false });
-    };
-
-    handleCreate = () => {
-        const { form } = this.formRef.props;
-        form.validateFields((err, values) => {
-            if (err) {
+    save(form, key) {
+        form.validateFields((error, row) => {
+            if (error) {
                 return;
             }
+            const newData = [...this.state.dataList];
+            _assetService.bindEamTag(row).then(response => {
+                const index = newData.findIndex(item => key === item.asset_id);
+                const item = newData[index];
+                newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                });
+                this.setState({ dataList: newData, editingKey: '' });
+            }, errMsg => {
+                localStorge.errorTips(errMsg);
+            });
 
-            console.log('Received values of form: ', values);
-            form.resetFields();
-            this.setState({ visible: false });
+
+            // const index = newData.findIndex(item => key === item.asset_id);
+            // if (index > -1) {
+            //     const item = newData[index];
+            //     newData.splice(index, 1, {
+            //         ...item,
+            //         ...row,
+            //     });
+            //     this.setState({ dataList: newData, editingKey: '' });
+            // } else {
+            //     newData.push(row);
+            //     this.setState({ dataList: newData, editingKey: '' });
+            // }
         });
-    };
+    }
 
-    saveFormRef = formRef => {
-        this.formRef = formRef;
-    };
-    onSelectChange = selectedRowKeys => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
-        this.setState({ selectedRowKeys });
-    };
-
+    edit(key) {
+        this.setState({ editingKey: key });
+    }
 
     render() {
-
-        const { loading, selectedRowKeys } = this.state;
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: this.onSelectChange,
-        };
-        const hasSelected = selectedRowKeys.length > 0;
-
-        const { getFieldDecorator } = this.props.form;
-        const formItemLayout = {
-            labelCol: {
-                xs: { span: 24 },
-                sm: { span: 8 },
-            },
-            wrapperCol: {
-                xs: { span: 24 },
-                sm: { span: 16 },
-            },
-        };
-        const tailFormItemLayout = {
-            wrapperCol: {
-                xs: {
-                    span: 24,
-                    offset: 0,
-                },
-                sm: {
-                    span: 16,
-                    offset: 8,
-                },
+        const components = {
+            body: {
+                cell: EditableCell,
             },
         };
 
-        const columns = [
-            { title: '资产标签', dataIndex: 'barCode', key: 'barCode' },
-            { title: '物联网标签', dataIndex: 'electronicLabel', key: 'electronicLabel' },
-            { title: '资产名称', dataIndex: 'assetFirstname', key: 'assetFirstname' },
-            { title: '生产厂商', dataIndex: 'productor', key: 'productor' },
-            { title: '规格型号', dataIndex: 'model', key: 'model' },
-            // { title: '资产类别编号', dataIndex: 'typeCode', key: 'typeCode' },
-            { title: '资产类别描述', dataIndex: 'typeName', key: 'typeName' },
-            // {
-            //     title: '状态',
-            //     key: 'state',
-            //     render: (text, record, index) => {
-            //         let status = 'success'
-            //         let desc = '正常'
-            //         if (record.state % 3 == 0) {
-            //             status = 'success'
-            //             desc = '正常'
-            //         } else if (record.state % 3 == 1) {
-            //             status = 'warning'
-            //             desc = '警告'
-            //         } else if (record.state % 3 == 2) {
-            //             status = 'error'
-            //             desc = '错误'
-            //         }
-            //         return (
-            //             <span>
-            //                 <Badge status={status} />
-            //                 {desc}
-            //             </span>
-            //         )
-            //     }
-            // },
-            // { title: '状态更新时间', dataIndex: 'updateDate', key: 'updateDate' },
-            { title: '操作', key: 'action', render: (text, record, index) => { return (<a>编辑</a>) } },
-
-        ];
-        const data = [];
-        for (let i = 0; i < 9; ++i) {
-            data.push({
-                key: i,
-                "assetType": "预转资资产",
-                "assetCode": "",
-                "barCode": "303724G00056570" + i,
-                "electronicLabel": '',
-                "newBarCode": "",
-                "assetFirstname": "TD-LTE专用直放站",
-                "assetLastname": "TD-LTE专用直放站",
-                "productor": "华为",
-                "model": "GSM900 LTE（F/A/D）",
-                "amount": 1,
-                "unit": "个",
-                "appDomainCode": "01",
-                "appDomainName": "营业用",
-                "typeCode": "01.02-03-02-02.0000",
-                "typeName": "TD-LTE专用直放站",
-                "state": i,
-                "updateDate": '2014-12-24 23:12:00',
-
-            });
-        }
-
+        const columns = this.columns.map(col => {
+            if (!col.editable) {
+                return col;
+            }
+            return {
+                ...col,
+                onCell: record => ({
+                    record,
+                    inputType: col.dataIndex === 'age' ? 'number' : 'text',
+                    dataIndex: col.dataIndex,
+                    title: col.title,
+                    editing: this.isEditing(record),
+                }),
+            };
+        });
 
         return (
             <div id="page-wrapper">
-                <Card title="资产管理">
-
-                    <Button onClick={this.showModal} type="primary" icon="database">绑定物联网标签</Button>
-
+                <Card title="资产标签管理">
                     <Input.Search
                         style={{ maxWidth: 300, marginBottom: '10px', float: "right" }}
                         placeholder="请输入资产标签号或物联网标签号..."
                         enterButton="查询"
                     />
 
-                    <CollectionCreateForm
-                        wrappedComponentRef={this.saveFormRef}
-                        visible={this.state.visible}
-                        onCancel={this.handleCancel}
-                        onCreate={this.handleCreate}
-                    />
+                    <EditableContext.Provider value={this.props.form}>
+                        <Table
+                            components={components}
+                            bordered
+                            dataSource={this.state.dataList}
+                            columns={columns}
+                            rowClassName="editable-row"
+                            pagination={{
+                                onChange: this.cancel,
+                            }}
+                        />
+                    </EditableContext.Provider>
 
-                    <Table
-                        rowSelection={rowSelection}
-                        className="components-table-demo-nested"
-                        columns={columns}
-                        dataSource={data}
-                    />
                 </Card>
-            </div >
-        )
+            </div>
+
+        );
     }
 }
-export default Form.create()(TreeTest);
-
+export default Form.create()(EditableTable);

@@ -85,6 +85,13 @@ const assetmap = Loadable({
     delay: 3000
 });
 
+const assetmapGaoDe = Loadable({
+    loader: () => import(/* webpackChunkName: "assetmap" */ './page/map/assetmapGaoDe.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
+
 
 const assetList = Loadable({
     loader: () => import(/* webpackChunkName: "assetList" */ './page/asset/assetList.jsx'),
@@ -120,6 +127,9 @@ const addGateway = Loadable({
     delay: 3000
 });
 
+
+
+
 const LayoutRouter = (nextState, replace) => {
     if (undefined != localStorge.getStorage('userInfo') && '' != localStorge.getStorage('userInfo')) {
         return (
@@ -140,6 +150,7 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/assetMonitoring" component={assetMonitoring} />
                     <Route path="/gatewayManagement" component={gatewayManagement} />
                     <Route path="/addGateway/:name" component={addGateway} />
+                    <Route path="/assetmapGaoDe" component={assetmapGaoDe} />
                 </Switch>
             </Layout>
         );

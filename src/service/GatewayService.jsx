@@ -7,11 +7,19 @@ export default class GatewayService {
         return HttpService.post(url, JSON.stringify(param));
     }
 
+    //获取网关列表 分页
     getGatewayList(param) {
         let url = "reportServer/gateway/listEamGateway";
         return HttpService.post(url, JSON.stringify(param));
     }
 
+    //获取所有网关
+    getGatewayListAll(param) {
+        let url = "reportServer/gateway/listEamGatewayAll";
+        return HttpService.post(url, JSON.stringify(param));
+    }
+
+    //删除网关
     deleteGateway(param) {
         let url = "reportServer/gateway/deleteGateway";
         return HttpService.post(url, JSON.stringify(param));
