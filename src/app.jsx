@@ -127,6 +127,12 @@ const addGateway = Loadable({
     delay: 3000
 });
 
+const gatewayBindingAsset = Loadable({
+    loader: () => import(/* webpackChunkName: "gatewayBindingAsset" */ './page/asset/gatewayBindingAsset.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
 
 
 
@@ -151,6 +157,7 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/gatewayManagement" component={gatewayManagement} />
                     <Route path="/addGateway/:name" component={addGateway} />
                     <Route path="/assetmapGaoDe" component={assetmapGaoDe} />
+                    <Route path="/gatewayBindingAsset/:name" component={gatewayBindingAsset} />
                 </Switch>
             </Layout>
         );

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Select, Row, Col, Table, Button, Card, Input, Tree, Badge, Pagination, Modal } from 'antd';
+import { Form, Select, Row, Col, Table, Button, Card, Input, Tree, Badge, Pagination, Modal, Divider } from 'antd';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
 import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
@@ -173,7 +173,11 @@ class TreeTest extends React.Component {
             {
                 title: '操作', key: 'operation', render: (text, record, index) => {
                     return (
-                        <a onClick={() => this.showConfirm(record.gateway_id)}>删除</a>
+                        <span>
+                            <a onClick={() => this.showConfirm(record.gateway_id)}>删除</a>
+                            <Divider type="vertical" />
+                            <a href={`#/gatewayBindingAsset/${record.gateway_id}`}>关联资产</a>
+                        </span>
                     )
                 }
             },
