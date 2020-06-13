@@ -76,21 +76,11 @@ const dashboardRouter = Loadable({
 });
 
 
-
-
-
-const assetmap = Loadable({
-    loader: () => import(/* webpackChunkName: "assetmap" */ './page/map/assetmap.jsx'),
+const assetRouter = Loadable({
+    loader: () => import(/* webpackChunkName: "assetRouter" */ './page/asset/assetRouter.jsx'),
     loading: loading,
     delay: 3000
 });
-
-const assetmapGaoDe = Loadable({
-    loader: () => import(/* webpackChunkName: "assetmap" */ './page/map/assetmapGaoDe.jsx'),
-    loading: loading,
-    delay: 3000
-});
-
 
 
 const assetList = Loadable({
@@ -98,37 +88,11 @@ const assetList = Loadable({
     loading: loading,
     delay: 3000
 });
-const gatewayManagementOld = Loadable({
-    loader: () => import(/* webpackChunkName: "gatewayManagementOld" */ './page/asset/gatewayManagementOld.jsx'),
+const assetEdit = Loadable({
+    loader: () => import(/* webpackChunkName: "assetEdit" */ './page/asset/assetEdit.jsx'),
     loading: loading,
     delay: 3000
 });
-const assetInventory = Loadable({
-    loader: () => import(/* webpackChunkName: "assetInventory" */ './page/asset/assetInventory.jsx'),
-    loading: loading,
-    delay: 3000
-});
-
-const assetMonitoring = Loadable({
-    loader: () => import(/* webpackChunkName: "assetMonitoring" */ './page/asset/assetMonitoring.jsx'),
-    loading: loading,
-    delay: 3000
-});
-
-const gatewayManagement = Loadable({
-    loader: () => import(/* webpackChunkName: "gatewayManagement" */ './page/asset/gatewayManagement.jsx'),
-    loading: loading,
-    delay: 3000
-});
-
-const addGateway = Loadable({
-    loader: () => import(/* webpackChunkName: "addGateway" */ './page/asset/addGateway.jsx'),
-    loading: loading,
-    delay: 3000
-});
-
-
-
 
 const LayoutRouter = (nextState, replace) => {
     if (undefined != localStorge.getStorage('userInfo') && '' != localStorge.getStorage('userInfo')) {
@@ -143,14 +107,9 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/Auth" component={Auth} />
                     <Route path="/role" component={RoleRouter} />
                     <Route path="/authType" component={AuthTypeRouter} />
-                    <Route path="/assetmap" component={assetmap} />
-                    <Route path="/assetList" component={assetList} />
-                    <Route path="/gatewayManagementOld" component={gatewayManagementOld} />
-                    <Route path="/assetInventory" component={assetInventory} />
-                    <Route path="/assetMonitoring" component={assetMonitoring} />
-                    <Route path="/gatewayManagement" component={gatewayManagement} />
-                    <Route path="/addGateway/:name" component={addGateway} />
-                    <Route path="/assetmapGaoDe" component={assetmapGaoDe} />
+                    <Route path="/asset/assetList" component={assetList} />
+                    <Route path="/asset/assetEdit" component={assetEdit} />
+                   
                 </Switch>
             </Layout>
         );

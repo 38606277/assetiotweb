@@ -1,12 +1,13 @@
 
 import React from 'react';
-import { Table, Input, InputNumber, Popconfirm, Form, Pagination, Card } from 'antd';
+import { Table, Input, InputNumber, Popconfirm, Form, Pagination,Row,Col,Button, Card } from 'antd';
 import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
 
 import AssetService from '../../service/AssetService.jsx';
 const _assetService = new AssetService();
+const Search = Input.Search;
 
 
 const EditableContext = React.createContext();
@@ -66,6 +67,7 @@ class EditableTable extends React.Component {
             editingKey: ''
         };
         this.columns = [
+
             {
                 title: '资产Id',
                 dataIndex: 'asset_id',
@@ -75,6 +77,12 @@ class EditableTable extends React.Component {
             {
                 title: '资产编号',
                 dataIndex: 'asset_num',
+                width: '15%',
+                editable: true,
+            },
+            {
+                title: '物联网标签号',
+                dataIndex: 'iot_num',
                 width: '15%',
                 editable: true,
             },
@@ -145,6 +153,7 @@ class EditableTable extends React.Component {
 
     isEditing = record => record.asset_id === this.state.editingKey;
 
+
     cancel = () => {
         this.setState({ editingKey: '' });
     };
@@ -213,11 +222,19 @@ class EditableTable extends React.Component {
         return (
             <div id="page-wrapper">
                 <Card title="资产标签管理">
-                    <Input.Search
-                        style={{ maxWidth: 300, marginBottom: '10px', float: "right" }}
-                        placeholder="请输入资产标签号或物联网标签号..."
-                        enterButton="查询"
-                    />
+                    <Row>
+                        <Col xs={24} sm={12}>
+                            <Search
+                                style={{ maxWidth: 300, marginBottom: '10px' }}
+                                placeholder="请输入..."
+                                enterButton="查询"
+                            />
+                        </Col>
+                        <Col xs={24} sm={12}>
+                            <Button href="#/asset/assetEdit/null" style={{ float: "right", marginRight: "10px" }} type="primary">导入资产</Button>
+                            <Button href="#/asset/assetEdit/null" style={{ float: "right", marginRight: "10px" }} type="primary">新建资产</Button>
+                        </Col>
+                    </Row>
 
                     <EditableContext.Provider value={this.props.form}>
                         <Table
