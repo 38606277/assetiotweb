@@ -24,4 +24,9 @@ export default class GatewayService {
         let url = "reportServer/gateway/deleteGateway";
         return HttpService.post(url, JSON.stringify(param));
     }
+
+    bindAssetList(param) {
+        let url = "reportServer/gateway/bindAssetList";
+        return HttpService.post(url, JSON.stringify(param));
+    }
 }

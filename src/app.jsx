@@ -94,6 +94,27 @@ const assetEdit = Loadable({
     delay: 3000
 });
 
+const gatewayManagement = Loadable({
+    loader: () => import(/* webpackChunkName: "gatewayManagement" */ './page/asset/gatewayManagement.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
+const addGateway = Loadable({
+    loader: () => import(/* webpackChunkName: "addGateway" */ './page/asset/addGateway.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
+const gatewayBindingAsset = Loadable({
+    loader: () => import(/* webpackChunkName: "gatewayBindingAsset" */ './page/asset/gatewayBindingAsset.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
+
+
+
 const LayoutRouter = (nextState, replace) => {
     if (undefined != localStorge.getStorage('userInfo') && '' != localStorge.getStorage('userInfo')) {
         return (
@@ -110,6 +131,15 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/asset/assetList" component={assetList} />
                     <Route path="/asset/assetEdit" component={assetEdit} />
                    
+                    <Route path="/assetmap" component={assetmap} />
+                    <Route path="/assetList" component={assetList} />
+                    <Route path="/gatewayManagementOld" component={gatewayManagementOld} />
+                    <Route path="/assetInventory" component={assetInventory} />
+                    <Route path="/assetMonitoring" component={assetMonitoring} />
+                    <Route path="/gatewayManagement" component={gatewayManagement} />
+                    <Route path="/addGateway/:name" component={addGateway} />
+                    <Route path="/assetmapGaoDe" component={assetmapGaoDe} />
+                    <Route path="/gatewayBindingAsset/:name" component={gatewayBindingAsset} />
                 </Switch>
             </Layout>
         );

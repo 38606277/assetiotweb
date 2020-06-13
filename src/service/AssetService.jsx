@@ -13,6 +13,12 @@ export default class AssetService {
         return HttpService.post(url, JSON.stringify(param));
     }
 
+    //获取资产列表
+    getBindingAssetList(param) {
+        let url = "reportServer/asset/listBindingEamAsset";
+        return HttpService.post(url, JSON.stringify(param));
+    }
+
     //删除资产
     deleteAsset(param) {
         let url = "reportServer/asset/deleteAsset";
