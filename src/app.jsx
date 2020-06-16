@@ -94,6 +94,9 @@ const assetEdit = Loadable({
     delay: 3000
 });
 
+
+
+
 const gatewayManagement = Loadable({
     loader: () => import(/* webpackChunkName: "gatewayManagement" */ './page/asset/gatewayManagement.jsx'),
     loading: loading,
