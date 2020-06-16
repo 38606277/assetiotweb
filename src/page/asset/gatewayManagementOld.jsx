@@ -369,8 +369,7 @@ class TreeTest extends React.Component {
                                 onCancel={this.handleCancel}
                                 onCreate={this.handleCreate}
                             />
-                            <Table columns={columns} dataSource={data} pagination={false} />
-
+                            <Table columns={columns} dataSource={data} pagination={false} bordered />
                         </Card>
                     </Col>
                 </Row>

@@ -409,6 +409,7 @@ class TreeTest extends React.Component {
                     />
 
                     <Table
+                        bordered
                         className="components-table-demo-nested"
                         columns={columns}
                         dataSource={data}

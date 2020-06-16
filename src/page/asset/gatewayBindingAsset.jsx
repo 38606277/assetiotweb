@@ -22,7 +22,6 @@ class GatewayBindingAsset extends React.Component {
             editingKey: '',
             selectedRowKeys: [],
             selectedRows: []
-
         };
         this.columns = [
             {
@@ -47,7 +46,6 @@ class GatewayBindingAsset extends React.Component {
                 this.state.selectedRows = selectedRows;
             }
         };
-
     }
     componentDidMount() {
         // To disable submit button at the beginning.

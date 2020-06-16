@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button } from 'antd';
+import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Popover } from 'antd';
 import { List, Typography } from 'antd';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import './assetmap.css';
@@ -10,6 +10,7 @@ import "babel-polyfill";
 import GatewayService from '../../service/GatewayService.jsx'
 import AssetService from '../../service/AssetService.jsx'
 import LocalStorge from '../../util/LogcalStorge.jsx';
+import { addTraces } from 'plotly.js';
 
 const localStorge = new LocalStorge();
 const _gatewayService = new GatewayService();
@@ -17,6 +18,8 @@ const _assetService = new AssetService();
 
 
 const url = window.getServerUrl();
+
+
 
 class assetmap extends Component {
 
@@ -26,12 +29,16 @@ class assetmap extends Component {
             map: null,
             AMap: null,
             panelDisplay: 'none',
-            address: '北京市东城区景山前街4号',
-            addressImg: 'report/upload/20190320/165211/jz1.jpg',
+            address: '',
+            addressImg: '',
             assetList: [
             ],
             dataList: [],
             collapsed: false,
+            listType: 'list',
+            searchKeyword: null,
+            cluster: null,
+            markers: []
         }
     }
 
@@ -42,11 +49,16 @@ class assetmap extends Component {
     loadGatewayList() {
         let param = {};
 
+        // 如果是搜索的话，需要传入搜索类型和搜索关键字
+        if (this.state.listType === 'search') {
+            param.keyword = this.state.searchKeyword;
+        }
+
         _gatewayService.getGatewayListAll(param).then(response => {
             this.setState({
                 dataList: response.data,
             });
-            this.initMapData(this.map, this.AMap);
+            this.initMapData(this.state.map, this.state.AMap);
         }, errMsg => {
             localStorge.errorTips(errMsg);
         });
@@ -74,10 +86,18 @@ class assetmap extends Component {
         }, errMsg => {
             localStorge.errorTips(errMsg);
         });
-
-
-
     }
+    // 搜索
+    onSearch(searchKeyword) {
+        let listType = searchKeyword === '' ? 'list' : 'search';
+        this.setState({
+            listType: listType,
+            searchKeyword: searchKeyword
+        }, () => {
+            this.loadGatewayList();
+        });
+    }
+
     togglePanel = () => {
         if (this.state.panelDisplay != 'none') {
             this.setState(
@@ -94,6 +114,7 @@ class assetmap extends Component {
 
         }
     }
+
     toggle = () => {
         this.setState({
             collapsed: !this.state.collapsed,
@@ -103,42 +124,83 @@ class assetmap extends Component {
 
     }
 
-
-
-
+    //编辑字段对应值
+    onValueChange(e) {
+        let name = e.target.name,
+            value = e.target.value.trim();
+        this.setState({ [name]: value });
+        this.props.form.setFieldsValue({ [name]: value });
+    }
 
     initMapData = (map, AMap) => {
+        console.log('initMapData')
         map.clearMap();
+        this.state.markers = [];
         let _this = this;
         for (var i = 0; i < this.state.dataList.length; i++) {
             // 创建一个 Marker 实例：
             let gatewayItem = this.state.dataList[i];
-            var marker = new AMap.Marker({
+            let marker = new AMap.Marker({
                 position: new AMap.LngLat(gatewayItem.lng, gatewayItem.rng),   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
                 title: gatewayItem.address
             });
+
+
+            // let infoWindow = new AMap.InfoWindow({
+            //     isCustom: true,  //使用自定义窗体
+            //     content: _this.createInfoWindow(gatewayItem),
+            //     offset: new AMap.Pixel(16, -45)
+            // });
+
+            //鼠标点击marker弹出自定义的信息窗体
+            // AMap.event.addListener(marker, 'click', function () {
+            //     console.log(`点击标注物${marker.getPosition()}`)
+            //     //infoWindow.open(map, marker.getPosition());
+
+            // });
+
 
             marker.on('click', function (e) {
                 console.log(gatewayItem)
                 _this.getAddr(gatewayItem, e);
             });
+
+
             // 将创建的点标记添加到已有的地图实例：
-            map.add(marker);
+            //map.add(marker);
+            this.state.markers.push(marker);
         }
+        if (this.state.cluster) {
+            this.state.cluster.setMap(null);
+        }
+        new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 80 });
+
     }
+
+    createInfoWindow(gatewayItem) {
+
+        return (<div>1111111</div>)
+    }
+
+
+    closeInfoWindow() {
+        map.clearInfoWindow();
+    }
+
 
     init = () => {
 
         //初始化地图
         AMapLoader.load({
             "key": "38109451268a4a1356c4a3320f251ace",   // 申请好的Web端开发者Key，首次调用 load 时必填
-            "version": "2.0",   // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-            "plugins": []  //插件列表
+            // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+            "plugins": ['AMap.MarkerClusterer']  //插件列表
         }).then((AMap) => {
-            this.AMap = AMap;
-            this.map = new AMap.Map('mapContainer', {
+            this.state.AMap = AMap;
+            this.state.map = new AMap.Map('mapContainer', {
                 center: [116.404, 39.915],
-                zoom: 13
+                zoom: 15,
+                resizeEnable: true,
             });
             this.loadGatewayList();
             //this.initMapData(map, AMap);
@@ -147,7 +209,6 @@ class assetmap extends Component {
             console.log(e);
         })
     }
-
 
     render() {
         return (
@@ -163,10 +224,10 @@ class assetmap extends Component {
 
                     <Row>
                         <Col span={24}>
-                            <Input addonAfter={
+                            <Input name='searchContent' onChange={(e) => this.onValueChange(e)} addonAfter={
                                 <span>
                                     <Button style={{ width: '40px', border: '0px', borderRadius: '0px' }} onClick={this.togglePanel} icon="thunderbolt" />
-                                    <Button type="primary" style={{ width: '40px', border: '0px', borderRadius: '0px' }} icon="search" />
+                                    <Button type="primary" style={{ width: '40px', border: '0px', borderRadius: '0px' }} icon="search" onClick={() => this.onSearch(this.state.searchContent)} />
                                 </span>
                             }></Input>
                         </Col>
@@ -204,8 +265,6 @@ class assetmap extends Component {
                                     />
 
                                 </List.Item>
-
-
                             )}
                         />
                     </Card>

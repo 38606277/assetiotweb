@@ -425,6 +425,7 @@ class TreeTest extends React.Component {
                         className="components-table-demo-nested"
                         columns={columns}
                         dataSource={data}
+                        bordered
                     />
                 </Card>
             </div >

@@ -67,14 +67,14 @@ class EditableTable extends React.Component {
         };
         this.columns = [
             {
-                title: '资产Id',
-                dataIndex: 'asset_id',
+                title: '资产编号',
+                dataIndex: 'asset_num',
                 width: '15%',
                 editable: true,
             },
             {
-                title: '资产编号',
-                dataIndex: 'asset_num',
+                title: '物联网标签号',
+                dataIndex: 'asset_id',
                 width: '15%',
                 editable: true,
             },

@@ -258,7 +258,7 @@ class TreeTest extends React.Component {
 
                     <Button href="#/addGateway/null" type="primary" icon="database" style={{ marginBottom: '10px' }}>新增网关</Button>
 
-                    <Table columns={columns} dataSource={this.state.dataList} pagination={false} />
+                    <Table columns={columns} dataSource={this.state.dataList} bordered pagination={false} />
                     <Pagination
                         style={{ marginTop: '10px' }}
                         current={this.state.pageNum}
