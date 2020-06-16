@@ -25,6 +25,13 @@ import { HashRouter as Router, Switch, Redirect, Route, Link } from 'react-route
 //     loading: loading,
 //     delay: 3000
 // });
+
+// const assetEdit = Loadable({
+//     loader: () => import(/* webpackChunkName: "assetEdit" */ './assetEdit.jsx'),
+//     loading: loading,
+//     delay: 3000
+// });
+
 // const gatewayManagementOld = Loadable({
 //     loader: () => import(/* webpackChunkName: "gatewayManagementOld" */ './gatewayManagementOld.jsx'),
 //     loading: loading,
@@ -61,7 +68,7 @@ export default class assetRouter extends React.Component {
         return (
             <Switch>
                 <Route path="/asset/assetList" component={assetList} />
-                <Route path="/asset/assetEdit/:asset_id" component={assetEdit} />
+                <Route path="/asset/assetEdit/:action/:id" component={assetEdit} />
                 {/* <Route path="/asset/assetmap" component={assetmap} />
                 <Route path="/gatewayManagementOld" component={gatewayManagementOld} />
                 <Route path="/assetInventory" component={assetInventory} />

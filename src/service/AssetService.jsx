@@ -2,7 +2,7 @@ import HttpService from '../util/HttpService.jsx';
 
 export default class AssetService {
     // 添加资产
-    addAsset(param) {
+    static addAsset(param) {
         let url = "reportServer/asset/addAsset";
         return HttpService.post(url, JSON.stringify(param));
     }

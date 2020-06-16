@@ -1,79 +1,75 @@
 import React from 'react';
-import { Form, Input, Select, Button, Icon, Card, Row, Col } from 'antd';
+import { Form, Input, Select, Button, Icon, Card, Row, Col, message } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-import { SettingOutlined } from '@ant-design/icons';
+import AssetService from '../../service/AssetService.jsx';
+import HttpService from '../../util/HttpService.jsx';
 
 
 class assetEdit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      confirmDirty: false,
-      _id: this.props.match.params.roleId,
-      roleId: '',
-      roleName: '',
+      action: this.props.match.params.action,
+      id: this.props.match.params.id,
       enabled: '1',
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleConfirmBlur = this.handleConfirmBlur.bind(this);
+
 
   }
 
   //初始化加载调用方法
   componentDidMount() {
-    if (null != this.state._id && '' != this.state._id && 'null' != this.state._id) {
-      _role.getRoleInfo(this.state._id).then(response => {
-        this.setState(response);
-        this.props.form.setFieldsValue({
-          roleName: response.roleName,
-          enabled: response.enabled.toString(),
-          roleId: response.roleId,
-          confirm: ''
+    if (this.state.action == 'update') {
+      HttpService.post("reportServer/asset/getAssetById", JSON.stringify({ asset_id: this.state.id }))
+        .then(res => {
+          if (res.resultCode == "1000") {
+            this.props.form.setFieldsValue(res.data);
+          }
+          else
+            message.error(res.message);
+
         });
-      }, errMsg => {
-        this.setState({
-        });
-        localStorge.errorTips(errMsg);
-      });
     }
 
   }
 
-
-  //编辑字段对应值
-  onValueChange(e) {
-    let name = e.target.name,
-      value = e.target.value.trim();
-    this.setState({ [name]: value });
-    this.props.form.setFieldsValue({ [name]: value });
-
-  }
-  //编辑字段对应值
-  onSelectChange(name, value) {
-    this.setState({ [name]: value });
-    this.props.form.setFieldsValue({ [name]: value });
-  }
   //提交
-  handleSubmit(e) {
-    e.preventDefault();
+  onSaveClick(closed) {
+    let formInfo = this.props.form.getFieldsValue();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        _role.saveRoleInfo(this.state).then(response => {
-          if (null != this.state._id && '' != this.state._id && 'null' != this.state._id) {
-            alert("修改成功");
-          } else {
-            alert("保存成功");
-          }
-          window.location.href = "#role/roleList";
-        }, errMsg => {
-          this.setState({
-          });
-          localStorge.errorTips(errMsg);
-        });
+        if (this.state.action == 'create') {
+          HttpService.post("reportServer/asset/CreateAsset", JSON.stringify(formInfo))
+            .then(res => {
+              if (res.resultCode == "1000") {
+                message.success('创建成功！id号：' + res.data);
+                this.setState({ action: 'update' });
+                this.props.form.setFieldsValue({ asset_id: res.data });
+              }
+              else
+                message.error(res.message);
+
+            });
+
+        } else if (this.state.action == 'update') {
+          HttpService.post("reportServer/asset/UpdateAsset", JSON.stringify(formInfo))
+            .then(res => {
+              if (res.resultCode == "1000") {
+                message.success(`保存成功！`)
+              }
+              else
+                message.error(res.message);
+
+            });
+        }
+        if (closed) {
+          window.location.href = "#/asset/assetList";
+        }
       }
     });
   }
+
 
   handleConfirmBlur(e) {
     const value = e.target.value;
@@ -111,24 +107,29 @@ class assetEdit extends React.Component {
 
     return (
       <div id="page-wrapper">
-        <Card title={this.state._id == 'null' ? '新建角色' : '编辑角色'}>
-          <Form onSubmit={this.handleSubmit}>
+        <Card title={this.state._id == 'null' ? '新建资产标签' : '编辑资产标签'}>
+          <Form >
+            <FormItem style={{ display: 'none' }}>
+              {getFieldDecorator('asset_id')(
+                <Input type='text' />
+              )}
+            </FormItem>
             <Row>
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="物联网编号">
-                  {getFieldDecorator('roleName', {
-                    rules: [{ required: true, message: '请输入角色名称!' }],
+                  {getFieldDecorator('iot_num', {
+                    rules: [{ required: true, message: '请输入物联网标签号!' }],
                   })(
-                    <Input type='text' name='roleName' onChange={(e) => this.onValueChange(e)} />
+                    <Input type='text' />
                   )}
                 </FormItem>
               </Col>
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="资产编号">
-                  {getFieldDecorator('roleName', {
-                    rules: [{ required: true, message: '请输入角色名称!' }],
+                  {getFieldDecorator('asset_num', {
+                    rules: [{ required: true, message: '请输入资产编号!' }],
                   })(
-                    <Input type='text' name='roleName' addonAfter={<Icon type="setting" onClick={e => this.openModelClick()} />} onChange={(e) => this.onValueChange(e)} />
+                    <Input type='text' addonAfter={<Icon type="setting" onClick={e => this.openModelClick()} />} />
                   )}
                 </FormItem>
               </Col>
@@ -136,10 +137,10 @@ class assetEdit extends React.Component {
             <Row>
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="资产名称">
-                  {getFieldDecorator('roleName', {
+                  {getFieldDecorator('asset_name', {
                     rules: [{ required: true, message: '请输入角色名称!' }],
                   })(
-                    <Input type='text' name='roleName'  />
+                    <Input type='text' />
                   )}
                 </FormItem>
               </Col>
@@ -156,8 +157,9 @@ class assetEdit extends React.Component {
             </Row>
 
             <FormItem {...tailFormItemLayout}>
-              <Button type="primary" htmlType="submit">保存</Button>
-              <Button href="#/asset/assetList" type="primary" style={{ marginLeft: '30px' }}>返回</Button>
+              <Button type="primary" style={{ marginLeft: '30px' }} onClick={() => this.onSaveClick(true)}>保存并关闭</Button>
+              <Button type="primary" style={{ marginLeft: '30px' }} onClick={() => this.onSaveClick(false)}>保存</Button>
+              <Button href="#/asset/assetList" style={{ marginLeft: '30px' }}>返回</Button>
             </FormItem>
           </Form>
         </Card>
