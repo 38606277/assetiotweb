@@ -1,69 +1,31 @@
 
 import React from 'react';
-import { Table, Input, InputNumber, Popconfirm, Form, Pagination, Card } from 'antd';
+import { Link } from 'react-router-dom';
+import { Table, Input, message, Divider, Form, Pagination, Row, Col, Button, Card } from 'antd';
 import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
+import HttpService from '../../util/HttpService.jsx';
 
 import AssetService from '../../service/AssetService.jsx';
 const _assetService = new AssetService();
+const Search = Input.Search;
+
+const { Column, ColumnGroup } = Table;
 
 
-const EditableContext = React.createContext();
 
-class EditableCell extends React.Component {
-    getInput = () => {
-        if (this.props.inputType === 'number') {
-            return <InputNumber />;
-        }
-        return <Input />;
-    };
 
-    renderCell = ({ getFieldDecorator }) => {
-        const {
-            editing,
-            dataIndex,
-            title,
-            inputType,
-            record,
-            index,
-            children,
-            ...restProps
-        } = this.props;
-        return (
-            <td {...restProps}>
-                {editing ? (
-                    <Form.Item style={{ margin: 0 }}>
-                        {getFieldDecorator(dataIndex, {
-                            rules: [
-                                {
-                                    required: true,
-                                    message: `Please Input ${title}!`,
-                                },
-                            ],
-                            initialValue: record[dataIndex],
-                        })(this.getInput())}
-                    </Form.Item>
-                ) : (
-                        children
-                    )}
-            </td>
-        );
-    };
-
-    render() {
-        return <EditableContext.Consumer>{this.renderCell}</EditableContext.Consumer>;
-    }
-}
-
-class EditableTable extends React.Component {
+export default class assetList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             pageNum: 1,
-            perPage: 6,
+            perPage: 10,
             dataList: [],
-            editingKey: ''
+            selectedRows: [],
+            selectedRowKeys: [],
+            selected: true
         };
         this.columns = [
             {
@@ -114,7 +76,9 @@ class EditableTable extends React.Component {
                 },
             },
         ];
+
     }
+
 
     componentDidMount() {
         // To disable submit button at the beginning.
@@ -143,94 +107,105 @@ class EditableTable extends React.Component {
         });
     }
 
-    isEditing = record => record.asset_id === this.state.editingKey;
+    onDelButtonClick() {
 
-    cancel = () => {
-        this.setState({ editingKey: '' });
-    };
 
-    save(form, key) {
-        form.validateFields((error, row) => {
-            if (error) {
-                return;
-            }
-            const newData = [...this.state.dataList];
-            _assetService.bindEamTag(row).then(response => {
-                const index = newData.findIndex(item => key === item.asset_id);
-                const item = newData[index];
-                newData.splice(index, 1, {
-                    ...item,
-                    ...row,
+        if (confirm('确认删除吗？')) {
+
+            let asset_ids = this.state.selectedRowKeys.join(',');
+
+            HttpService.post('reportServer/asset/DeleteAsset', JSON.stringify({ asset_ids: asset_ids }))
+                .then(res => {
+                    if (res.resultCode == "1000") {
+                        message.success("删除成功！");
+                        this.loadAssetList();
+                        this.setState({ selectedRowKeys: [], selectedRows: [] });
+                    }
+
+                    else
+                        message.error(res.message);
+
                 });
-                this.setState({ dataList: newData, editingKey: '' });
-            }, errMsg => {
-                localStorge.errorTips(errMsg);
-            });
-
-
-            // const index = newData.findIndex(item => key === item.asset_id);
-            // if (index > -1) {
-            //     const item = newData[index];
-            //     newData.splice(index, 1, {
-            //         ...item,
-            //         ...row,
-            //     });
-            //     this.setState({ dataList: newData, editingKey: '' });
-            // } else {
-            //     newData.push(row);
-            //     this.setState({ dataList: newData, editingKey: '' });
-            // }
+        }
+    }
+    // 搜索
+    onSearch(searchKeyword) {
+        let listType = searchKeyword === '' ? 'list' : 'search';
+        this.setState({
+            listType: listType,
+            pageNum: 1,
+            searchKeyword: searchKeyword
+        }, () => {
+            this.loadAssetList();
         });
     }
 
-    edit(key) {
-        this.setState({ editingKey: key });
-    }
+
+
+
+
 
     render() {
-        const components = {
-            body: {
-                cell: EditableCell,
+
+        const rowSelection = {
+            selectedRowKeys: this.state.selectedRowKeys,
+            onChange: (selectedRowKeys, selectedRows) => {
+                console.log('selectedRowKeys changed: ', selectedRowKeys);
+                this.setState({ selectedRowKeys: selectedRowKeys, selectedRows: selectedRows });
             },
         };
 
-        const columns = this.columns.map(col => {
-            if (!col.editable) {
-                return col;
-            }
-            return {
-                ...col,
-                onCell: record => ({
-                    record,
-                    inputType: col.dataIndex === 'age' ? 'number' : 'text',
-                    dataIndex: col.dataIndex,
-                    title: col.title,
-                    editing: this.isEditing(record),
-                }),
-            };
-        });
-
         return (
             <div id="page-wrapper">
-                <Card title="资产标签管理">
-                    <Input.Search
-                        style={{ maxWidth: 300, marginBottom: '10px', float: "right" }}
-                        placeholder="请输入资产标签号或物联网标签号..."
-                        enterButton="查询"
-                    />
+                <Card title={<b>资产标签管理</b>} >
+                    <Row>
+                        <Col xs={24} sm={12}>
+                            <Search
+                                style={{ maxWidth: 300, marginBottom: '10px' }}
+                                placeholder="请输入..."
+                                enterButton="查询"
+                                onSearch={value => this.onSearch(value)}
+                            />
+                        </Col>
+                        <Col xs={24} sm={12}>
+                            <Button disabled={this.state.selectedRowKeys.length > 0 ? false : true} onClick={() => this.onDelButtonClick()} style={{ float: "right", marginRight: "10px" }}  >删除</Button>
+                            <Button href="#/asset/assetEdit/null" style={{ float: "right", marginRight: "10px" }} type="primary">导入资产</Button>
+                            <Button href="#/asset/assetEdit/create/0" style={{ float: "right", marginRight: "10px" }} type="primary">新建资产</Button>
 
-                    <EditableContext.Provider value={this.props.form}>
-                        <Table
-                            components={components}
-                            bordered
-                            dataSource={this.state.dataList}
-                            columns={columns}
-                            rowClassName="editable-row"
-                            pagination={{
-                                onChange: this.cancel,
-                            }}
+                        </Col>
+                    </Row>
+                    <Table dataSource={this.state.dataList} rowSelection={rowSelection} rowKey={"asset_id"} pagination={false} >
+                        <Column
+                            title="资产ID"
+                            dataIndex="asset_id"
+
                         />
-                    </EditableContext.Provider>
+                        <Column
+                            title="物联网标签号"
+                            dataIndex="iot_num"
+                        />
+                        <Column
+                            title="资产编号"
+                            dataIndex="asset_num"
+                        />
+                        <Column
+                            title="资产名称"
+                            dataIndex="asset_name"
+                        />
+
+                        <Column
+                            title="动作"
+                            render={(text, record) => (
+                                <span>
+                                    <a href={`#/asset/assetEdit/update/${record.asset_id}`}>编辑</a>
+
+                                </span>
+                            )}
+                        />
+                    </Table>
+                    <Pagination current={this.state.pageNum}
+                        total={this.state.total}
+                        onChange={(pageNum) => this.onPageNumChange(pageNum)} />
 
                 </Card>
             </div>
@@ -238,4 +213,3 @@ class EditableTable extends React.Component {
         );
     }
 }
-export default Form.create()(EditableTable);

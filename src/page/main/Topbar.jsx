@@ -57,27 +57,7 @@ export default class TopBar extends React.Component {
         HttpService.post('/reportServer/appConfig/getWebAppTitle', null).then(res => {
             this.setState({ title: res.data });
         });
-        HttpService.post('/reportServer/chat/getChatByuserID', JSON.stringify(mInfo))
-            .then(res => {
-                let list = res.data;
-                for (var i = 0; i < list.length; i++) {
-                    if (user_id == list[i].from_userId) {
-                        addUserMessage(list[i].post_message);
-                    } else {
-                        if (list[i].message_type == 'json') {
-                            let ress = JSON.parse(list[i].post_message);
-                            renderCustomComponent(this.FormD, { data: ress.data.list, out: ress.data.out });
-                        } else if (list[i].message_type == "file") {
-                            let ress = JSON.parse(list[i].post_message);
-                            renderCustomComponent(this.FormFile, { data: "改为文件名", file: "http://localhost:8080/report/upload/20190404/093729/FL_edqibyQgGF4dYX00O.jpg" });
-                        } else if (list[i].message_type == "text") {
-                            addResponseMessage(list[i].post_message);
-                        } else {
-                            addResponseMessage(list[i].post_message);
-                        }
-                    }
-                }
-            })
+       
     }
 
     //组件即将销毁
