@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Popover } from 'antd';
+import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Popover, Progress, Tag } from 'antd';
 import { List, Typography } from 'antd';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import './assetmap.css';
@@ -7,6 +7,7 @@ import gg from './../../asset/gg.png';
 import bikepng from '../../asset/bike.jpg';
 import { Resizable, ResizableBox } from 'react-resizable';
 import "babel-polyfill";
+
 import GatewayService from '../../service/GatewayService.jsx'
 import AssetService from '../../service/AssetService.jsx'
 import LocalStorge from '../../util/LogcalStorge.jsx';
@@ -145,21 +146,6 @@ class assetmap extends Component {
                 title: gatewayItem.address
             });
 
-
-            // let infoWindow = new AMap.InfoWindow({
-            //     isCustom: true,  //使用自定义窗体
-            //     content: _this.createInfoWindow(gatewayItem),
-            //     offset: new AMap.Pixel(16, -45)
-            // });
-
-            //鼠标点击marker弹出自定义的信息窗体
-            // AMap.event.addListener(marker, 'click', function () {
-            //     console.log(`点击标注物${marker.getPosition()}`)
-            //     //infoWindow.open(map, marker.getPosition());
-
-            // });
-
-
             marker.on('click', function (e) {
                 console.log(gatewayItem)
                 _this.getAddr(gatewayItem, e);
@@ -177,16 +163,6 @@ class assetmap extends Component {
 
     }
 
-    createInfoWindow(gatewayItem) {
-
-        return (<div>1111111</div>)
-    }
-
-
-    closeInfoWindow() {
-        map.clearInfoWindow();
-    }
-
 
     init = () => {
 
@@ -198,7 +174,7 @@ class assetmap extends Component {
         }).then((AMap) => {
             this.state.AMap = AMap;
             this.state.map = new AMap.Map('mapContainer', {
-                center: [116.404, 39.915],
+                center: [114.5220818442, 38.0489583146],
                 zoom: 15,
                 resizeEnable: true,
             });
@@ -243,30 +219,55 @@ class assetmap extends Component {
                         <Row style={{ height: '40px', marginLeft: '30px', color: '#0e89f5' }}>
                             <Col span={8}><Icon type='setting' style={{ marginRight: '8px' }} />详细</Col>
                             <Col span={8}><Icon type='tag' style={{ marginRight: '8px' }} />分离</Col>
-                            <Col span={8}><Icon type='pushpin' style={{ marginRight: '8px' }} />新增</Col>
+                            <Col span={8}><Icon type='pushpin' style={{ marginRight: '8px' }} onClick={() => this.props.history.push('/asset/assetEdit/create/0')} />新增</Col>
                         </Row>
 
-                        <List
+                        <div style={{ height: '300px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
 
-                            bodyStyle={{ padding: '5px', fontSize: '14px' }}
-                            style={{ padding: '5px' }}
-                            dataSource={this.state.assetList}
-                            renderItem={item => (
-                                <List.Item
 
-                                    actions={[]}
-                                >
-                                    <List.Item.Meta style={{ fontSize: '12px' }}
-                                        avatar={
-                                            <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                                        }
-                                        title={<a href="">{item.asset_name}</a>}
-                                        description={item.asset_num}
-                                    />
+                            <List
+                                bodyStyle={{ padding: '5px', fontSize: '14px', backgroundColor: '#ffffcc' }}
+                                style={{ padding: '5px' }}
+                                dataSource={this.state.assetList}
+                                renderItem={item => (
+                                    <List.Item
 
-                                </List.Item>
-                            )}
-                        />
+                                        actions={[]}
+                                    >
+                                        <List.Item.Meta style={{ fontSize: '12px' }}
+                                            avatar={
+                                                <Avatar src={require("./../../asset/notebookComputer.jpg")} />
+                                            }
+                                            title={
+                                                <div>
+                                                    <a href={`#/asset/assetEdit/update/${item.asset_id}`}>
+                                                        {item.asset_name}
+                                                    </a>
+
+                                                    <Tag style={{ float: 'right' }} color={item.tag_id == null ? 'gray' : 'green'}>{item.tag_id == null ? '未关联' : '正常'}</Tag>
+                                                    <img src={require("./../../asset/wifi.png")}></img>
+                                                </div>
+                                            }
+                                            description={<div>
+                                                {item.asset_num}<br />
+                                                {item.electricity != null &&
+                                                    (<div>电量：{item.electricity}V<br /></div>)
+                                                }
+
+                                                {item.receive_time != null &&
+                                                    (<div> 更新于：{item.receive_time}<br /></div>)
+                                                }
+                                            </div>
+
+                                            }
+                                        />
+
+                                    </List.Item>
+                                )}
+                            />
+
+                        </div>
+
                     </Card>
                 </Card>
 

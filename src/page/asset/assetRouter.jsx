@@ -1,9 +1,10 @@
 import React from 'react';
 import { HashRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom'
 // 页面
- import assetList from './assetList.jsx';
- import assetEdit from './assetEdit.jsx';
- import assetmapGaoDe from './assetmapGaoDe.jsx';
+import assetList from './assetList.jsx';
+import assetEdit from './assetEdit.jsx';
+import assetmapGaoDe from './assetmapGaoDe.jsx';
+import gatewayManagementOld from './gatewayManagementOld.jsx';
 
 
 
@@ -71,13 +72,15 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/assetList" component={assetList} />
                 <Route path="/asset/assetEdit/:action/:id" component={assetEdit} />
                 <Route path="/asset/assetmapGaoDe" component={assetmapGaoDe} />
+                <Route path="/asset/gatewayManagementOld" component={gatewayManagementOld} />
+
                 {/* <Route path="/asset/assetmap" component={assetmap} />
                 <Route path="/gatewayManagementOld" component={gatewayManagementOld} />
                 <Route path="/assetInventory" component={assetInventory} />
                 <Route path="/assetMonitoring" component={assetMonitoring} />
                 <Route path="/gatewayManagement" component={gatewayManagement} />
                 <Route path="/addGateway/:name" component={addGateway} />
-                
+                <Route path="/assetmapGaoDe" component={assetmapGaoDe} />
                 <Redirect exact from="/asset" to="/asset/assetList" /> */}
             </Switch>
         )
