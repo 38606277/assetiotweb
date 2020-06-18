@@ -79,14 +79,13 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/gatewayEdit/:action/:id" component={gatewayEdit} />
                 <Route path="/asset/assetmapGaoDe" component={assetmapGaoDe} />
                 <Route path="/asset/gatewayManagementOld" component={gatewayManagementOld} />
-                <Route path="/asset/dashboard" component={dashboard} />
                 {/* <Route path="/asset/assetmap" component={assetmap} />
                 
                 <Route path="/assetInventory" component={assetInventory} />
                 <Route path="/assetMonitoring" component={assetMonitoring} />
                 <Route path="/gatewayManagement" component={gatewayManagement} />
                 <Route path="/addGateway/:name" component={addGateway} />
-                
+                <Route path="/assetmapGaoDe" component={assetmapGaoDe} />
                 <Redirect exact from="/asset" to="/asset/assetList" /> */}
             </Switch>
         )
