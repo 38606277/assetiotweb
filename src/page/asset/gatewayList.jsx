@@ -9,6 +9,11 @@ import HttpService from '../../util/HttpService.jsx';
 
 import AssetService from '../../service/AssetService.jsx';
 const _assetService = new AssetService();
+
+
+
+import GatewayService from '../../service/GatewayService.jsx'
+const _gatewayService = new GatewayService();
 const Search = Input.Search;
 
 const { Column, ColumnGroup } = Table;
@@ -16,7 +21,7 @@ const { Column, ColumnGroup } = Table;
 
 
 
-export default class assetList extends React.Component {
+export default class gatewayList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,14 +31,12 @@ export default class assetList extends React.Component {
             selectedRows: [],
             selectedRowKeys: [],
             selected: true
-        };
-       
-    }
 
-
+        }
+    };
     componentDidMount() {
         // To disable submit button at the beginning.
-        this.loadAssetList();
+        this.loadGatewayList();
     }
 
     // 页数发生变化的时候
@@ -44,11 +47,11 @@ export default class assetList extends React.Component {
             this.loadAssetList();
         });
     }
-    loadAssetList() {
+    loadGatewayList() {
         let param = {};
         param.pageNum = this.state.pageNum;
         param.perPage = this.state.perPage;
-        _assetService.getAssetList(param).then(response => {
+        _gatewayService.getGatewayList(param).then(response => {
             this.setState({
                 dataList: response.data.list,
                 total: response.data.total
@@ -63,9 +66,9 @@ export default class assetList extends React.Component {
 
         if (confirm('确认删除吗？')) {
 
-            let asset_ids = this.state.selectedRowKeys.join(',');
+            let gateway_ids = this.state.selectedRowKeys.join(',');
 
-            HttpService.post('reportServer/asset/DeleteAsset', JSON.stringify({ asset_ids: asset_ids }))
+            HttpService.post('reportServer/gateway/DeleteGateway', JSON.stringify({ gateway_ids: gateway_ids }))
                 .then(res => {
                     if (res.resultCode == "1000") {
                         message.success("删除成功！");
@@ -108,7 +111,7 @@ export default class assetList extends React.Component {
 
         return (
             <div id="page-wrapper">
-                <Card title={<b>资产标签管理</b>} >
+                <Card title={<b>网关管理</b>} >
                     <Row>
                         <Col xs={24} sm={12}>
                             <Search
@@ -120,35 +123,35 @@ export default class assetList extends React.Component {
                         </Col>
                         <Col xs={24} sm={12}>
                             <Button disabled={this.state.selectedRowKeys.length > 0 ? false : true} onClick={() => this.onDelButtonClick()} style={{ float: "right", marginRight: "10px" }}  >删除</Button>
-                            <Button href="#/asset/assetEdit/null" style={{ float: "right", marginRight: "10px" }} type="primary">导入资产</Button>
-                            <Button href="#/asset/assetEdit/create/0" style={{ float: "right", marginRight: "10px" }} type="primary">新建资产</Button>
+                            <Button href="#/asset/assetEdit/null" style={{ float: "right", marginRight: "10px" }} type="primary">导入网关</Button>
+                            <Button href="#/asset/gateWayEdit/create/0" style={{ float: "right", marginRight: "10px" }} type="primary">新建网关</Button>
 
                         </Col>
                     </Row>
-                    <Table dataSource={this.state.dataList} rowSelection={rowSelection} rowKey={"asset_id"} pagination={false} >
+                    <Table dataSource={this.state.dataList} rowSelection={rowSelection} rowKey={"gateWay_id"} pagination={false} >
                         <Column
-                            title="资产ID"
-                            dataIndex="asset_id"
+                            title="网关ID"
+                            dataIndex="gateway_id"
 
                         />
                         <Column
-                            title="物联网标签号"
-                            dataIndex="iot_num"
+                            title="地址"
+                            dataIndex="address"
                         />
                         <Column
-                            title="资产编号"
-                            dataIndex="asset_num"
+                            title="经度"
+                            dataIndex="lng"
                         />
                         <Column
-                            title="资产名称"
-                            dataIndex="asset_name"
+                            title="纬度"
+                            dataIndex="rng"
                         />
 
                         <Column
                             title="动作"
                             render={(text, record) => (
                                 <span>
-                                    <a href={`#/asset/assetEdit/update/${record.asset_id}`}>编辑</a>
+                                    <a href={`#/asset/gatewayEdit/update/${record.gateway_id}`}>编辑</a>
 
                                 </span>
                             )}

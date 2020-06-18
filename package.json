@@ -53,6 +53,7 @@
   "dependencies": {
     "@amap/amap-jsapi-loader": "^0.0.1",
     "@antv/data-set": "^0.10.1",
+    "@antv/g2plot": "^1.1.7",
     "@grapecity/spread-excelio": "^12.0.9",
     "@grapecity/spread-sheets": "^11.2.2",
     "@grapecity/spread-sheets-react": "^11.2.2",

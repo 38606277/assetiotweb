@@ -40,7 +40,7 @@ class assetEdit extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         if (this.state.action == 'create') {
-          HttpService.post("reportServer/asset/CreateAsset", JSON.stringify(formInfo))
+          HttpService.post("reportServer/gateway/CreateGateway", JSON.stringify(formInfo))
             .then(res => {
               if (res.resultCode == "1000") {
                 message.success('创建成功！id号：' + res.data);
@@ -53,7 +53,7 @@ class assetEdit extends React.Component {
             });
 
         } else if (this.state.action == 'update') {
-          HttpService.post("reportServer/asset/UpdateAsset", JSON.stringify(formInfo))
+          HttpService.post("reportServer/gateway/UpdateGateway", JSON.stringify(formInfo))
             .then(res => {
               if (res.resultCode == "1000") {
                 message.success(`保存成功！`)
@@ -107,7 +107,12 @@ class assetEdit extends React.Component {
 
     return (
       <div id="page-wrapper">
-        <Card title={this.state._id == 'null' ? '新建资产标签' : '编辑资产标签'}>
+        <Card title={<b>{this.state._id == 'null' ? '新建资产标签' : '编辑资产标签'}</b>} 
+        extra={<span>
+          <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(true)}>保存并关闭</Button>
+          <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(false)}>保存</Button>
+          <Button href="#/asset/assetList" style={{ marginLeft: '10px' }}>返回</Button>
+        </span>} >
           <Form >
             <FormItem style={{ display: 'none' }}>
               {getFieldDecorator('asset_id')(
@@ -156,11 +161,7 @@ class assetEdit extends React.Component {
               </Col>
             </Row>
 
-            <FormItem {...tailFormItemLayout}>
-              <Button type="primary" style={{ marginLeft: '30px' }} onClick={() => this.onSaveClick(true)}>保存并关闭</Button>
-              <Button type="primary" style={{ marginLeft: '30px' }} onClick={() => this.onSaveClick(false)}>保存</Button>
-              <Button href="#/asset/assetList" style={{ marginLeft: '30px' }}>返回</Button>
-            </FormItem>
+           
           </Form>
         </Card>
       </div>

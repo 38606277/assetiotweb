@@ -1,0 +1,30 @@
+{
+    "gatewayHeader": {
+        "gateway_id": 1319100003,
+        "address": "人名大会堂",
+        "lng": "116.407854",
+        "rng": "39.921988"
+    },
+    "gatewayline": [
+        {
+            "iot_num": "2222",
+            "address": "人名大会堂",
+            "lng": "116.407854",
+            "asset_name": "222222",
+            "address_id": "110102000000",
+            "rng": "39.921988",
+            "asset_num": "2",
+            "gateway_id": 1319100003
+        },
+        {
+            "iot_num": "fsdfsd",
+            "address": "人名大会堂",
+            "lng": "116.407854",
+            "asset_name": "dsf",
+            "address_id": "110102000000",
+            "rng": "39.921988",
+            "asset_num": "fdf",
+            "gateway_id": 1319100003
+        }
+    ]
+}

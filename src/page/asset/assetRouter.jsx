@@ -3,7 +3,12 @@ import { HashRouter as Router, Switch, Redirect, Route, Link } from 'react-route
 // 页面
  import assetList from './assetList.jsx';
  import assetEdit from './assetEdit.jsx';
- import assetmapGaoDe from './assetmapGaoDe.jsx';
+ import gatewayList from './gatewayList.jsx';
+ import gatewayEdit from './gatewayEdit.jsx';
+ import assetmapGaoDe from './assetmapGaoDe.jsx'; 
+ import gatewayManagementOld from './gatewayManagementOld.jsx';
+ import Analysis from '../../page/dashboard/analysis.jsx';
+ import  dashboard    from './dashboard.jsx'
 
 
 
@@ -70,9 +75,13 @@ export default class assetRouter extends React.Component {
             <Switch>
                 <Route path="/asset/assetList" component={assetList} />
                 <Route path="/asset/assetEdit/:action/:id" component={assetEdit} />
+                <Route path="/asset/gatewayList" component={gatewayList} />
+                <Route path="/asset/gatewayEdit/:action/:id" component={gatewayEdit} />
                 <Route path="/asset/assetmapGaoDe" component={assetmapGaoDe} />
+                <Route path="/asset/gatewayManagementOld" component={gatewayManagementOld} />
+                <Route path="/asset/dashboard" component={dashboard} />
                 {/* <Route path="/asset/assetmap" component={assetmap} />
-                <Route path="/gatewayManagementOld" component={gatewayManagementOld} />
+                
                 <Route path="/assetInventory" component={assetInventory} />
                 <Route path="/assetMonitoring" component={assetMonitoring} />
                 <Route path="/gatewayManagement" component={gatewayManagement} />
