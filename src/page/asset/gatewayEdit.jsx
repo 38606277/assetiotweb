@@ -316,7 +316,7 @@ class gatewayEdit extends React.Component {
                     rules: [
                       { type: 'array', required: true, message: '请选择网关位置' },
                     ],
-                  })(<Cascader
+                  })(<Cascader 
                     options={this.state.options}
                     loadData={this.loadData}
                     onChange={this.onChange}
