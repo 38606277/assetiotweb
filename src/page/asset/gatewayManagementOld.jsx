@@ -1,121 +1,23 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Select, Row, Col, Table, Divider, Button, Card, Input, Tree, Dropdown, Badge, Menu, Icon, message, Modal, Radio } from 'antd';
+import { Form, Select, Row, Col, Table, Divider, Button, Card, Input, Tree, Dropdown, Badge, Menu, Icon, message, Modal, Radio, Pagination } from 'antd';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
 import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import echarts from 'echarts'
 import ReactEcharts from 'echarts-for-react'
 
+import HttpService from '../../util/HttpService.jsx';
 import GatewayService from '../../service/GatewayService.jsx'
+import AssetService from '../../service/AssetService.jsx';
 import AreaService from '../../service/AreaService.jsx'
 const _gatewayService = new GatewayService();
 const _areaService = new AreaService();
+const _assetService = new AssetService();
 
-const FormItem = Form.Item;
-const Option = Select.Option;
+const { Column, ColumnGroup } = Table;
 const { TreeNode } = Tree;
-
-const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
-    // eslint-disable-next-line
-    class extends React.Component {
-
-        addGateway() {
-            let param = {
-                gatewayNumber: '1319100003'
-            }
-
-            _gatewayService.addGateway(JSON.stringify(param)).then((response) => {
-                console.log(response.data)
-            }, (errMsg) => {
-                console.log(errMsg)
-            });
-
-
-        }
-
-        render() {
-            const { visible, onCancel, onCreate, form } = this.props;
-            const { getFieldDecorator } = form;
-
-            const formItemLayout2 = {
-                labelCol: {
-                    xs: { span: 24 },
-                    sm: { span: 4 },
-                },
-                wrapperCol: {
-                    xs: { span: 24 },
-                    sm: { span: 16 },
-                },
-            };
-
-            const formItemLayout = {
-                labelCol: {
-                    xs: { span: 24 },
-                    sm: { span: 4 },
-                },
-                wrapperCol: {
-                    xs: { span: 24 },
-                    sm: { span: 20 },
-                },
-            };
-            const tailFormItemLayout = {
-                wrapperCol: {
-                    xs: {
-                        span: 24,
-                        offset: 0,
-                    },
-                    sm: {
-                        span: 16,
-                        offset: 8,
-                    },
-                },
-            };
-            return (
-                <Modal
-                    visible={visible}
-                    title="新增网关"
-                    okText="确认"
-                    cancelText="取消"
-                    onCancel={onCancel}
-                    onOk={() => this.addGateway()}
-                >
-                    <Form layout="vertical">
-                        <FormItem {...formItemLayout} label="网关编号">
-                            {getFieldDecorator('name', {
-                                rules: [{ required: false, message: '请输入网关编号!' }],
-                            })(
-                                <Input type='text' name='name' placeholder='请输入网关编号' />
-                            )}
-                        </FormItem>
-
-                        <FormItem {...formItemLayout} label="网关地址">
-                            {getFieldDecorator('address', {
-                                rules: [{ required: false, message: '请输入网关地址!' }],
-                            })(
-                                <Input type='text' name='address' placeholder='请输入网关地址' />
-                            )}
-                        </FormItem>
-
-                        <div style={{ marginBottom: "10px" }}>注：经纬度，状态等信息自动获取</div>
-
-
-                        <FormItem {...formItemLayout} label="标签号">
-                            {getFieldDecorator('code', {
-                                rules: [{ required: false, message: '请输资产标签号或物联网标签号!' }],
-                            })(
-                                <Input.Search type='text' name='code' placeholder='请输资产标签号或物联网标签号' enterButton="添加" />
-                            )}
-                        </FormItem>
-
-
-                    </Form>
-                </Modal>
-            );
-        }
-    },
-);
 
 class TreeTest extends React.Component {
     constructor(props) {
@@ -123,13 +25,23 @@ class TreeTest extends React.Component {
         this.state = {
             confirmDirty: false,
             _name: this.props.match.params.name,
-            treeData: [
-
-            ]
+            treeData: [],
+            selectedKeys: [],
+            total: 0,
+            pageNum: 1,
+            perPage: 10,
+            assetList: [],
+            gatewayData: {
+                address_id: '',
+                rng: '',
+                address: '暂无',
+                lng: '',
+                gateway_id: '暂无',
+            }
         };
     }
     componentDidMount() {
-        this.loadAreaData('CHN');
+        this.loadAreaData('13');
     }
 
     loadAreaData(code) {
@@ -137,7 +49,7 @@ class TreeTest extends React.Component {
             parentCode: code,
             maxLevel: 3
         }
-        _areaService.getArea(param).then(response => {
+        _areaService.getGatewayArea(param).then(response => {
             this.setState({
                 treeData: response,
             });
@@ -152,33 +64,39 @@ class TreeTest extends React.Component {
                 resolve();
                 return;
             }
-
+            let maxLevel = 3
             console.log(treeNode);
-            let param = {
-                parentCode: treeNode.props.dataRef.value,
-                maxLevel: 3
-            }
-            _areaService.getArea(param).then(response => {
-                treeNode.props.dataRef.children = response;
-                this.setState({
-                    treeData: [...this.state.treeData],
+            if (treeNode.props.dataRef.level < maxLevel) { //小于则查询地点
+                let param = {
+                    parentCode: treeNode.props.dataRef.value,
+                    maxLevel: maxLevel
+                }
+                _areaService.getGatewayArea(param).then(response => {
+                    treeNode.props.dataRef.children = response;
+                    this.setState({
+                        treeData: [...this.state.treeData],
+                    });
+                    resolve();
+                }, errMsg => {
+                    localStorge.errorTips(errMsg);
                 });
-                resolve();
-            }, errMsg => {
-                localStorge.errorTips(errMsg);
-            });
+            } else {
+
+                let param = {
+                    address_id: treeNode.props.dataRef.value,
+                }
+                _gatewayService.treeGatewayByAddressId(param).then(response => {
+                    treeNode.props.dataRef.children = response;
+                    this.setState({
+                        treeData: [...this.state.treeData],
+                    });
+                    resolve();
+                }, errMsg => {
+                    localStorge.errorTips(errMsg);
+                });
 
 
-            // setTimeout(() => {
-            //     treeNode.props.dataRef.children = [
-            //         { label: 'Child Node', value: `${treeNode.props.eventKey}-0` },
-            //         { label: 'Child Node', value: `${treeNode.props.eventKey}-1` },
-            //     ];
-            //     this.setState({
-            //         treeData: [...this.state.treeData],
-            //     });
-            //     resolve();
-            // }, 1000);
+            }
         });
 
     renderTreeNodes = data =>
@@ -193,15 +111,53 @@ class TreeTest extends React.Component {
             return <TreeNode key={item.value} title={item.label} {...item} dataRef={item} />;
         });
 
+    onSelect = (selectedKeys, info) => {
 
-    showModal = () => {
-        console.log('点击新增')
-        this.setState({ visible: true });
+        if (info.selectedNodes[0].props.dataRef.isGateway) { //点击的是否为网关 
+            this.state.gateway_id = info.selectedNodes[0].props.dataRef.value;
+            this.setState({ gateway_id: info.selectedNodes[0].props.dataRef.value });
+
+            HttpService.post("reportServer/gateway/getGatewayById", JSON.stringify({ gateway_id: info.selectedNodes[0].props.dataRef.value }))
+                .then(res => {
+                    if (res.resultCode == "1000") {
+                        this.setState({
+                            gatewayData: res.data
+                        });
+                    }
+                    else
+                        message.error(res.message);
+
+                });
+
+            this.loadAssetList();
+        }
+
     };
 
-    handleCancel = () => {
-        this.setState({ visible: false });
-    };
+
+    // 页数发生变化的时候
+    onPageNumChange(pageNum) {
+        this.setState({
+            pageNum: pageNum
+        }, () => {
+            this.loadAssetList();
+        });
+    }
+    loadAssetList() {
+        let param = {};
+        param.pageNum = this.state.pageNum;
+        param.perPage = this.state.perPage;
+        param.gateway_id = this.state.gateway_id;
+        _assetService.listEamAssetPageByGatewayId(param).then(response => {
+            this.setState({
+                assetList: response.data.list,
+                total: response.data.total
+            });
+        }, errMsg => {
+            localStorge.errorTips(errMsg);
+        });
+    }
+
 
     handleCreate = () => {
         const { form } = this.formRef.props;
@@ -215,6 +171,8 @@ class TreeTest extends React.Component {
             this.setState({ visible: false });
         });
     };
+
+
 
     saveFormRef = formRef => {
         this.formRef = formRef;
@@ -241,10 +199,9 @@ class TreeTest extends React.Component {
                     name: '资产数量',
                     type: 'pie',
                     data: [
-                        { value: 3, name: '正常', itemStyle: { color: '#52c41a' } },
-                        { value: 3, name: '警告', itemStyle: { color: '#faad14' } },
-                        { value: 3, name: '错误', itemStyle: { color: '#f5222d' } },
-
+                        { value: this.state.assetList.length, name: '正常', itemStyle: { color: '#52c41a' } },
+                        { value: 0, name: '警告', itemStyle: { color: '#faad14' } },
+                        { value: 0, name: '错误', itemStyle: { color: '#f5222d' } },
                     ],
                 }
             ]
@@ -254,67 +211,6 @@ class TreeTest extends React.Component {
 
 
     render() {
-
-        const columns = [
-            { title: '资产标签', dataIndex: 'barCode', key: 'barCode' },
-            { title: '物联网标签', dataIndex: 'electronicLabel', key: 'electronicLabel' },
-            { title: '资产名称', dataIndex: 'assetFirstname', key: 'assetFirstname' },
-            { title: '生产厂商', dataIndex: 'productor', key: 'productor' },
-            { title: '规格型号', dataIndex: 'model', key: 'model' },
-            // { title: '资产类别编号', dataIndex: 'typeCode', key: 'typeCode' },
-            { title: '资产类别描述', dataIndex: 'typeName', key: 'typeName' },
-            {
-                title: '状态',
-                key: 'state',
-                render: (text, record, index) => {
-                    let status = 'success'
-                    let desc = '正常'
-                    if (record.state % 3 == 0) {
-                        status = 'success'
-                        desc = '正常'
-                    } else if (record.state % 3 == 1) {
-                        status = 'warning'
-                        desc = '警告'
-                    } else if (record.state % 3 == 2) {
-                        status = 'error'
-                        desc = '错误'
-                    }
-                    return (
-                        <span>
-                            <Badge status={status} />
-                            {desc}
-                        </span>
-                    )
-                }
-            },
-            // { title: '状态更新时间', dataIndex: 'updateDate', key: 'updateDate' },
-
-        ];
-        const data = [];
-        for (let i = 0; i < 9; ++i) {
-            data.push({
-                key: i,
-                "assetType": "预转资资产",
-                "assetCode": "",
-                "barCode": "303724G00056570" + i,
-                "electronicLabel": "DZ300029102" + i,
-                "newBarCode": "",
-                "assetFirstname": "TD-LTE专用直放站",
-                "assetLastname": "TD-LTE专用直放站",
-                "productor": "华为",
-                "model": "GSM900 LTE（F/A/D）",
-                "amount": 1,
-                "unit": "个",
-                "appDomainCode": "01",
-                "appDomainName": "营业用",
-                "typeCode": "01.02-03-02-02.0000",
-                "typeName": "TD-LTE专用直放站",
-                "state": i,
-                "updateDate": '2014-12-24 23:12:00',
-
-            });
-        }
-
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: {
@@ -348,28 +244,51 @@ class TreeTest extends React.Component {
                 <Row>
                     <Col xs={24} sm={4}>
                         <div class="ant-card-head"><div class="ant-card-head-wrapper"><div class="ant-card-head-title">设备位置</div></div></div>
-                        <Tree loadData={this.onLoadData}>{this.renderTreeNodes(this.state.treeData)}</Tree>
+                        <Tree loadData={this.onLoadData} onSelect={this.onSelect}>{this.renderTreeNodes(this.state.treeData)}</Tree>
                     </Col>
                     <Col xs={24} sm={20}>
-                        <Card title="裕华路1号仓库设备信息">
+                        <Card title="网关信息">
 
                             <div style={{ marginBottom: '40px', height: '240px' }}>
 
                                 <ReactEcharts style={{ float: 'right', width: '400px', height: '240px', marginRight: '100px' }} option={this.getOption()} />
-                                <h1 style={{ marginBottom: '40px' }}>WG000014</h1>
-                                <h3>河北省石家庄长安区裕华路 <img style={{ width: '15px', height: '24px' }} src={require("./../../asset/map.png")} /></h3>
+                                <h1 style={{ marginBottom: '40px' }}>{this.state.gatewayData.gateway_id}</h1>
+                                <h3>{this.state.gatewayData.address} <img style={{ width: '15px', height: '24px' }} src={require("./../../asset/map.png")} /></h3>
 
                             </div>
 
-                            <Button onClick={this.showModal} type="primary" icon="database" style={{ marginBottom: '10px' }}>新增</Button>
+                            {/* <Button onClick={this.showModal} type="primary" icon="database" style={{ marginBottom: '10px' }}>新增</Button> */}
 
-                            <CollectionCreateForm
-                                wrappedComponentRef={this.saveFormRef}
-                                visible={this.state.visible}
-                                onCancel={this.handleCancel}
-                                onCreate={this.handleCreate}
-                            />
-                            <Table columns={columns} dataSource={data} pagination={false} bordered />
+                            <Table dataSource={this.state.assetList} rowKey={"asset_id"} pagination={false} >
+                                <Column
+                                    title="资产ID"
+                                    dataIndex="asset_id"
+                                />
+                                <Column
+                                    title="物联网标签号"
+                                    dataIndex="iot_num"
+                                />
+                                <Column
+                                    title="资产编号"
+                                    dataIndex="asset_num"
+                                />
+                                <Column
+                                    title="资产名称"
+                                    dataIndex="asset_name"
+                                />
+                                {/* <Column
+                                    title="动作"
+                                    render={(text, record) => (
+                                        <span>
+                                            <a href={`#/asset/assetEdit/update/${record.asset_id}`}>编辑</a>
+                                        </span>
+                                    )}
+                                /> */}
+                            </Table>
+                            <Pagination current={this.state.pageNum}
+                                total={this.state.total}
+                                onChange={(pageNum) => this.onPageNumChange(pageNum)} />
+
                         </Card>
                     </Col>
                 </Row>

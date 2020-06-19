@@ -25,9 +25,11 @@ export default class assetList extends React.Component {
             dataList: [],
             selectedRows: [],
             selectedRowKeys: [],
-            selected: true
+            selected: true,
+            listType: 'list',
+            searchKeyword: null
         };
-       
+
     }
 
 
@@ -46,8 +48,15 @@ export default class assetList extends React.Component {
     }
     loadAssetList() {
         let param = {};
+
+        // 如果是搜索的话，需要传入搜索类型和搜索关键字
+        if (this.state.listType === 'search') {
+            param.keyword = this.state.searchKeyword;
+        }
+
         param.pageNum = this.state.pageNum;
         param.perPage = this.state.perPage;
+
         _assetService.getAssetList(param).then(response => {
             this.setState({
                 dataList: response.data.list,
@@ -92,10 +101,6 @@ export default class assetList extends React.Component {
     }
 
 
-
-
-
-
     render() {
 
         const rowSelection = {
@@ -129,7 +134,6 @@ export default class assetList extends React.Component {
                         <Column
                             title="资产ID"
                             dataIndex="asset_id"
-
                         />
                         <Column
                             title="物联网标签号"

@@ -44,11 +44,17 @@ export default class gatewayList extends React.Component {
         this.setState({
             pageNum: pageNum
         }, () => {
-            this.loadAssetList();
+            this.loadGatewayList();
         });
     }
     loadGatewayList() {
         let param = {};
+
+        // 如果是搜索的话，需要传入搜索类型和搜索关键字
+        if (this.state.listType === 'search') {
+            param.keyword = this.state.searchKeyword;
+        }
+
         param.pageNum = this.state.pageNum;
         param.perPage = this.state.perPage;
         _gatewayService.getGatewayList(param).then(response => {
@@ -66,18 +72,16 @@ export default class gatewayList extends React.Component {
 
         if (confirm('确认删除吗？')) {
 
-            let gateway_ids = this.state.selectedRowKeys.join(',');
-
-            HttpService.post('reportServer/gateway/DeleteGateway', JSON.stringify({ gateway_ids: gateway_ids }))
+            HttpService.post('reportServer/gateway/DeleteGateway', JSON.stringify({ gatewayLines: this.state.selectedRows }))
                 .then(res => {
                     if (res.resultCode == "1000") {
                         message.success("删除成功！");
-                        this.loadAssetList();
+                        this.loadGatewayList();
                         this.setState({ selectedRowKeys: [], selectedRows: [] });
                     }
-
-                    else
+                    else {
                         message.error(res.message);
+                    }
 
                 });
         }
@@ -90,14 +94,9 @@ export default class gatewayList extends React.Component {
             pageNum: 1,
             searchKeyword: searchKeyword
         }, () => {
-            this.loadAssetList();
+            this.loadGatewayList();
         });
     }
-
-
-
-
-
 
     render() {
 
@@ -105,6 +104,7 @@ export default class gatewayList extends React.Component {
             selectedRowKeys: this.state.selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
                 console.log('selectedRowKeys changed: ', selectedRowKeys);
+                console.log('selectedRows changed: ', selectedRows);
                 this.setState({ selectedRowKeys: selectedRowKeys, selectedRows: selectedRows });
             },
         };

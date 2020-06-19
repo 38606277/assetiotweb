@@ -6,4 +6,11 @@ export default class AreaService {
         let url = "/reportServer/area/getArea";
         return HttpService.post(url, JSON.stringify(param));
     }
+
+
+    getGatewayArea(param) {
+        let url = "/reportServer/area/getGatewayArea";
+        return HttpService.post(url, JSON.stringify(param));
+    }
 }
+
