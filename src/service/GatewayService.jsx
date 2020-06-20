@@ -25,8 +25,16 @@ export default class GatewayService {
         return HttpService.post(url, JSON.stringify(param));
     }
 
+
     bindAssetList(param) {
         let url = "reportServer/gateway/bindAssetList";
         return HttpService.post(url, JSON.stringify(param));
     }
+
+    //获取地点下的网关， 返回tree控件需要的格式
+    treeGatewayByAddressId(param) {
+        let url = "reportServer/gateway/treeGatewayByAddressId";
+        return HttpService.post(url, JSON.stringify(param));
+    }
+
 }

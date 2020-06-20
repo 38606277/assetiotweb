@@ -32,11 +32,11 @@ class gatewayEdit extends React.Component {
       pageNum: 1,
       perPage: 10,
       dataList: [],
-      assetList:[],
-      selectedRowKeys:[],
-      selectedRows:[],
-      asset_selectedRowKeys:[],
-      asset_selectedRows:[]
+      assetList: [],
+      selectedRowKeys: [],
+      selectedRows: [],
+      asset_selectedRowKeys: [],
+      asset_selectedRows: []
     };
 
 
@@ -69,12 +69,14 @@ class gatewayEdit extends React.Component {
         });
 
     }
-    this.loadAreaData('CHN');
+
+    //
+    this.loadAreaData('13');
 
   }
 
 
-
+  //加载区域数据
   loadAreaData(code) {
     let param = {
       parentCode: code,
@@ -93,12 +95,12 @@ class gatewayEdit extends React.Component {
     let param = {};
     param.pageNum = this.state.pageNum;
     param.perPage = this.state.perPage;
-    _assetService.getAssetList(param).then(response => {
+    _assetService.getNotBindingAssetList(param).then(response => {
       this.setState({
         assetList: response.data.list,
         total: response.data.total
       });
-    // alert(JSON.stringify(this.state.assetList));
+      // alert(JSON.stringify(this.state.assetList));
 
     }, errMsg => {
       localStorge.errorTips(errMsg);
@@ -109,14 +111,23 @@ class gatewayEdit extends React.Component {
 
   //提交
   onSaveClick(closed) {
-    let formInfo = this.props.form.getFieldsValue();
-    let gateway = {
-      gatewayHeader: formInfo,
-      gatewayLines: this.state.dataList
 
-    }
     this.props.form.validateFieldsAndScroll((err, values) => {
+
       if (!err) {
+
+        let formInfo = this.props.form.getFieldsValue();
+        console.log(formInfo);
+        //添加位置id 位置名称
+        formInfo.address_id = values.address_array[values.address_array.length - 1];
+
+
+        let gateway = {
+          gatewayHeader: formInfo,
+          gatewayLines: this.state.dataList
+
+        }
+
         if (this.state.action == 'create') {
           HttpService.post("reportServer/gateway/CreateGateway", JSON.stringify(gateway))
             .then(res => {
@@ -131,7 +142,7 @@ class gatewayEdit extends React.Component {
             });
 
         } else if (this.state.action == 'update') {
-          HttpService.post("reportServer/asset/UpdateAsset", JSON.stringify(formInfo))
+          HttpService.post("reportServer/gateway/UpdateGateway", JSON.stringify(gateway))
             .then(res => {
               if (res.resultCode == "1000") {
                 message.success(`保存成功！`)
@@ -148,19 +159,16 @@ class gatewayEdit extends React.Component {
     });
   }
 
-
-  onDeleteLinesClick(){
+  onDeleteLinesClick() {
     this.state.selectedRows.forEach(element => {
-      let index=this.state.dataList.indexOf(element);
-      this.state.dataList.splice(index,1);
-      
-    });
-    let  newDataList= this.state.dataList;
-    this.setState({dataList:newDataList});
-    this.selectedRowKeys=[];
-    this.selectedRows=[];
-  }
+      let index = this.state.dataList.indexOf(element);
+      this.state.dataList.splice(index, 1);
 
+    });
+    let newDataList = this.state.dataList;
+    this.setState({ dataList: newDataList, selectedRowKeys: [], selectedRows: [] });
+
+  }
 
   handleConfirmBlur(e) {
     const value = e.target.value;
@@ -169,8 +177,6 @@ class gatewayEdit extends React.Component {
   openModelClick() {
     alert("dkf");
   }
-
-
 
   showModal = () => {
     this.loadAssetList();
@@ -182,11 +188,11 @@ class gatewayEdit extends React.Component {
 
   handleOk = e => {
     this.state.asset_selectedRows.forEach(element => {
-      
+
       this.state.dataList.push(element);
     });
     this.setState({})
-    
+
     console.log(e);
     this.setState({
       visible: false,
@@ -234,7 +240,7 @@ class gatewayEdit extends React.Component {
 
 
   render() {
-    
+
     const asset_rowSelection = {
       selectedRowKeys: this.state.asset_selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
@@ -250,9 +256,9 @@ class gatewayEdit extends React.Component {
         this.setState({ selectedRowKeys: selectedRowKeys, selectedRows: selectedRows });
       },
     };
-    
+
     const { getFieldDecorator } = this.props.form;
-    
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -316,11 +322,12 @@ class gatewayEdit extends React.Component {
                     rules: [
                       { type: 'array', required: true, message: '请选择网关位置' },
                     ],
-                  })(<Cascader 
+                  })(<Cascader
                     options={this.state.options}
                     loadData={this.loadData}
                     onChange={this.onChange}
                     changeOnSelect
+                    placeholde="请选择"
                   />)}
                 </FormItem>
 
@@ -353,14 +360,14 @@ class gatewayEdit extends React.Component {
           </Form>
         </Card>
         <div style={{ padding: '16px' }}>
-          <div style={{paddingBottom:'16px'}}>
+          <div style={{ paddingBottom: '16px' }}>
             <span style={{ verticalAlign: 'middle', fontSize: '16px' }}><strong>关联资产</strong></span>
             <span style={{ float: "right", verticalAlign: 'middle' }}>
               <Button style={{ marginLeft: '10px' }} onClick={this.showModal}>新增</Button>
-              <Button  disabled={this.state.selectedRowKeys.length > 0 ? false : true}  style={{ marginLeft: '10px' }} onClick={() => this.onDeleteLinesClick()}>删除</Button>
+              <Button disabled={this.state.selectedRowKeys.length > 0 ? false : true} style={{ marginLeft: '10px' }} onClick={() => this.onDeleteLinesClick()}>删除</Button>
             </span>
           </div>
-       
+
           <Table dataSource={this.state.dataList} rowSelection={gateway_rowSelection} rowKey={"gateWay_id"} pagination={false} >
             <Column
               title="物联网标签号"

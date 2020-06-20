@@ -13,9 +13,14 @@ export default class AssetService {
         return HttpService.post(url, JSON.stringify(param));
     }
 
-    //获取资产列表
+    //获取已关联网关的资产列表
     getBindingAssetList(param) {
         let url = "reportServer/asset/listBindingEamAsset";
+        return HttpService.post(url, JSON.stringify(param));
+    }
+    //获取未关联网关的资产列表
+    getNotBindingAssetList(param) {
+        let url = "reportServer/asset/listAssetNoBindGateway";
         return HttpService.post(url, JSON.stringify(param));
     }
 
@@ -34,6 +39,12 @@ export default class AssetService {
     //获取网关下的资产
     getEamAssetListByGatewayId(param) {
         let url = "reportServer/asset/listEamAssetByGatewayId";
+        return HttpService.post(url, JSON.stringify(param));
+    }
+
+    //获取网关下的资产 分页
+    listEamAssetPageByGatewayId(param) {
+        let url = "reportServer/asset/listEamAssetPageByGatewayId";
         return HttpService.post(url, JSON.stringify(param));
     }
 
