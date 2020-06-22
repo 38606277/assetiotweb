@@ -83,6 +83,7 @@ class assetEdit extends React.Component {
             });
 
         } else if (this.state.action == 'update') {
+          formInfo.asset_id = this.state.id;
           HttpService.post("reportServer/asset/UpdateAsset", JSON.stringify(formInfo))
             .then(res => {
               if (res.resultCode == "1000") {
