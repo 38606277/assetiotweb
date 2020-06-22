@@ -28,7 +28,10 @@ class TreeTest extends React.Component {
         this.state = {
             confirmDirty: false,
             _name: this.props.match.params.name,
-            treeData: [],
+            treeData: [
+                { "level": "1", "label": "北京市", "value": "11", "isLeaf": false },
+                { "level": "1", "label": "河北省", "value": "13", "isLeaf": false }
+            ],
             selectedKeys: [],
             total: 0,
             pageNum: 1,
@@ -44,7 +47,7 @@ class TreeTest extends React.Component {
         };
     }
     componentDidMount() {
-        this.loadAreaData('13');
+        //this.loadAreaData('13');
     }
 
     loadAreaData(code) {
