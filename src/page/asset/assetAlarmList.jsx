@@ -256,8 +256,8 @@ export default class assetAlarmList extends React.Component {
                             title="状态"
                             dataIndex="status"
                             render={(text, record) => (
-                                <span style={record.status == 0 ? { color: 'red' } : { color: 'green' }}>
-                                    {record.status == 0 ? '未处理' : '已处理'}
+                                <span style={record.status == 1 ? { color: 'green' } : { color: 'red' }}>
+                                    {record.status == 1 ? '已处理' : '未处理'}
                                 </span>
                             )}
                         />
@@ -266,7 +266,7 @@ export default class assetAlarmList extends React.Component {
                             render={(text, record) => (
                                 <span>
                                     {
-                                        record.status == 0 ?
+                                        record.status == 1 ?
                                             (
                                                 <a onClick={() => this.showModal(record)}>查看详情</a>
                                             ) : (
