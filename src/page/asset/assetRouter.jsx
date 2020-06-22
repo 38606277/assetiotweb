@@ -1,14 +1,17 @@
 import React from 'react';
 import { HashRouter as Router, Switch, Redirect, Route, Link } from 'react-router-dom'
 // 页面
- import assetList from './assetList.jsx';
- import assetEdit from './assetEdit.jsx';
- import gatewayList from './gatewayList.jsx';
- import gatewayEdit from './gatewayEdit.jsx';
- import assetmapGaoDe from './assetmapGaoDe.jsx'; 
- import gatewayManagementOld from './gatewayManagementOld.jsx';
- import Analysis from '../../page/dashboard/analysis.jsx';
- import  dashboard    from './dashboard.jsx'
+import assetList from './assetList.jsx';
+import assetEdit from './assetEdit.jsx';
+import gatewayList from './gatewayList.jsx';
+import gatewayEdit from './gatewayEdit.jsx';
+import assetmapGaoDe from './assetmapGaoDe.jsx';
+import gatewayManagementOld from './gatewayManagementOld.jsx';
+import Analysis from '../../page/dashboard/analysis.jsx';
+import dashboard from './dashboard.jsx'
+import assetAlarmList from './assetAlarmList.jsx';
+
+
 
 
 
@@ -80,6 +83,7 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/assetmapGaoDe" component={assetmapGaoDe} />
                 <Route path="/asset/gatewayManagementOld" component={gatewayManagementOld} />
                 <Route path="/asset/dashboard" component={dashboard} />
+                <Route path="/asset/assetAlarmList" component={assetAlarmList} />
                 {/* <Route path="/asset/assetmap" component={assetmap} />
                 
                 <Route path="/assetInventory" component={assetInventory} />

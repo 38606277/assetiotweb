@@ -1,9 +1,28 @@
 import React from 'react';
-import { Form, Input, Select, Button, Icon, Card, Row, Col, message } from 'antd';
+import { Form, Input, Select, Button, Icon, Card, Row, Col, message, Upload } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import AssetService from '../../service/AssetService.jsx';
 import HttpService from '../../util/HttpService.jsx';
+
+
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
+
+function beforeUpload(file) {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('You can only upload JPG/PNG file!');
+  }
+  const isLt20M = file.size / 1024 / 1024 < 20;
+  if (!isLt20M) {
+    message.error('Image must smaller than 20MB!');
+  }
+  return isJpgOrPng && isLt20M;
+}
 
 
 class assetEdit extends React.Component {
@@ -13,6 +32,8 @@ class assetEdit extends React.Component {
       action: this.props.match.params.action,
       id: this.props.match.params.id,
       enabled: '1',
+      loading: false,
+      imageUrl: ''
     };
 
 
@@ -25,6 +46,9 @@ class assetEdit extends React.Component {
         .then(res => {
           if (res.resultCode == "1000") {
             this.props.form.setFieldsValue(res.data);
+            this.setState({
+              imageUrl: res.data.imageBase64
+            })
           }
           else
             message.error(res.message);
@@ -37,8 +61,14 @@ class assetEdit extends React.Component {
   //提交
   onSaveClick(closed) {
     let formInfo = this.props.form.getFieldsValue();
+
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+
+        console.log("提交数据", formInfo);
+
+        formInfo.imageBase64 = this.state.imageUrl;
+
         if (this.state.action == 'create') {
           HttpService.post("reportServer/asset/CreateAsset", JSON.stringify(formInfo))
             .then(res => {
@@ -53,6 +83,7 @@ class assetEdit extends React.Component {
             });
 
         } else if (this.state.action == 'update') {
+          formInfo.asset_id = this.state.id;
           HttpService.post("reportServer/asset/UpdateAsset", JSON.stringify(formInfo))
             .then(res => {
               if (res.resultCode == "1000") {
@@ -79,6 +110,33 @@ class assetEdit extends React.Component {
     alert("dkf");
   }
 
+  customRequest() {
+
+  }
+
+  handleChange = info => {
+    console.log(info);
+    if (info.file.status === 'uploading') {
+
+      getBase64(info.file.originFileObj, imageUrl => {
+        console.log(imageUrl)
+        this.setState({
+          imageUrl,
+          loading: false,
+        })
+      },
+      );
+      return;
+    }
+
+  };
+
+  checkImage = (rule, value, callback) => {
+    if (value || this.state.imageUrl) {
+      return callback();
+    }
+    callback('请选择资产图片!');
+  };
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -92,18 +150,14 @@ class assetEdit extends React.Component {
         sm: { span: 16 },
       },
     };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0,
-        },
-        sm: {
-          span: 16,
-          offset: 8,
-        },
-      },
-    };
+
+    const uploadButton = (
+      <div>
+        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <div className="ant-upload-text">Upload</div>
+      </div>
+    );
+    const { imageUrl } = this.state;
 
     return (
       <div id="page-wrapper">
@@ -161,7 +215,32 @@ class assetEdit extends React.Component {
               </Col>
             </Row>
 
+            <Row>
+              <Col xs={24} sm={12}>
 
+                <FormItem {...formItemLayout} label='资产图片' >
+
+                  {getFieldDecorator('asset_img', {
+                    rules: [{ type: 'object', required: true, message: '请选择资产图片!', validator: this.checkImage }],
+                  })(
+                    <Upload
+                      name="avatar"
+                      listType="picture-card"
+                      className="avatar-uploader"
+                      showUploadList={false}
+                      customRequest={this.customRequest}
+                      beforeUpload={beforeUpload}
+                      onChange={this.handleChange}
+                    >
+                      {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                    </Upload>
+                  )}
+
+                </FormItem>
+
+
+              </Col>
+            </Row>
           </Form>
         </Card>
       </div>

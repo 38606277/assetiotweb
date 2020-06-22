@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Form, Input, Divider, Select, Button, Modal, Pagination, Icon, Card, Row, Col, message, Cascader } from 'antd';
+import { Table, Form, Input, Divider, Select, Button, Modal, Pagination, Icon, Card, Row, Col, message, Cascader, Upload } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import GatewayService from '../../service/GatewayService.jsx'
@@ -12,12 +12,26 @@ import { each } from 'lodash';
 const _assetService = new AssetService();
 
 const { Column, ColumnGroup } = Table;
-
-
-
-
 const _areaService = new AreaService();
 
+
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
+
+function beforeUpload(file) {
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJpgOrPng) {
+    message.error('You can only upload JPG/PNG file!');
+  }
+  const isLt20M = file.size / 1024 / 1024 < 20;
+  if (!isLt20M) {
+    message.error('Image must smaller than 20MB!');
+  }
+  return isJpgOrPng && isLt20M;
+}
 
 class gatewayEdit extends React.Component {
   constructor(props) {
@@ -36,7 +50,9 @@ class gatewayEdit extends React.Component {
       selectedRowKeys: [],
       selectedRows: [],
       asset_selectedRowKeys: [],
-      asset_selectedRows: []
+      asset_selectedRows: [],
+      loading: false,
+      imageUrl: ''
     };
 
 
@@ -50,6 +66,9 @@ class gatewayEdit extends React.Component {
         .then(res => {
           if (res.resultCode == "1000") {
             this.props.form.setFieldsValue(res.data);
+            this.setState({
+              imageUrl: res.data.imageBase64
+            })
           }
           else
             message.error(res.message);
@@ -117,10 +136,10 @@ class gatewayEdit extends React.Component {
       if (!err) {
 
         let formInfo = this.props.form.getFieldsValue();
-        console.log(formInfo);
+        console.log("提交数据", formInfo);
         //添加位置id 位置名称
         formInfo.address_id = values.address_array[values.address_array.length - 1];
-
+        formInfo.imageBase64 = this.state.imageUrl;
 
         let gateway = {
           gatewayHeader: formInfo,
@@ -239,6 +258,37 @@ class gatewayEdit extends React.Component {
   };
 
 
+
+  customRequest() {
+
+  }
+
+  handleChange = info => {
+    console.log(info);
+    if (info.file.status === 'uploading') {
+
+      getBase64(info.file.originFileObj, imageUrl => {
+        console.log(imageUrl)
+        this.setState({
+          imageUrl,
+          loading: false,
+        })
+      },
+      );
+      return;
+    }
+
+  };
+
+  checkImage = (rule, value, callback) => {
+    console.log('checkImage', value)
+    if (value || this.state.imageUrl) {
+      return callback();
+    }
+    callback('请选择资产图片!');
+  };
+
+
   render() {
 
     const asset_rowSelection = {
@@ -281,6 +331,13 @@ class gatewayEdit extends React.Component {
         },
       },
     };
+    const uploadButton = (
+      <div>
+        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <div className="ant-upload-text">Upload</div>
+      </div>
+    );
+    const { imageUrl } = this.state;
 
     return (
       <div id="page-wrapper">
@@ -354,9 +411,30 @@ class gatewayEdit extends React.Component {
               </Col>
             </Row>
 
-            <FormItem {...tailFormItemLayout}>
+            <Row>
+              <Col xs={24} sm={12}>
 
-            </FormItem>
+                <FormItem {...formItemLayout} label='网关图片' >
+
+                  {getFieldDecorator('gateway_img', {
+                    rules: [{ type: 'object', required: true, message: '请选择网关图片!', validator: this.checkImage }],
+                  })(
+                    <Upload
+                      name="avatar"
+                      listType="picture-card"
+                      className="avatar-uploader"
+                      showUploadList={false}
+                      customRequest={this.customRequest}
+                      beforeUpload={beforeUpload}
+                      onChange={this.handleChange}
+                    >
+                      {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                    </Upload>
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
           </Form>
         </Card>
         <div style={{ padding: '16px' }}>

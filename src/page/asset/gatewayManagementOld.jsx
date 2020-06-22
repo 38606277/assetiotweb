@@ -8,6 +8,9 @@ import 'antd/dist/antd.css';
 import echarts from 'echarts'
 import ReactEcharts from 'echarts-for-react'
 
+import LocalStorge from '../../util/LogcalStorge.jsx';
+const localStorge = new LocalStorge();
+
 import HttpService from '../../util/HttpService.jsx';
 import GatewayService from '../../service/GatewayService.jsx'
 import AssetService from '../../service/AssetService.jsx';
