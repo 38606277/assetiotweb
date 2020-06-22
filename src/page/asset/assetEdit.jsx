@@ -147,7 +147,7 @@ class assetEdit extends React.Component {
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 },
+        sm: { span: 12 },
       },
     };
 
@@ -204,16 +204,60 @@ class assetEdit extends React.Component {
                 </FormItem>
               </Col>
               <Col xs={24} sm={12}>
-                <FormItem {...formItemLayout} label='创建人' >
-                  <Select name='enabled' value={this.state.enabled.toString()} style={{ width: 120 }} onChange={(value) => this.onSelectChange('enabled', value)}>
-                    <Option value='1' >启用</Option>
-                    <Option value='0' >禁用</Option>
-
-                  </Select>
+                <FormItem {...formItemLayout} label='使用部门' >
+                {getFieldDecorator('asset_dept', {
+                    rules: [{ required: true, message: '请输入使用部门!' }],
+                  })(
+                    <Input type='text' />
+                  )}
 
                 </FormItem>
               </Col>
             </Row>
+            <Row>
+              <Col xs={24} sm={12}>
+                <FormItem {...formItemLayout} label="使用人">
+                  {getFieldDecorator('asset_user', {
+                    rules: [{ required: true, message: '请输入角色名称!' }],
+                  })(
+                    <Input type='text' />
+                  )}
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={12}>
+                <FormItem {...formItemLayout} label='责任人' >
+                {getFieldDecorator('asset_responser', {
+                    rules: [{ required: true, message: '请输入使用部门!' }],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col xs={24} sm={12}>
+                <FormItem {...formItemLayout} label="资产类型">
+                  {getFieldDecorator('asset_type', {
+                    rules: [{ required: true, message: '请输入角色名称!' }],
+                  })(
+                    <Input type='text' />
+                  )}
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={12}>
+                <FormItem {...formItemLayout} label='详细地址' >
+                {getFieldDecorator('asset_addr', {
+                    rules: [{ required: true, message: '请输入使用部门!' }],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
+
 
             <Row>
               <Col xs={24} sm={12}>
