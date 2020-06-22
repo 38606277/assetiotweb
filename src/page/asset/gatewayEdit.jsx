@@ -42,7 +42,10 @@ class gatewayEdit extends React.Component {
       enabled: '1',
       confirmDirty: false,
       authtype_id: this.props.match.params.name,
-      options: [],
+      options: [
+        { "level": "1", "label": "北京市", "value": "11", "isLeaf": false },
+        { "level": "1", "label": "河北省", "value": "13", "isLeaf": false }
+      ],
       pageNum: 1,
       perPage: 10,
       dataList: [],
@@ -90,7 +93,7 @@ class gatewayEdit extends React.Component {
     }
 
     //
-    this.loadAreaData('13');
+    //this.loadAreaData('13');
 
   }
 
