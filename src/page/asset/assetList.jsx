@@ -149,11 +149,18 @@ export default class assetList extends React.Component {
                         />
 
                         <Column
+                            title="资产图片"
+                            render={(text, record) => (
+                                <span>
+                                    <img style={{ width: '100px', height: '100px' }} src={record.imageBase64} />
+                                </span>
+                            )}
+                        />
+                        <Column
                             title="动作"
                             render={(text, record) => (
                                 <span>
                                     <a href={`#/asset/assetEdit/update/${record.asset_id}`}>编辑</a>
-
                                 </span>
                             )}
                         />

@@ -146,7 +146,14 @@ export default class gatewayList extends React.Component {
                             title="纬度"
                             dataIndex="rng"
                         />
-
+                        <Column
+                            title="网关图片"
+                            render={(text, record) => (
+                                <span>
+                                    <img style={{ width: '100px', height: '100px' }} src={record.imageBase64} />
+                                </span>
+                            )}
+                        />
                         <Column
                             title="动作"
                             render={(text, record) => (
