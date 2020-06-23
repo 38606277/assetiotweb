@@ -197,7 +197,7 @@ class assetEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="资产名称">
                   {getFieldDecorator('asset_name', {
-                    rules: [{ required: true, message: '请输入角色名称!' }],
+                    rules: [{ required: true, message: '请输入资产名称!' }],
                   })(
                     <Input type='text' />
                   )}
@@ -206,7 +206,7 @@ class assetEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label='使用部门' >
                 {getFieldDecorator('asset_dept', {
-                    rules: [{ required: true, message: '请输入使用部门!' }],
+                    rules: [{  }],
                   })(
                     <Input type='text' />
                   )}
@@ -218,7 +218,7 @@ class assetEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="使用人">
                   {getFieldDecorator('asset_user', {
-                    rules: [{ required: true, message: '请输入角色名称!' }],
+                    rules: [{  }],
                   })(
                     <Input type='text' />
                   )}
@@ -227,7 +227,7 @@ class assetEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label='责任人' >
                 {getFieldDecorator('asset_responser', {
-                    rules: [{ required: true, message: '请输入使用部门!' }],
+                    rules: [{ }],
                   })(
                     <Input type='text' />
                   )}
@@ -240,7 +240,7 @@ class assetEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="资产类型">
                   {getFieldDecorator('asset_type', {
-                    rules: [{ required: true, message: '请输入角色名称!' }],
+                    rules: [{ }],
                   })(
                     <Input type='text' />
                   )}
@@ -249,7 +249,7 @@ class assetEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label='详细地址' >
                 {getFieldDecorator('asset_addr', {
-                    rules: [{ required: true, message: '请输入使用部门!' }],
+                    rules: [{ }],
                   })(
                     <Input type='text' />
                   )}
