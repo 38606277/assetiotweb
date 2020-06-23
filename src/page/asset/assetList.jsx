@@ -132,6 +132,14 @@ export default class assetList extends React.Component {
                     </Row>
                     <Table dataSource={this.state.dataList} rowSelection={rowSelection} rowKey={"asset_id"} pagination={false} >
                         <Column
+                            title="资产图片"
+                            render={(text, record) => (
+                                <span>
+                                    <img style={{ width: '100px', height: '100px' }} src={record.imageBase64} />
+                                </span>
+                            )}
+                        />
+                        <Column
                             title="资产ID"
                             dataIndex="asset_id"
                         />
@@ -148,14 +156,7 @@ export default class assetList extends React.Component {
                             dataIndex="asset_name"
                         />
 
-                        <Column
-                            title="资产图片"
-                            render={(text, record) => (
-                                <span>
-                                    <img style={{ width: '100px', height: '100px' }} src={record.imageBase64} />
-                                </span>
-                            )}
-                        />
+
                         <Column
                             title="动作"
                             render={(text, record) => (

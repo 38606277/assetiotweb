@@ -130,6 +130,14 @@ export default class gatewayList extends React.Component {
                     </Row>
                     <Table dataSource={this.state.dataList} rowSelection={rowSelection} rowKey={"gateWay_id"} pagination={false} >
                         <Column
+                            title="网关图片"
+                            render={(text, record) => (
+                                <span>
+                                    <img style={{ width: '100px', height: '100px' }} src={record.imageBase64} />
+                                </span>
+                            )}
+                        />
+                        <Column
                             title="网关ID"
                             dataIndex="gateway_id"
 
@@ -146,14 +154,7 @@ export default class gatewayList extends React.Component {
                             title="纬度"
                             dataIndex="rng"
                         />
-                        <Column
-                            title="网关图片"
-                            render={(text, record) => (
-                                <span>
-                                    <img style={{ width: '100px', height: '100px' }} src={record.imageBase64} />
-                                </span>
-                            )}
-                        />
+
                         <Column
                             title="动作"
                             render={(text, record) => (
