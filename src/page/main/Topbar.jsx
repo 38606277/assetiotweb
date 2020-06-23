@@ -19,7 +19,7 @@ export default class TopBar extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            title: "河北移动蓝牙资产监控系统",
+            title: "河北移动蓝牙物联网资产管理系统",
             collapsed: false,
             visible: false,
             ishow: '0',

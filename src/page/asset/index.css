@@ -12,7 +12,7 @@ a {
     text-decoration: none;
 }
 
-.viewport {
+.dashboardwrap {
     /* 限定大小 */
     min-width: 1024px;
     max-width: 1920px;

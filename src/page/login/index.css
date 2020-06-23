@@ -10,19 +10,6 @@
     background-attachment: fixed;
 }
 
-* {
-    margin: 0;
-    padding: 0
-}
-
-img {
-    border: 0
-}
-
-a {
-    text-decoration: none
-}
-
 .title {
     font-weight: 100;
     padding-bottom: 30px;

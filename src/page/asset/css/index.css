@@ -15,7 +15,7 @@ a {
     max-width: 1920px;
     min-height: 780px;
     margin: 0 auto;
-    background: url(../images/logo.png) no-repeat 0 0 / contain;
+    background: url(../images/asset_title.png) no-repeat 0 0 / contain;
     display: flex;
     padding: 3.667rem 0.833rem 0;
     background-repeat: no-repeat;
@@ -29,6 +29,7 @@ a {
 
 .column {
     flex: 3;
+    margin-top: 60px;
     position: relative;
 }
 

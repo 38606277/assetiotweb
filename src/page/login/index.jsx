@@ -7,8 +7,7 @@
 import React from 'react';
 import User from '../../service/user-service.jsx'
 import LocalStorge from '../../util/LogcalStorge.jsx';
-
-import './index.css';
+ import './index.css';
 
 const localStorge = new LocalStorge();
 const _user = new User();

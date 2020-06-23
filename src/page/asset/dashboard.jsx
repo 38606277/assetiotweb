@@ -232,14 +232,14 @@ export default class dashboard extends React.Component {
                     roseType: 'radius',
                     // 数据集 value 数据的值 name 数据的名称
                     data: [
-                        { value: 20, name: '云南' },
-                        { value: 5, name: '北京' },
-                        { value: 15, name: '山东' },
-                        { value: 25, name: '河北' },
-                        { value: 20, name: '江苏' },
-                        { value: 35, name: '浙江' },
-                        { value: 30, name: '四川' },
-                        { value: 40, name: '湖北' }
+                        { value: 20, name: '石家庄' },
+                        { value: 5, name: '唐山' },
+                        { value: 15, name: '保定' },
+                        { value: 25, name: '雄安' },
+                        { value: 20, name: '张家口' },
+                        { value: 35, name: '秦皇岛' },
+                        { value: 30, name: '承德' },
+                        { value: 40, name: '沧州' }
                     ],
                     //文字调整
                     label: {
@@ -257,7 +257,7 @@ export default class dashboard extends React.Component {
         return option;
 
     };
-    getLineOption=()=>{
+    getLineOption = () => {
         var option = {
             // 给echarts图设置背景色
             //backgroundColor: '#FBFBFB',  // -----------> // 给echarts图设置背景色
@@ -265,40 +265,40 @@ export default class dashboard extends React.Component {
             tooltip: {
                 trigger: 'axis'
             },
-           
-            grid:{
-                        x:40,
-                        y:30,
-                        x2:5,
-                        y2:20
-                        
-                    },
+
+            grid: {
+                x: 40,
+                y: 30,
+                x2: 5,
+                y2: 20
+
+            },
             calculable: true,
-    
-    
+
+
             xAxis: [{
-                 type: 'category',
-            data: ['6:00-9:00', '10:00-12:00', '13:00-15:00', '16:00-20:00', '21:00-24:00'],
-         axisLabel: {
-                color: "#7FFF00" //刻度线标签颜色
+                type: 'category',
+                data: ['1月', '2月', '3月', '4月', '5月'],
+                axisLabel: {
+                    color: "#7FFF00" //刻度线标签颜色
                 }
             }],
             yAxis: [{
-    
+
                 type: 'value',
                 axisLabel: {
-                color: "#7FFF00" //刻度线标签颜色
+                    color: "#7FFF00" //刻度线标签颜色
                 }
             }],
             series: [{
                 name: '人次',
                 type: 'line',
                 data: [800, 300, 500, 800, 300, 600],
-                
+
             }]
         };
-        
-        
+
+
         return option;
     }
 
@@ -354,7 +354,7 @@ export default class dashboard extends React.Component {
                     // 使用类目，必须有data属性
                     type: 'category',
                     // 使用 data 中的数据设为刻度文字
-                    data: ['石家庄', '唐山', '雄安', '保定', '廊坊', '', '......', '', '张家口', '承德', '济南', '成都', '邢台'],
+                    data: ['石家庄', '唐山', '雄安', '保定', '廊坊', '', '......', '', '张家口', '承德', '邯郸', '成都', '邢台'],
                     // 刻度设置
                     axisTick: {
                         // true意思：图形在刻度中间
@@ -531,6 +531,18 @@ export default class dashboard extends React.Component {
                                             <span class="col">1000010</span>
                                             <span class="icon-dot"></span>
                                         </div>
+                                        <div class="row">
+                                            <span class="col">20190710</span>
+                                            <span class="col">雄安新区</span>
+                                            <span class="col">1000010</span>
+                                            <span class="icon-dot"></span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col">20190710</span>
+                                            <span class="col">唐山市路南区</span>
+                                            <span class="col">1000010</span>
+                                            <span class="icon-dot"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -558,43 +570,28 @@ export default class dashboard extends React.Component {
                         <div class="inner">
                             <h3>点位分布统计</h3>
                             <div class="chart">
-                                <ReactEcharts style={{ marginRight: '80px', float: 'right', width: '500px', height: '200px' }} option={this.getOption()} />
+                                <ReactEcharts style={{ width: '400px', height: '180px' }} option={this.getOption()} />
                             </div>
+
                         </div>
                     </div>
                 </div>
-                <div class="column">
+                <div class="column" style={{ marginTop: '80px' }}>
                     <div class="map">
                         <h3>
                             <span class="icon-cube"></span>
-                    设备数据统计
+                    资产数据统计
                 </h3>
                         <div class="chart">
                             <ReactEcharts style={{ marginRight: '80px', float: 'right', width: '500px', height: '350px' }} option={this.getMapOption()} />
-                            <div class="data">
 
-                                <div class="item">
-                                    <h4>320,11</h4>
-                                    <span>
-                                        <i class="icon-dot" style={{ color: '#ed3f35' }} ></i>
-                               点位总数
-                           </span>
-                                </div>
-                                <div class="item">
-                                    <h4>418</h4>
-                                    <span>
-                                        <i class="icon-dot" style={{ color: '#eacf19' }}></i>
-                               本月新增
-                           </span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="users panel">
                         <div class="inner">
                             <h3>全省资产总量统计</h3>
                             <div class="chart">
-                                <ReactEcharts style={{ marginRight: '80px', float: 'right', width: '600px', height: '150px' }} option={this.getOption2()} />
+                                <ReactEcharts style={{ width: '500px', height: '130px' }} option={this.getOption2()} />
                                 <div class="data">
                                     <div class="item">
                                         <h4>120,899</h4>
@@ -617,28 +614,29 @@ export default class dashboard extends React.Component {
                 </div>
                 <div class="column">
                     <div class="order panel">
+                   
                         <div class="inner">
-                           
                             <div class="data">
                                 <div class="item">
-                                    <h4>20,301,987</h4>
+                                    <h4>1000</h4>
                                     <span>
                                         <i class="icon-dot" style={{ color: '#ed3f35' }}></i>
-                                订单量
+                                异常数量
                             </span>
                                 </div>
                                 <div class="item">
-                                    <h4>99834</h4>
+                                    <h4>990</h4>
                                     <span>
                                         <i class="icon-dot" style={{ color: '#eacf19' }}></i>
-                                销售额(万元)
+                                异常处理
                             </span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="sales panel">
-                    {/* <ReactEcharts style={{width: '380px', height: '12px' }} option={this.getLineOption()} /> */}
+                    <div class="sales panel" style={{ borderLeft: '30px' }}>
+                        <h3>资产异常发展趋势</h3>
+                        <ReactEcharts style={{ width: '380px', height: '100px' }} option={this.getLineOption()} />
                     </div>
                     <div class="wrap">
                         <div class="channel panel">
@@ -683,7 +681,7 @@ export default class dashboard extends React.Component {
                                 <h3>一季度转资额</h3>
                                 <div class="chart">
                                     <div class="box">
-                                        {/* <ReactEcharts style={{ marginLeft:'10px', width: '120px', height: '3.5rem' }} option={this.getGugarOption()} />     */}
+                                         <ReactEcharts style={{ marginLeft:'10px', width: '120px', height: '3rem' }} option={this.getGugarOption()} />     */}
                                         <div class="label">75<small> %</small></div>
                                     </div>
                                     <div class="data">
