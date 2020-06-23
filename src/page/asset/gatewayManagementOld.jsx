@@ -215,6 +215,32 @@ class TreeTest extends React.Component {
         return option;
     }
 
+    StatusLayout(props) {
+        console.log('getStatusLayout', props.statusValue)
+        let statusValue = props.statusValue;
+        let status;
+        let desc;
+        if (statusValue == 1) {
+            status = 'success'
+            desc = '正常'
+        } else if (statusValue == 2) {
+            status = 'warning'
+            desc = '警告'
+        } else if (statusValue == 3) {
+            status = 'error'
+            desc = '错误'
+        } else {
+            status = 'success'
+            desc = '正常'
+        }
+        return (
+            <span>
+                <Badge status={status} />
+                {desc}
+            </span>
+        );
+    }
+
 
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -282,6 +308,15 @@ class TreeTest extends React.Component {
                                     title="资产名称"
                                     dataIndex="asset_name"
                                 />
+                                <Column
+                                    title="资产状态"
+                                    render={(text, record) => (
+                                        <this.StatusLayout
+                                            statusValue={record.status}
+                                        />
+                                    )}
+                                />
+
                                 {/* <Column
                                     title="动作"
                                     render={(text, record) => (

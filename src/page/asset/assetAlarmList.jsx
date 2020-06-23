@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Divider, Form, Pagination, Row, Col, Button, Card, Modal } from 'antd';
+import { Table, Input, message, Divider, Form, Pagination, Row, Col, Button, Card, Modal, Select } from 'antd';
 import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
@@ -10,14 +10,13 @@ import HttpService from '../../util/HttpService.jsx';
 import AssetService from '../../service/AssetService.jsx';
 const _assetService = new AssetService();
 
-
-
 import GatewayService from '../../service/GatewayService.jsx'
 import FormItem from 'antd/lib/form/FormItem';
 const _gatewayService = new GatewayService();
 const Search = Input.Search;
 const TextArea = Input.TextArea;
 const { Column, ColumnGroup } = Table;
+const { Option } = Select;
 
 
 const HandleDialog = Form.create({ name: 'form_in_modal' })(
@@ -68,12 +67,14 @@ export default class assetAlarmList extends React.Component {
             selectedRows: [],
             selectedRowKeys: [],
             selected: true,
-            alarmModel: {}
+            alarmModel: {},
+            selectStatusDefault: 0,//默认展示未处理列表
+            selectStatus: 0
         }
     };
     componentDidMount() {
         // To disable submit button at the beginning.
-        this.loadGatewayList();
+        this.loadDataList();
     }
 
     // 页数发生变化的时候
@@ -81,17 +82,19 @@ export default class assetAlarmList extends React.Component {
         this.setState({
             pageNum: pageNum
         }, () => {
-            this.loadGatewayList();
+            this.loadDataList();
         });
     }
-    loadGatewayList() {
+    loadDataList() {
         let param = {};
 
         // 如果是搜索的话，需要传入搜索类型和搜索关键字
         if (this.state.listType === 'search') {
             param.keyword = this.state.searchKeyword;
         }
-
+        if (this.state.selectStatusDefault != -1) {
+            param.status = this.state.selectStatusDefault;
+        }
         param.pageNum = this.state.pageNum;
         param.perPage = this.state.perPage;
         HttpService.post('reportServer/alarm/listEamAlarm', JSON.stringify(param))
@@ -113,7 +116,7 @@ export default class assetAlarmList extends React.Component {
                 .then(res => {
                     if (res.resultCode == "1000") {
                         message.success("删除成功！");
-                        this.loadGatewayList();
+                        this.loadDataList();
                         this.setState({ selectedRowKeys: [], selectedRows: [] });
                     }
                     else {
@@ -129,9 +132,10 @@ export default class assetAlarmList extends React.Component {
         this.setState({
             listType: listType,
             pageNum: 1,
-            searchKeyword: searchKeyword
+            searchKeyword: searchKeyword,
+            selectStatusDefault: this.state.selectStatus
         }, () => {
-            this.loadGatewayList();
+            this.loadDataList();
         });
     }
 
@@ -166,7 +170,7 @@ export default class assetAlarmList extends React.Component {
                         message.success("处理成功！");
                         form.resetFields();
                         this.setState({ visible: false });
-                        this.loadGatewayList();
+                        this.loadDataList();
                     }
                     else {
                         message.error(res.message);
@@ -188,6 +192,11 @@ export default class assetAlarmList extends React.Component {
         this.setState({ alarmModel: alarmModel, visible: true });
     };
 
+    onSelectChange = (value) => {
+        this.setState({ selectStatus: value });
+        // this.loadDataList();
+    }
+
 
     render() {
         const rowSelection = {
@@ -198,6 +207,17 @@ export default class assetAlarmList extends React.Component {
                 this.setState({ selectedRowKeys: selectedRowKeys, selectedRows: selectedRows });
             },
         };
+
+        const selectBefore = (
+            <Select defaultValue="未处理"
+                style={{ paddingLeft: '8px', paddingRight: '8px', width: 100 }}
+                onChange={(value) => this.onSelectChange(value)}
+            >
+                <Option value="-1">全部</Option>
+                <Option value="0">未处理</Option>
+                <Option value="1">已处理</Option>
+            </Select>
+        );
 
         return (
             <div id="page-wrapper">
@@ -213,8 +233,10 @@ export default class assetAlarmList extends React.Component {
 
                     <Row>
                         <Col xs={24} sm={12}>
+
                             <Search
-                                style={{ maxWidth: 300, marginBottom: '10px' }}
+                                addonBefore={selectBefore}
+                                style={{ maxWidth: 400, marginBottom: '10px' }}
                                 placeholder="请输入..."
                                 enterButton="查询"
                                 onSearch={value => this.onSearch(value)}
