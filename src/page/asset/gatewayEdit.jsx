@@ -2,6 +2,8 @@ import React from 'react';
 import { Table, Form, Input, Divider, Select, Button, Modal, Pagination, Icon, Card, Row, Col, message, Cascader, Upload } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
+import AMapLoader from '@amap/amap-jsapi-loader';
+import './assetmap.css';
 import GatewayService from '../../service/GatewayService.jsx'
 import AreaService from '../../service/AreaService.jsx'
 import HttpService from '../../util/HttpService.jsx';
@@ -14,6 +16,7 @@ const _assetService = new AssetService();
 const { Column, ColumnGroup } = Table;
 const _areaService = new AreaService();
 
+const { Search } = Input;
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -32,6 +35,70 @@ function beforeUpload(file) {
   }
   return isJpgOrPng && isLt20M;
 }
+
+
+class SelectAddressModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      AMap: null,
+      map: null,
+      lng: -1,
+      lat: -1
+    }
+
+  }
+  componentDidMount() {
+    this.initMap();
+  }
+  initMap = () => {
+    //初始化地图
+    AMapLoader.load({
+      "key": "38109451268a4a1356c4a3320f251ace",   // 申请好的Web端开发者Key，首次调用 load 时必填
+      // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
+      "plugins": ['AMap.MarkerClusterer']  //插件列表
+    }).then((AMap) => {
+      console.info('AMap', AMap)
+      this.state.AMap = AMap;
+      this.state.map = new AMap.Map('mapContainer', {
+        center: [114.5220818442, 38.0489583146],
+        zoom: 15,
+        resizeEnable: true,
+      });
+
+      //点击事件
+      this.state.map.on('click', function (ev) {
+        // 触发事件的对象
+        var target = ev.target;
+        // 触发事件的地理坐标，AMap.LngLat 类型
+        var lnglat = ev.lnglat;
+        // 触发事件的像素坐标，AMap.Pixel 类型
+        var pixel = ev.pixel;
+        // 触发事件类型
+        var type = ev.type;
+
+        // this.setState({
+        //   lng: lnglat.getLng(),
+        //   lat: lnglat.getLat()
+        // });
+
+        alert(`点击了：经度${lnglat.getLng()} ,纬度${lnglat.getLat()}`)
+
+      });
+
+    }).catch(e => {
+      console.log(e);
+    })
+  }
+
+  render() {
+    return (
+      <div id="mapContainer" style={{ height: '400px' }}></div>
+    )
+  }
+
+}
+
 
 class gatewayEdit extends React.Component {
   constructor(props) {
@@ -55,7 +122,8 @@ class gatewayEdit extends React.Component {
       asset_selectedRowKeys: [],
       asset_selectedRows: [],
       loading: false,
-      imageUrl: ''
+      imageUrl: '',
+      assetListType: 'assetList', // assetList tagList
     };
 
 
@@ -91,10 +159,6 @@ class gatewayEdit extends React.Component {
         });
 
     }
-
-    //
-    //this.loadAreaData('13');
-
   }
 
 
@@ -113,20 +177,22 @@ class gatewayEdit extends React.Component {
     });
   }
 
+  //获取未绑定的资产列表
   loadAssetList() {
     let param = {};
     param.pageNum = this.state.pageNum;
     param.perPage = this.state.perPage;
-    _assetService.getNotBindingAssetList(param).then(response => {
-      this.setState({
-        assetList: response.data.list,
-        total: response.data.total
-      });
-      // alert(JSON.stringify(this.state.assetList));
 
-    }, errMsg => {
-      localStorge.errorTips(errMsg);
-    });
+    let url = this.state.assetListType == 'assetList' ? "reportServer/asset/listAssetNoBindGateway" : "reportServer/asset/listTagNoBindGateway"
+
+    HttpService.post(url, JSON.stringify(param))
+      .then(res => {
+        this.setState({
+          assetList: res.data.list,
+          total: res.data.total
+        });
+      });
+
   }
 
 
@@ -171,7 +237,6 @@ class gatewayEdit extends React.Component {
               }
               else
                 message.error(res.message);
-
             });
         }
         if (closed) {
@@ -200,11 +265,14 @@ class gatewayEdit extends React.Component {
     alert("dkf");
   }
 
-  showModal = () => {
+  showModal = (assetListType) => {
+    this.state.assetListType = assetListType;
     this.loadAssetList();
     this.setState({
       visible: true,
+      assetListType
     });
+
 
   };
 
@@ -292,6 +360,31 @@ class gatewayEdit extends React.Component {
   };
 
 
+
+  handleAddressOk = e => {
+    this.setState({
+      visibleAddressModal: false,
+    });
+  };
+
+  handleAddressCancel = e => {
+    console.log(e);
+    this.setState({
+      visibleAddressModal: false,
+    });
+  };
+
+
+  //选择地点
+  selectAddress = () => {
+    this.setState({
+      visibleAddressModal: true,
+    });
+  }
+
+
+
+
   render() {
 
     const asset_rowSelection = {
@@ -370,7 +463,14 @@ class gatewayEdit extends React.Component {
                   {getFieldDecorator('address', {
                     rules: [{ required: true, message: '请输入网关地址' }],
                   })(
-                    <Input type='text' />
+
+                    <Search
+                      type='text'
+                      enterButton="选择"
+                      onSearch={(value) => {
+                        this.selectAddress();
+                      }}
+                    />
                   )}
                 </FormItem>
               </Col>
@@ -444,7 +544,8 @@ class gatewayEdit extends React.Component {
           <div style={{ paddingBottom: '16px' }}>
             <span style={{ verticalAlign: 'middle', fontSize: '16px' }}><strong>关联资产</strong></span>
             <span style={{ float: "right", verticalAlign: 'middle' }}>
-              <Button style={{ marginLeft: '10px' }} onClick={this.showModal}>新增</Button>
+              <Button style={{ marginLeft: '10px' }} onClick={() => this.showModal('tagList')}>标签新增</Button>
+              <Button style={{ marginLeft: '10px' }} onClick={() => this.showModal('assetList')}>资产新增</Button>
               <Button disabled={this.state.selectedRowKeys.length > 0 ? false : true} style={{ marginLeft: '10px' }} onClick={() => this.onDeleteLinesClick()}>删除</Button>
             </span>
           </div>
@@ -508,6 +609,18 @@ class gatewayEdit extends React.Component {
           <Pagination current={this.state.pageNum}
             total={this.state.total}
             onChange={(pageNum) => this.onPageNumChange(pageNum)} />
+
+        </Modal>
+
+
+        <Modal
+          title="选择地址"
+          width="500px"
+          visible={this.state.visibleAddressModal}
+          onOk={this.handleAddressOk}
+          onCancel={this.handleAddressCancel}
+        >
+          <SelectAddressModal />
 
         </Modal>
 
