@@ -168,7 +168,7 @@ class assetmap extends Component {
 
         //初始化地图
         AMapLoader.load({
-            "key": "38109451268a4a1356c4a3320f251ace",   // 申请好的Web端开发者Key，首次调用 load 时必填
+            "key": "034f37e988d8a97079766539387a6a0b",   // 申请好的Web端开发者Key，首次调用 load 时必填
             // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
             "plugins": ['AMap.MarkerClusterer']  //插件列表
         }).then((AMap) => {

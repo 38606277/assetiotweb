@@ -40,34 +40,74 @@ function beforeUpload(file) {
 class SelectAddressModal extends React.Component {
   constructor(props) {
     super(props);
+    console.log('props', props);
     this.state = {
       AMap: null,
       map: null,
-      lng: -1,
-      lat: -1
+      lng: props.lng ? props.lng : -1,
+      lat: props.lat ? props.lat : -1,
+      onSelectAddress: props.onSelectAddress,
     }
 
   }
   componentDidMount() {
     this.initMap();
   }
+
+
+  regeoCode(AMap, lnglat) {
+    let _this = this
+    this.state.map.clearMap();
+    let marker = new AMap.Marker({
+      position: new AMap.LngLat(lnglat.getLng(), lnglat.getLat()),   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+    });
+
+    this.state.map.add(marker);
+
+    let geocoder = new AMap.Geocoder({
+      // city: "010", //城市设为北京，默认：“全国”
+      // radius: 1000 //范围，默认：500
+    });
+    var mlnglat = [lnglat.getLng(), lnglat.getLat()];
+    geocoder.getAddress(mlnglat, function (status, result) {
+      console.log('status', status)
+      console.log('result', result)
+      if (status === 'complete' && result.regeocode) {
+        var address = result.regeocode.formattedAddress;
+        lnglat.address = address;
+        _this.state.onSelectAddress(lnglat);
+      } else {
+        lnglat.address = '根据经纬度查询地址失败';
+        _this.state.onSelectAddress(lnglat);
+
+      }
+    });
+  }
+
   initMap = () => {
+    let _this = this;
     //初始化地图
     AMapLoader.load({
-      "key": "38109451268a4a1356c4a3320f251ace",   // 申请好的Web端开发者Key，首次调用 load 时必填
+      "key": "034f37e988d8a97079766539387a6a0b",   // 申请好的Web端开发者Key，首次调用 load 时必填
       // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-      "plugins": ['AMap.MarkerClusterer']  //插件列表
+      "plugins": ['AMap.MarkerClusterer', 'AMap.Geocoder']  //插件列表
     }).then((AMap) => {
       console.info('AMap', AMap)
-      this.state.AMap = AMap;
-      this.state.map = new AMap.Map('mapContainer', {
-        center: [114.5220818442, 38.0489583146],
+      _this.state.AMap = AMap;
+
+      let mapConfig = {
         zoom: 15,
         resizeEnable: true,
-      });
+      }
+      if (!(_this.state.lng == -1 && _this.state.lat == -1)) {
+        mapConfig.center = [_this.state.lng, _this.state.lat]
+      }
+
+      _this.state.map = new AMap.Map('mapContainer', mapConfig);
 
       //点击事件
-      this.state.map.on('click', function (ev) {
+      _this.state.map.on('click', function (ev) {
+
         // 触发事件的对象
         var target = ev.target;
         // 触发事件的地理坐标，AMap.LngLat 类型
@@ -76,13 +116,14 @@ class SelectAddressModal extends React.Component {
         var pixel = ev.pixel;
         // 触发事件类型
         var type = ev.type;
-
-        // this.setState({
+        // _this.setState({
         //   lng: lnglat.getLng(),
         //   lat: lnglat.getLat()
         // });
 
-        alert(`点击了：经度${lnglat.getLng()} ,纬度${lnglat.getLat()}`)
+        _this.regeoCode(AMap, lnglat);
+
+        //alert(`点击了：经度${lnglat.getLng()} ,纬度${lnglat.getLat()}`)
 
       });
 
@@ -124,6 +165,9 @@ class gatewayEdit extends React.Component {
       loading: false,
       imageUrl: '',
       assetListType: 'assetList', // assetList tagList
+      selectLng: -1,//选择的经度
+      selectLat: -1, //选择的纬度
+      selectAddress: ''
     };
 
 
@@ -138,7 +182,7 @@ class gatewayEdit extends React.Component {
           if (res.resultCode == "1000") {
             this.props.form.setFieldsValue(res.data);
             this.setState({
-              imageUrl: res.data.imageBase64
+              imageUrl: res.data.imageBase64,
             })
           }
           else
@@ -150,8 +194,6 @@ class gatewayEdit extends React.Component {
         .then(res => {
           if (res.resultCode == "1000") {
             this.setState({ dataList: res.data })
-
-
           }
           else
             message.error(res.message);
@@ -213,7 +255,6 @@ class gatewayEdit extends React.Component {
         let gateway = {
           gatewayHeader: formInfo,
           gatewayLines: this.state.dataList
-
         }
 
         if (this.state.action == 'create') {
@@ -360,11 +401,17 @@ class gatewayEdit extends React.Component {
   };
 
 
-
   handleAddressOk = e => {
     this.setState({
       visibleAddressModal: false,
     });
+
+    this.props.form.setFieldsValue({
+      lng: this.state.selectLng,
+      rng: this.state.selectLat,
+      address: this.state.selectAddress
+    });
+
   };
 
   handleAddressCancel = e => {
@@ -376,13 +423,19 @@ class gatewayEdit extends React.Component {
 
 
   //选择地点
-  selectAddress = () => {
+  showSelectAddress = () => {
     this.setState({
       visibleAddressModal: true,
     });
   }
 
-
+  onSelectAddress(lnglat) {
+    this.setState({
+      selectLng: lnglat.getLng(),
+      selectLat: lnglat.getLat(),
+      selectAddress: lnglat.address
+    });
+  }
 
 
   render() {
@@ -468,7 +521,7 @@ class gatewayEdit extends React.Component {
                       type='text'
                       enterButton="选择"
                       onSearch={(value) => {
-                        this.selectAddress();
+                        this.showSelectAddress();
                       }}
                     />
                   )}
@@ -614,13 +667,15 @@ class gatewayEdit extends React.Component {
 
 
         <Modal
-          title="选择地址"
+          title={`选择地址(${this.state.selectLng},${this.state.selectLat},${this.state.selectAddress})`}
           width="500px"
           visible={this.state.visibleAddressModal}
           onOk={this.handleAddressOk}
           onCancel={this.handleAddressCancel}
         >
-          <SelectAddressModal />
+          <SelectAddressModal
+
+            onSelectAddress={(lnglat) => this.onSelectAddress(lnglat)} />
 
         </Modal>
 
