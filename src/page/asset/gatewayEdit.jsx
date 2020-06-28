@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Form, Input, Divider, Select, Button, Modal, Pagination, Icon, Card, Row, Col, message, Cascader, Upload } from 'antd';
+import { Table, Form, Input, Divider, Select, Button, Modal, Pagination, Icon, Card, Row, Col, message, Cascader, Upload, Tree } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import AMapLoader from '@amap/amap-jsapi-loader';
@@ -17,6 +17,7 @@ const { Column, ColumnGroup } = Table;
 const _areaService = new AreaService();
 
 const { Search } = Input;
+const { TreeNode } = Tree;
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -36,6 +37,99 @@ function beforeUpload(file) {
   return isJpgOrPng && isLt20M;
 }
 
+class SelectAreaModal extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log('SelectAreaModal', props)
+    this.state = {
+      treeData: [
+        { "level": "1", "label": "北京市", "value": "11", "isLeaf": false },
+        { "level": "1", "label": "河北省", "value": "13", "isLeaf": false }
+      ],
+      handleAreaOk: props.handleAreaOk,
+      handleAreaCancel: props.handleAreaCancel,
+      areaInfo: {
+        areaId: props.address_id ? props.address_id : '',
+        areaName: props.merger_name ? props.merger_name : '',
+      }
+    }
+  }
+  loadAreaData(code) {
+    let param = {
+      parentCode: code,
+      maxLevel: 3
+    }
+    _areaService.getArea(param).then(response => {
+      this.setState({
+        treeData: response,
+      });
+    }, errMsg => {
+      localStorge.errorTips(errMsg);
+    });
+  }
+
+  onLoadData = treeNode =>
+    new Promise(resolve => {
+      if (treeNode.props.children) {
+        resolve();
+        return;
+      }
+      let maxLevel = 3
+      console.log(treeNode);
+      let param = {
+        parentCode: treeNode.props.dataRef.value,
+        maxLevel: maxLevel
+      }
+      _areaService.getArea(param).then(response => {
+        treeNode.props.dataRef.children = response;
+        this.setState({
+          treeData: [...this.state.treeData],
+        });
+        resolve();
+      }, errMsg => {
+        localStorge.errorTips(errMsg);
+      });
+
+    });
+
+  renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.label} key={item.value} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.value} title={item.label} {...item} dataRef={item} />;
+    });
+
+  onSelect = (selectedKeys, info) => {
+    if (info.node.props.dataRef.isLeaf) {
+      this.setState({
+        areaInfo: {
+          address_id: info.node.props.dataRef.value,
+          merger_name: info.node.props.dataRef.merger_name
+        },
+      })
+    }
+
+  };
+  render() {
+    return (
+      <Modal
+        title={this.state.areaInfo.merger_name ? `选择网关位置 ${this.state.areaInfo.merger_name}` : '选择网关位置'}
+        width="700px"
+        height="300px"
+        visible={this.props.visible}
+        onOk={() => this.state.handleAreaOk(this.state.areaInfo)}
+        onCancel={this.state.handleAreaCancel}>
+        <Tree loadData={this.onLoadData} onSelect={this.onSelect}>{this.renderTreeNodes(this.state.treeData)}</Tree>
+      </Modal>
+    )
+  }
+
+}
 
 class SelectAddressModal extends React.Component {
   constructor(props) {
@@ -167,7 +261,10 @@ class gatewayEdit extends React.Component {
       assetListType: 'assetList', // assetList tagList
       selectLng: -1,//选择的经度
       selectLat: -1, //选择的纬度
-      selectAddress: ''
+      selectAddress: '',
+      visibleAreaModal: false,
+      address_id: '',
+      merger_name: ''
     };
 
 
@@ -183,11 +280,12 @@ class gatewayEdit extends React.Component {
             this.props.form.setFieldsValue(res.data);
             this.setState({
               imageUrl: res.data.imageBase64,
+              address_id: res.data.address_id,
+              merger_name: res.data.merger_name,
             })
           }
           else
             message.error(res.message);
-
         });
       //加班明细表
       await HttpService.post("reportServer/gateway/getGatewayAssetById", JSON.stringify({ gateway_id: this.state.id }))
@@ -249,7 +347,7 @@ class gatewayEdit extends React.Component {
         let formInfo = this.props.form.getFieldsValue();
         console.log("提交数据", formInfo);
         //添加位置id 位置名称
-        formInfo.address_id = values.address_array[values.address_array.length - 1];
+        formInfo.address_id = this.state.address_id
         formInfo.imageBase64 = this.state.imageUrl;
 
         let gateway = {
@@ -438,6 +536,34 @@ class gatewayEdit extends React.Component {
   }
 
 
+  showSelectArea = () => {
+    console.log('showSelectArea')
+    this.setState({
+      visibleAreaModal: true,
+    });
+  }
+
+  handleAreaOk = (areaInfo) => {
+    console.log('areaInfo', areaInfo)
+    this.props.form.setFieldsValue({
+      merger_name: areaInfo.merger_name
+    });
+
+    this.setState({
+      visibleAreaModal: false,
+      merger_name: areaInfo.merger_name,
+      address_id: areaInfo.address_id
+    });
+  };
+
+  handleAreaCancel = e => {
+    console.log(e);
+    this.setState({
+      visibleAreaModal: false,
+    });
+  };
+
+
   render() {
 
     const asset_rowSelection = {
@@ -530,7 +656,24 @@ class gatewayEdit extends React.Component {
             </Row>
             <Row>
               <Col xs={24} sm={12}>
-                <FormItem {...formItemLayout} label='网关位置' >
+
+                <FormItem {...formItemLayout} label="网关位置">
+                  {getFieldDecorator('merger_name', {
+                    rules: [{ required: true, message: '请输入网关地址' }],
+                  })(
+                    <Search
+                      type='text'
+                      enterButton="选择"
+                      onSearch={(value) => {
+                        this.showSelectArea();
+                      }}
+                    />
+                  )}
+                </FormItem>
+
+
+
+                {/* <FormItem {...formItemLayout} label='网关位置' >
                   {getFieldDecorator('address_array', {
                     rules: [
                       { type: 'array', required: true, message: '请选择网关位置' },
@@ -542,7 +685,7 @@ class gatewayEdit extends React.Component {
                     changeOnSelect
                     placeholde="请选择"
                   />)}
-                </FormItem>
+                </FormItem> */}
 
               </Col>
             </Row>
@@ -678,6 +821,15 @@ class gatewayEdit extends React.Component {
             onSelectAddress={(lnglat) => this.onSelectAddress(lnglat)} />
 
         </Modal>
+
+        <SelectAreaModal
+          visible={this.state.visibleAreaModal}
+          handleAreaOk={this.handleAreaOk}
+          handleAreaCancel={this.handleAreaCancel}
+          address_id={this.state.address_id}
+          merger_name={this.state.merger_name}
+        />
+
 
 
       </div >
