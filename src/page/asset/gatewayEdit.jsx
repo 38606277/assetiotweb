@@ -124,7 +124,7 @@ class SelectAreaModal extends React.Component {
         visible={this.props.visible}
         onOk={() => this.state.handleAreaOk(this.state.areaInfo)}
         onCancel={this.state.handleAreaCancel}>
-        <Tree loadData={this.onLoadData} onSelect={this.onSelect}>{this.renderTreeNodes(this.state.treeData)}</Tree>
+        <Tree style={{ height: '400px', overflow: 'auto' }} loadData={this.onLoadData} onSelect={this.onSelect}>{this.renderTreeNodes(this.state.treeData)}</Tree>
       </Modal>
     )
   }
@@ -249,7 +249,7 @@ class gatewayEdit extends React.Component {
         { "level": "1", "label": "河北省", "value": "13", "isLeaf": false }
       ],
       pageNum: 1,
-      perPage: 10,
+      perPage: 7,
       dataList: [],
       assetList: [],
       selectedRowKeys: [],
@@ -314,6 +314,15 @@ class gatewayEdit extends React.Component {
       });
     }, errMsg => {
       localStorge.errorTips(errMsg);
+    });
+  }
+
+  // 页数发生变化的时候
+  onPageNumChange(pageNum) {
+    this.setState({
+      pageNum: pageNum
+    }, () => {
+      this.loadAssetList();
     });
   }
 
