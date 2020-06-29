@@ -573,6 +573,24 @@ class gatewayEdit extends React.Component {
   };
 
 
+  getGatewayStatus = value => {
+    if (value == '') {
+      message.error('请输入网关编号');
+      return;
+    }
+
+    HttpService.post("reportServer/gateway/queryGatewayStatusByGatewayId", JSON.stringify({ gateway_id: value }))
+      .then(res => {
+        if (res.resultCode == "1000") {
+          this.props.form.setFieldsValue(res.data);
+          console.log("网关状态", res)
+        }
+        else
+          message.error(res.message);
+      });
+
+  }
+
   render() {
 
     const asset_rowSelection = {
@@ -642,7 +660,13 @@ class gatewayEdit extends React.Component {
                   {getFieldDecorator('gateway_id', {
                     rules: [{ required: true, message: '请输入网关编号!' }],
                   })(
-                    <Input type='text' />
+                    <Search
+                      type='text'
+                      enterButton="自动获取"
+                      onSearch={(value) => {
+                        this.getGatewayStatus(value);
+                      }}
+                    />
                   )}
                 </FormItem>
               </Col>
