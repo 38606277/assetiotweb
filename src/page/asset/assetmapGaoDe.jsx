@@ -175,7 +175,7 @@ class assetmap extends Component {
             this.state.AMap = AMap;
             this.state.map = new AMap.Map('mapContainer', {
                 center: [114.5220818442, 38.0489583146],
-                zoom: 15,
+                zoom: 7,
                 resizeEnable: true,
             });
             this.loadGatewayList();
