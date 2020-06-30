@@ -273,16 +273,7 @@ export default class TopBar extends React.Component {
         if (this.state.redirect) {
             return <Redirect push to="/login" />; //or <Redirect push to="/sample?a=xxx&b=yyy" /> 传递更多参数
         }
-        // const menu = (
-        //     <Menu>
-        //         <Menu.Item>
-        //             <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">个人资料</a>
-        //         </Menu.Item>
-        //         <Menu.Item>
-        //             <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">退出</a>
-        //         </Menu.Item>
-        //     </Menu>
-        // );
+        
 
         const ss = this.state.ishow;
         let contsss = null;
@@ -387,7 +378,7 @@ export default class TopBar extends React.Component {
                 <div style={{ float: 'left', background: '#2f96e2' }} >
 
                     <a href="javascript:;">
-                        <img alt="logo" style={{ width: '30px', height: '30px' }} src={logo} />
+                        <img alt="logo" style={{paddingLeft:'10px', width: '100px', height: '30px' }} src={logo} />
                         <span className="logodiv">{this.state.title}</span>
                     </a>
                     {/* <Button type="primary" onClick={this.toggleCollapsed} style={{ marginBottom: 16, marginLeft: 20 }}>
@@ -419,15 +410,11 @@ export default class TopBar extends React.Component {
                             visible={this.state.visible}
                             onVisibleChange={this.handleVisibleChange}
                         >
-                            <Button type="primary" style={{ color: '#ffffff', background: 'transparent', borderColor: 'transparent' }} onClick={() => this.onselect('1')}>
-                                <Icon type="setting" style={{ fontSize: '18px', color: '#ffffff', background: 'transparent', borderColor: 'transparent' }} />
-                            </Button>
+                            
                             <Button type="primary" style={{ background: 'transparent', borderColor: 'transparent' }} onClick={() => this.onselect('2')}>
                                 <Icon type="bell" style={{ fontSize: '18px', color: '#ffffff', background: 'transparent' }} />
                             </Button>
-                            {/* <Button type="primary" style={{ background: 'transparent', borderColor: 'transparent' }} onClick={() => this.openChat()}>
-                                    <Icon type="bell" style={{ fontSize: '18px', color: '#ffffff', background: 'transparent' }} />
-                                </Button>                        */}
+                          
                             <Button type="primary" onClick={() => this.onselect('4')} style={{ background: 'transparent', borderColor: 'transparent' }}>
                                 <Avatar size="{32}" icon="user" />
                             </Button>
