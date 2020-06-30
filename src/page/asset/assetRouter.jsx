@@ -10,6 +10,7 @@ import gatewayManagementOld from './gatewayManagementOld.jsx';
 import Analysis from '../../page/dashboard/analysis.jsx';
 import dashboard from './dashboard.jsx'
 import assetAlarmList from './assetAlarmList.jsx';
+import gatewayMonitor from './gatewayMonitor.jsx';
 
 
 
@@ -84,6 +85,7 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/gatewayManagementOld" component={gatewayManagementOld} />
                 <Route path="/asset/dashboard" component={dashboard} />
                 <Route path="/asset/assetAlarmList" component={assetAlarmList} />
+                <Route path="/asset/gatewayMonitor" component={gatewayMonitor} />
                 {/* <Route path="/asset/assetmap" component={assetmap} />
                 
                 <Route path="/assetInventory" component={assetInventory} />
