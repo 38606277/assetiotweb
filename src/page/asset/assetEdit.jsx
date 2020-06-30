@@ -196,7 +196,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="资产编号">
-                  {getFieldDecorator('asset_num', {
+                  {getFieldDecorator('asset_id', {
                     rules: [{ required: true, message: '请输入资产编号!' }],
                   })(
                     <Input type='text' addonAfter={<Icon type="setting" onClick={e => this.openModelClick()} />} />
@@ -206,7 +206,7 @@ class assetEdit extends React.Component {
 
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="资产标签号">
-                  {getFieldDecorator('asset_tag', {
+                  {getFieldDecorator('asset_num', {
                     rules: [{ required: true, message: '请输入资产名称!' }],
                   })(
                     <Input type='text' />
@@ -229,7 +229,7 @@ class assetEdit extends React.Component {
             <Row>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='资产类别编码' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('typeCode', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -239,7 +239,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='资产类别描述' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('typeName', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -251,7 +251,7 @@ class assetEdit extends React.Component {
             <Row>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='生产厂商' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('productor', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -261,7 +261,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='规格型号' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('model', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -271,7 +271,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='数量' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('amount', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -284,7 +284,7 @@ class assetEdit extends React.Component {
             <Row>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='启用日期' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('startDate', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -294,7 +294,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='折旧年限' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('lifeInYears', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -304,7 +304,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='剩余折旧月数' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('lifeInMonth', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -316,7 +316,7 @@ class assetEdit extends React.Component {
             <Row>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='责任部门' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('dutyDeptName', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -327,7 +327,7 @@ class assetEdit extends React.Component {
 
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="责任人编码">
-                  {getFieldDecorator('asset_user', {
+                  {getFieldDecorator('dutyCode', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -336,7 +336,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='责任人' >
-                  {getFieldDecorator('asset_responser', {
+                  {getFieldDecorator('dutyName', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -348,7 +348,7 @@ class assetEdit extends React.Component {
             <Row>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='使用部门' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('useDeptName', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -359,7 +359,7 @@ class assetEdit extends React.Component {
 
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="使用编码">
-                  {getFieldDecorator('asset_user', {
+                  {getFieldDecorator('userCode', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -368,7 +368,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='使用人' >
-                  {getFieldDecorator('asset_responser', {
+                  {getFieldDecorator('userName', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -380,7 +380,7 @@ class assetEdit extends React.Component {
             <Row>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='资产地点编号' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('addressCode', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -391,7 +391,7 @@ class assetEdit extends React.Component {
               <Divider orientation="left">财务信息</Divider>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="资产地点描述">
-                  {getFieldDecorator('asset_user', {
+                  {getFieldDecorator('addressName', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -400,7 +400,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='原值' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('cost', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -415,7 +415,7 @@ class assetEdit extends React.Component {
 
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="净值">
-                  {getFieldDecorator('asset_user', {
+                  {getFieldDecorator('netValue', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -424,7 +424,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='净额' >
-                  {getFieldDecorator('asset_responser', {
+                  {getFieldDecorator('netQuota', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -434,7 +434,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='残值' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('residualValue', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -447,7 +447,7 @@ class assetEdit extends React.Component {
 
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='本期折旧' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('periodDepreciation', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -459,7 +459,7 @@ class assetEdit extends React.Component {
 
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="本年折旧">
-                  {getFieldDecorator('asset_user', {
+                  {getFieldDecorator('yearDepreciation', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -468,7 +468,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='累计折旧' >
-                  {getFieldDecorator('asset_responser', {
+                  {getFieldDecorator('cumulativeDepreciation', {
 
                     rules: [{}],
                   })(
@@ -481,7 +481,7 @@ class assetEdit extends React.Component {
             <Row>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='本期减值' >
-                  {getFieldDecorator('asset_dept', {
+                  {getFieldDecorator('periodImpairment', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -492,7 +492,7 @@ class assetEdit extends React.Component {
 
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='本年减值'>
-                  {getFieldDecorator('asset_user', {
+                  {getFieldDecorator('yearImpairment', {
                     rules: [{}],
                   })(
                     <Input type='text' />
@@ -501,7 +501,7 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='累计减值' >
-                  {getFieldDecorator('asset_responser', {
+                  {getFieldDecorator('cumulativeImpairment', {
                     rules: [{}],
                   })(
                     <Input type='text' />
