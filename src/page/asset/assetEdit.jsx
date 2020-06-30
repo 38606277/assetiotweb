@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Select, Button, Icon, Card, Row, Col, message, Upload } from 'antd';
+import { Form, Input, Select, Button, Icon, Card, Row, Col, message, Upload,Divider } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import AssetService from '../../service/AssetService.jsx';
@@ -143,11 +143,21 @@ class assetEdit extends React.Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 8 },
+        sm: { span: 12 },
       },
       wrapperCol: {
         xs: { span: 24 },
         sm: { span: 12 },
+      },
+    };
+    const formItemLayout1 = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 4 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 20 },
       },
     };
 
@@ -174,7 +184,7 @@ class assetEdit extends React.Component {
               )}
             </FormItem>
             <Row>
-              <Col xs={24} sm={12}>
+              <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="物联网编号">
                   {getFieldDecorator('iot_num', {
                     rules: [{ required: true, message: '请输入物联网标签号!' }],
@@ -183,7 +193,7 @@ class assetEdit extends React.Component {
                   )}
                 </FormItem>
               </Col>
-              <Col xs={24} sm={12}>
+              <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="资产编号">
                   {getFieldDecorator('asset_num', {
                     rules: [{ required: true, message: '请输入资产编号!' }],
@@ -192,21 +202,22 @@ class assetEdit extends React.Component {
                   )}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
-              <Col xs={24} sm={12}>
-                <FormItem {...formItemLayout} label="资产名称">
-                  {getFieldDecorator('asset_name', {
+
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label="资产标签号">
+                  {getFieldDecorator('asset_tag', {
                     rules: [{ required: true, message: '请输入资产名称!' }],
                   })(
                     <Input type='text' />
                   )}
                 </FormItem>
               </Col>
-              <Col xs={24} sm={12}>
-                <FormItem {...formItemLayout} label='使用部门' >
-                {getFieldDecorator('asset_dept', {
-                    rules: [{  }],
+            </Row>
+            <Row>
+              <Col xs={24} sm={24}>
+                <FormItem {...formItemLayout1} label='资产名称' >
+                  {getFieldDecorator('asset_name', {
+                    rules: [{ required: true, message: '请输入资产名称!' }],
                   })(
                     <Input type='text' />
                   )}
@@ -215,19 +226,279 @@ class assetEdit extends React.Component {
               </Col>
             </Row>
             <Row>
-              <Col xs={24} sm={12}>
-                <FormItem {...formItemLayout} label="使用人">
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='资产类别编码' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='资产类别描述' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='生产厂商' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='规格型号' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='数量' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
+            <Divider orientation="left">使用信息</Divider>
+            <Row>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='启用日期' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='折旧年限' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='剩余折旧月数' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='责任部门' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label="责任人编码">
                   {getFieldDecorator('asset_user', {
-                    rules: [{  }],
+                    rules: [{}],
                   })(
                     <Input type='text' />
                   )}
                 </FormItem>
               </Col>
-              <Col xs={24} sm={12}>
+              <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label='责任人' >
-                {getFieldDecorator('asset_responser', {
-                    rules: [{ }],
+                  {getFieldDecorator('asset_responser', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='使用部门' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label="使用编码">
+                  {getFieldDecorator('asset_user', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='使用人' >
+                  {getFieldDecorator('asset_responser', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='资产地点编号' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+              <Divider orientation="left">财务信息</Divider>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label="资产地点描述">
+                  {getFieldDecorator('asset_user', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='原值' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            
+            </Row>
+            <Row>
+             
+
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label="净值">
+                  {getFieldDecorator('asset_user', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='净额' >
+                  {getFieldDecorator('asset_responser', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='残值' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='本期折旧' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label="本年折旧">
+                  {getFieldDecorator('asset_user', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='累计折旧' >
+                  {getFieldDecorator('asset_responser', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='本期减值' >
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+
+                </FormItem>
+              </Col>
+
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='本年减值'>
+                  {getFieldDecorator('asset_user', {
+                    rules: [{}],
+                  })(
+                    <Input type='text' />
+                  )}
+                </FormItem>
+              </Col>
+              <Col xs={24} sm={8}>
+                <FormItem {...formItemLayout} label='累计减值' >
+                  {getFieldDecorator('asset_responser', {
+                    rules: [{}],
                   })(
                     <Input type='text' />
                   )}
@@ -236,33 +507,13 @@ class assetEdit extends React.Component {
               </Col>
             </Row>
 
-            <Row>
-              <Col xs={24} sm={12}>
-                <FormItem {...formItemLayout} label="资产类型">
-                  {getFieldDecorator('asset_type', {
-                    rules: [{ }],
-                  })(
-                    <Input type='text' />
-                  )}
-                </FormItem>
-              </Col>
-              <Col xs={24} sm={12}>
-                <FormItem {...formItemLayout} label='详细地址' >
-                {getFieldDecorator('asset_addr', {
-                    rules: [{ }],
-                  })(
-                    <Input type='text' />
-                  )}
 
-                </FormItem>
-              </Col>
-            </Row>
 
 
             <Row>
-              <Col xs={24} sm={12}>
+              <Col xs={24} sm={24}>
 
-                <FormItem {...formItemLayout} label='资产图片' >
+                <FormItem {...formItemLayout1} label='资产图片' >
 
                   {getFieldDecorator('asset_img', {
                     rules: [{ type: 'object', required: true, message: '请选择资产图片!', validator: this.checkImage }],

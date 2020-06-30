@@ -12,6 +12,12 @@ export default class GatewayService {
         let url = "reportServer/gateway/listEamGateway";
         return HttpService.post(url, JSON.stringify(param));
     }
+    
+    //获取网关列表 分页
+    listGatewayStatus(param) {
+        let url = "reportServer/gateway/listGatewayStatus";
+        return HttpService.post(url, JSON.stringify(param));
+    }
 
     //获取所有网关
     getGatewayListAll(param) {
