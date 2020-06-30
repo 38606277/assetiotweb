@@ -132,10 +132,11 @@ class assetEdit extends React.Component {
   };
 
   checkImage = (rule, value, callback) => {
-    if (value || this.state.imageUrl) {
-      return callback();
-    }
-    callback('请选择资产图片!');
+    return callback();
+    // if (value || this.state.imageUrl) {
+    //   return callback();
+    // }
+    // callback('请选择资产图片!');
   };
 
   render() {
@@ -205,8 +206,8 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label='使用部门' >
-                {getFieldDecorator('asset_dept', {
-                    rules: [{  }],
+                  {getFieldDecorator('asset_dept', {
+                    rules: [{}],
                   })(
                     <Input type='text' />
                   )}
@@ -218,7 +219,7 @@ class assetEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="使用人">
                   {getFieldDecorator('asset_user', {
-                    rules: [{  }],
+                    rules: [{}],
                   })(
                     <Input type='text' />
                   )}
@@ -226,8 +227,8 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label='责任人' >
-                {getFieldDecorator('asset_responser', {
-                    rules: [{ }],
+                  {getFieldDecorator('asset_responser', {
+                    rules: [{}],
                   })(
                     <Input type='text' />
                   )}
@@ -240,7 +241,7 @@ class assetEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="资产类型">
                   {getFieldDecorator('asset_type', {
-                    rules: [{ }],
+                    rules: [{}],
                   })(
                     <Input type='text' />
                   )}
@@ -248,8 +249,8 @@ class assetEdit extends React.Component {
               </Col>
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label='详细地址' >
-                {getFieldDecorator('asset_addr', {
-                    rules: [{ }],
+                  {getFieldDecorator('asset_addr', {
+                    rules: [{}],
                   })(
                     <Input type='text' />
                   )}
@@ -265,7 +266,7 @@ class assetEdit extends React.Component {
                 <FormItem {...formItemLayout} label='资产图片' >
 
                   {getFieldDecorator('asset_img', {
-                    rules: [{ type: 'object', required: true, message: '请选择资产图片!', validator: this.checkImage }],
+                    rules: [{ type: 'object', required: false, message: '请选择资产图片!', validator: this.checkImage }],
                   })(
                     <Upload
                       name="avatar"

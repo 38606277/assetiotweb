@@ -331,7 +331,7 @@ class gatewayEdit extends React.Component {
     let param = {};
     param.pageNum = this.state.pageNum;
     param.perPage = this.state.perPage;
-
+    param.gateway_id = this.props.form.getFieldValue('gateway_id')
     let url = this.state.assetListType == 'assetList' ? "reportServer/asset/listAssetNoBindGateway" : "reportServer/asset/listTagNoBindGateway"
 
     HttpService.post(url, JSON.stringify(param))
@@ -500,11 +500,13 @@ class gatewayEdit extends React.Component {
   };
 
   checkImage = (rule, value, callback) => {
-    console.log('checkImage', value)
-    if (value || this.state.imageUrl) {
-      return callback();
-    }
-    callback('请选择资产图片!');
+    return callback();
+
+    // console.log('checkImage', value)
+    // if (value || this.state.imageUrl) {
+    //   return callback();
+    // }
+    // callback('请选择资产图片!');
   };
 
 
@@ -582,6 +584,10 @@ class gatewayEdit extends React.Component {
     HttpService.post("reportServer/gateway/queryGatewayStatusByGatewayId", JSON.stringify({ gateway_id: value }))
       .then(res => {
         if (res.resultCode == "1000") {
+          this.setState({
+            merger_name: res.data.merger_name,
+            address_id: res.data.code
+          });
           this.props.form.setFieldsValue(res.data);
           console.log("网关状态", res)
         }
@@ -749,7 +755,7 @@ class gatewayEdit extends React.Component {
                 <FormItem {...formItemLayout} label='网关图片' >
 
                   {getFieldDecorator('gateway_img', {
-                    rules: [{ type: 'object', required: true, message: '请选择网关图片!', validator: this.checkImage }],
+                    rules: [{ type: 'object', required: false, message: '请选择网关图片!', validator: this.checkImage }],
                   })(
                     <Upload
                       name="avatar"
