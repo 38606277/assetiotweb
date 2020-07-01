@@ -678,10 +678,10 @@ export default class dashboard extends React.Component {
                         </div>
                         <div class="quarter panel">
                             <div class="inner">
-                                <h3>一季度转资额</h3>
+                                <h3></h3>
                                 <div class="chart">
                                     <div class="box">
-                                         <ReactEcharts style={{ marginLeft:'10px', width: '120px', height: '3rem' }} option={this.getGugarOption()} />     */}
+                                         {/* <ReactEcharts style={{ marginLeft:'10px', width: '120px', height: '3rem' }} option={this.getGugarOption()} />     */} */}
                                         <div class="label">75<small> %</small></div>
                                     </div>
                                     <div class="data">
