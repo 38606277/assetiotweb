@@ -30,6 +30,7 @@ class assetmap extends Component {
             map: null,
             AMap: null,
             panelDisplay: 'none',
+            gateway_id: '',
             address: '',
             addressImg: '',
             assetList: [
@@ -80,6 +81,7 @@ class assetmap extends Component {
         _assetService.getEamAssetListByGatewayId(param).then(response => {
 
             this.setState({
+                gateway_id: gateway.gateway_id,
                 address: gateway.address,
                 addressImg: gateway.image,
                 assetList: response.data
@@ -191,12 +193,12 @@ class assetmap extends Component {
             <div className="address" style={{ height: '800px', width: '100%' }}>
 
                 <Card bodyStyle={{ padding: '0px' }} style={{ float: "left", width: "100%", padding: '0px' }}>
-                    <div id="mapContainer" style={{ height: '650px' }}></div>
+                    <div id="mapContainer" style={{ height: '800px' }}></div>
                 </Card>
                 <Card
                     bodyStyle={{ padding: '0px', fontSize: '12px' }}
                     headStyle={{ textAlign: 'center', backgroundColor: '#3385FF', color: '#FFF' }}
-                    style={{ fontSize: '12px', position: "absolute", top: "10px", left: "10px", padding: '0px', width: "280px" }}>
+                    style={{ fontSize: '12px', position: "absolute", top: "10px", left: "10px", padding: '0px', width: "320px" }}>
 
                     <Row>
                         <Col span={24}>
@@ -211,10 +213,18 @@ class assetmap extends Component {
                     <Card style={{ display: this.state.panelDisplay }} bodyStyle={{ padding: '5px', fontSize: '12px' }} >
 
                         <Row>
-                            <Col span={24}><img src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.addressImg}`} style={{ height: '100px', width: '100%' }} /></Col>
+                            <Col span={24}><img onClick={() => {
+                                window.location.href = `#/asset/gatewayEdit/update/${this.state.gateway_id}`
+                            }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.addressImg}`} style={{ height: '100px', width: '100%' }} /></Col>
                         </Row>
                         <Row style={{ height: '40px', marginTop: '10px', marginLeft: '10px' }}>
-                            <Col span={24} ><Icon type='bank' style={{ marginRight: '8px' }} />{this.state.address}</Col>
+                            <Col span={24} ><Icon type='bank' style={{ marginRight: '8px' }} />
+
+                                <a href={`#/asset/assetEdit/update/${this.state.gateway_id}`}>
+                                    {this.state.address}
+                                </a>
+
+                            </Col>
                         </Row>
                         <Row style={{ height: '40px', marginLeft: '30px', color: '#0e89f5' }}>
                             <Col span={8}><Icon type='setting' style={{ marginRight: '8px' }} />详细</Col>
@@ -222,7 +232,7 @@ class assetmap extends Component {
                             <Col span={8}><Icon type='pushpin' style={{ marginRight: '8px' }} onClick={() => this.props.history.push('/asset/assetEdit/create/0')} />新增</Col>
                         </Row>
 
-                        <div style={{ height: '300px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
+                        <div style={{ height: '350px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
 
 
                             <List
@@ -250,8 +260,9 @@ class assetmap extends Component {
                                             }
                                             description={<div>
                                                 {item.asset_num}<br />
+                                                {item.iot_num}<br />
                                                 {item.electricity != null &&
-                                                    (<div>电量：{item.electricity}V<br /></div>)
+                                                    (<div>电压：{item.electricity}V<br /></div>)
                                                 }
 
                                                 {item.receive_time != null &&

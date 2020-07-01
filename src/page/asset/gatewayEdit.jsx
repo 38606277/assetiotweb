@@ -249,7 +249,7 @@ class gatewayEdit extends React.Component {
         { "level": "1", "label": "河北省", "value": "13", "isLeaf": false }
       ],
       pageNum: 1,
-      perPage: 7,
+      perPage: 5,
       dataList: [],
       assetList: [],
       selectedRowKeys: [],
@@ -425,8 +425,8 @@ class gatewayEdit extends React.Component {
   };
 
   handleOk = e => {
+    this.state.dataList = [];
     this.state.asset_selectedRows.forEach(element => {
-
       this.state.dataList.push(element);
     });
     this.setState({})
@@ -616,14 +616,58 @@ class gatewayEdit extends React.Component {
 
   }
 
+  removeAssetSelectedRowsByAssetId(asset_id) {
+    for (let i in this.state.asset_selectedRows) {
+      if (this.state.asset_selectedRows[i].asset_id == asset_id) {
+        this.state.asset_selectedRows.splice(i, 1)
+        break;
+      }
+    }
+  }
+
   render() {
 
     const asset_rowSelection = {
       selectedRowKeys: this.state.asset_selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         console.log('selectedRowKeys changed: ', selectedRowKeys);
-        this.setState({ asset_selectedRowKeys: selectedRowKeys, asset_selectedRows: selectedRows });
+        //this.setState({ asset_selectedRowKeys: selectedRowKeys, asset_selectedRows: selectedRows });
+        this.setState({ asset_selectedRowKeys: selectedRowKeys });
       },
+      //选择操作
+      onSelect: (record, selected, selectedRows, nativeEvent) => {
+        if (selected) {
+          console.log('onSelect 添加', record);
+          this.state.asset_selectedRows.push(record)
+        } else {
+          this.removeAssetSelectedRowsByAssetId(record.asset_id)
+          console.log('onSelect 移除', record);
+        }
+        //  console.log('onSelect', record, selected, selectedRows, nativeEvent);
+      },
+      //全选
+      onSelectAll: (selected, selectedRows, changeRows) => {
+        if (selected) {
+          for (let i in changeRows) {
+            this.state.asset_selectedRows.push(changeRows[i])
+          }
+
+          console.log('onSelectAll 添加', changeRows);
+        } else {
+
+          for (let i in changeRows) {
+            this.removeAssetSelectedRowsByAssetId(changeRows[i].asset_id)
+          }
+          console.log('onSelectAll 移除', changeRows);
+        }
+
+
+        console.log('onSelectAll', selected, selectedRows, changeRows);
+      },
+      //反全选
+      // onSelectInvert: (selectedRows) => {
+      //   console.log('onSelectInvert', selectedRows);
+      // }
     };
 
     const gateway_rowSelection = {
@@ -808,6 +852,14 @@ class gatewayEdit extends React.Component {
 
           <Table dataSource={this.state.dataList} rowSelection={gateway_rowSelection} rowKey={"gateWay_id"} pagination={false} >
             <Column
+              title="资产图片"
+              render={(text, record) => (
+                <span>
+                  <img style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                </span>
+              )}
+            />
+            <Column
               title="物联网标签号"
               dataIndex="iot_num"
 
@@ -838,16 +890,24 @@ class gatewayEdit extends React.Component {
         </div>
         <Modal
           title="选择资产"
-          width="700px"
+          width="800px"
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
           <Table dataSource={this.state.assetList} rowSelection={asset_rowSelection} rowKey={"asset_id"} pagination={false} >
-            <Column
+            {/* <Column
               title="资产ID"
               dataIndex="asset_id"
 
+            /> */}
+            <Column
+              title="资产图片"
+              render={(text, record) => (
+                <span>
+                  <img style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                </span>
+              )}
             />
             <Column
               title="物联网标签号"
