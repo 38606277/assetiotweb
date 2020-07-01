@@ -81,7 +81,7 @@ class assetmap extends Component {
 
             this.setState({
                 address: gateway.address,
-                addressImg: gateway.imageBase64,
+                addressImg: gateway.image,
                 assetList: response.data
             })
         }, errMsg => {
@@ -211,7 +211,7 @@ class assetmap extends Component {
                     <Card style={{ display: this.state.panelDisplay }} bodyStyle={{ padding: '5px', fontSize: '12px' }} >
 
                         <Row>
-                            <Col span={24}><img src={this.state.addressImg} style={{ height: '100px', width: '100%' }} /></Col>
+                            <Col span={24}><img src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.addressImg}`} style={{ height: '100px', width: '100%' }} /></Col>
                         </Row>
                         <Row style={{ height: '40px', marginTop: '10px', marginLeft: '10px' }}>
                             <Col span={24} ><Icon type='bank' style={{ marginRight: '8px' }} />{this.state.address}</Col>
@@ -236,7 +236,7 @@ class assetmap extends Component {
                                     >
                                         <List.Item.Meta style={{ fontSize: '12px' }}
                                             avatar={
-                                                <Avatar src={item.imageBase64} />
+                                                <Avatar src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`} />
                                             }
                                             title={
                                                 <div>
