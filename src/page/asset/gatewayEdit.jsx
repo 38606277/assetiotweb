@@ -279,7 +279,7 @@ class gatewayEdit extends React.Component {
           if (res.resultCode == "1000") {
             this.props.form.setFieldsValue(res.data);
             this.setState({
-              imageUrl: res.data.imageBase64,
+              imageUrl: res.data.image,
               address_id: res.data.address_id,
               merger_name: res.data.merger_name,
             })
@@ -357,7 +357,7 @@ class gatewayEdit extends React.Component {
         console.log("提交数据", formInfo);
         //添加位置id 位置名称
         formInfo.address_id = this.state.address_id
-        formInfo.imageBase64 = this.state.imageUrl;
+        formInfo.image = this.state.imageUrl;
 
         let gateway = {
           gatewayHeader: formInfo,
@@ -478,26 +478,45 @@ class gatewayEdit extends React.Component {
 
 
 
-  customRequest() {
-
-  }
-
   handleChange = info => {
-    console.log(info);
+    console.log("info", info)
     if (info.file.status === 'uploading') {
-
-      getBase64(info.file.originFileObj, imageUrl => {
-        console.log(imageUrl)
-        this.setState({
-          imageUrl,
-          loading: false,
-        })
-      },
-      );
+      this.setState({ loading: true });
       return;
     }
+    if (info.file.status === 'done') {
+      if (info.file.response.resultCode == '1000') {
+        // Get this url from response in real world.
+        this.setState({
+          imageUrl: info.file.response.data.fileName,
+          loading: false,
+        });
+      }
+    } else {
+      message.error(info.file.response.message);
+      this.setState({
+        loading: false,
+      });
+    }
+  }
 
-  };
+
+  // handleChange = info => {
+  //   console.log(info);
+  //   if (info.file.status === 'uploading') {
+
+  //     getBase64(info.file.originFileObj, imageUrl => {
+  //       console.log(imageUrl)
+  //       this.setState({
+  //         imageUrl,
+  //         loading: false,
+  //       })
+  //     },
+  //     );
+  //     return;
+  //   }
+
+  // };
 
   checkImage = (rule, value, callback) => {
     return callback();
@@ -758,15 +777,17 @@ class gatewayEdit extends React.Component {
                     rules: [{ type: 'object', required: false, message: '请选择网关图片!', validator: this.checkImage }],
                   })(
                     <Upload
-                      name="avatar"
+                      name="file"
                       listType="picture-card"
                       className="avatar-uploader"
                       showUploadList={false}
-                      customRequest={this.customRequest}
+                      action="http://127.0.0.1/reportServer/uploadAssetImg/uploadAssetImg"
                       beforeUpload={beforeUpload}
                       onChange={this.handleChange}
                     >
-                      {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+
+                      {imageUrl ? < img src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+
                     </Upload>
                   )}
 
@@ -868,8 +889,6 @@ class gatewayEdit extends React.Component {
           address_id={this.state.address_id}
           merger_name={this.state.merger_name}
         />
-
-
 
       </div >
     );

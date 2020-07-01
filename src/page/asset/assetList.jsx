@@ -135,7 +135,7 @@ export default class assetList extends React.Component {
                             title="资产图片"
                             render={(text, record) => (
                                 <span>
-                                    <img style={{ width: '50px', height: '50px' }} src={record.imageBase64} />
+                                    <img style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
                                 </span>
                             )}
                         />

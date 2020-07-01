@@ -47,7 +47,7 @@ class assetEdit extends React.Component {
           if (res.resultCode == "1000") {
             this.props.form.setFieldsValue(res.data);
             this.setState({
-              imageUrl: res.data.imageBase64
+              imageUrl: res.data.image
             })
           }
           else
@@ -67,7 +67,7 @@ class assetEdit extends React.Component {
 
         console.log("提交数据", formInfo);
 
-        formInfo.imageBase64 = this.state.imageUrl;
+        formInfo.image = this.state.imageUrl;
 
         if (this.state.action == 'create') {
           HttpService.post("reportServer/asset/CreateAsset", JSON.stringify(formInfo))
@@ -115,21 +115,26 @@ class assetEdit extends React.Component {
   }
 
   handleChange = info => {
-    console.log(info);
+    console.log("info", info)
     if (info.file.status === 'uploading') {
-
-      getBase64(info.file.originFileObj, imageUrl => {
-        console.log(imageUrl)
-        this.setState({
-          imageUrl,
-          loading: false,
-        })
-      },
-      );
+      this.setState({ loading: true });
       return;
     }
-
-  };
+    if (info.file.status === 'done') {
+      if (info.file.response.resultCode == '1000') {
+        // Get this url from response in real world.
+        this.setState({
+          imageUrl: info.file.response.data.fileName,
+          loading: false,
+        });
+      }
+    } else {
+      message.error(info.file.response.message);
+      this.setState({
+        loading: false,
+      });
+    }
+  }
 
   checkImage = (rule, value, callback) => {
     return callback();
@@ -523,15 +528,17 @@ class assetEdit extends React.Component {
                     rules: [{ type: 'object', required: false, message: '请选择资产图片!', validator: this.checkImage }],
                   })(
                     <Upload
-                      name="avatar"
+                      name="file"
                       listType="picture-card"
                       className="avatar-uploader"
                       showUploadList={false}
-                      customRequest={this.customRequest}
+                      action="http://127.0.0.1/reportServer/uploadAssetImg/uploadAssetImg"
                       beforeUpload={beforeUpload}
                       onChange={this.handleChange}
                     >
-                      {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+
+                      {imageUrl ? < img src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+
                     </Upload>
                   )}
 
