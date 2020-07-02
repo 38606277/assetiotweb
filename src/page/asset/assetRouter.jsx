@@ -11,6 +11,7 @@ import Analysis from '../../page/dashboard/analysis.jsx';
 import dashboard from './dashboard.jsx'
 import assetAlarmList from './assetAlarmList.jsx';
 import gatewayMonitor from './gatewayMonitor.jsx';
+import assetInventory from './assetInventory.jsx';
 
 
 
@@ -86,9 +87,11 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/dashboard" component={dashboard} />
                 <Route path="/asset/assetAlarmList" component={assetAlarmList} />
                 <Route path="/asset/gatewayMonitor" component={gatewayMonitor} />
+                <Route path="/asset/assetInventory" component={assetInventory} />
+                
                 {/* <Route path="/asset/assetmap" component={assetmap} />
                 
-                <Route path="/assetInventory" component={assetInventory} />
+           
                 <Route path="/assetMonitoring" component={assetMonitoring} />
                 <Route path="/gatewayManagement" component={gatewayManagement} />
                 <Route path="/addGateway/:name" component={addGateway} />
