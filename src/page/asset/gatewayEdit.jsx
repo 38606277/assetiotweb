@@ -287,7 +287,7 @@ class gatewayEdit extends React.Component {
           else
             message.error(res.message);
         });
-      //加班明细表
+      //加载明细表
       await HttpService.post("reportServer/gateway/getGatewayAssetById", JSON.stringify({ gateway_id: this.state.id }))
         .then(res => {
           if (res.resultCode == "1000") {
@@ -625,6 +625,15 @@ class gatewayEdit extends React.Component {
     }
   }
 
+  handlePreviewCancel = () => this.setState({ previewVisible: false });
+
+  handlePreview = imageName => {
+    this.setState({
+      previewImage: `http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
+      previewVisible: true,
+    });
+  };
+
   render() {
 
     const asset_rowSelection = {
@@ -855,7 +864,7 @@ class gatewayEdit extends React.Component {
               title="资产图片"
               render={(text, record) => (
                 <span>
-                  <img style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
                 </span>
               )}
             />
@@ -905,7 +914,7 @@ class gatewayEdit extends React.Component {
               title="资产图片"
               render={(text, record) => (
                 <span>
-                  <img style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
                 </span>
               )}
             />
@@ -948,7 +957,12 @@ class gatewayEdit extends React.Component {
           handleAreaCancel={this.handleAreaCancel}
           address_id={this.state.address_id}
           merger_name={this.state.merger_name}
-        />
+        />、
+
+        <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
+          <img alt="图片" style={{ width: '100%' }} src={this.state.previewImage} />
+        </Modal>
+
 
       </div >
     );

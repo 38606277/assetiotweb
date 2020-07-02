@@ -35,7 +35,7 @@ class TreeTest extends React.Component {
             selectedKeys: [],
             total: 0,
             pageNum: 1,
-            perPage: 10,
+            perPage: 5,
             assetList: [],
             gatewayData: {
                 address_id: '',
@@ -276,7 +276,7 @@ class TreeTest extends React.Component {
                 <Row>
                     <Col xs={24} sm={4}>
                         <div class="ant-card-head"><div class="ant-card-head-wrapper"><div class="ant-card-head-title">设备位置</div></div></div>
-                        <Tree loadData={this.onLoadData} onSelect={this.onSelect}>{this.renderTreeNodes(this.state.treeData)}</Tree>
+                        <Tree style={{ height: '600px', overflow: 'auto' }} loadData={this.onLoadData} onSelect={this.onSelect}>{this.renderTreeNodes(this.state.treeData)}</Tree>
                     </Col>
                     <Col xs={24} sm={20}>
                         <Card title="网关信息">

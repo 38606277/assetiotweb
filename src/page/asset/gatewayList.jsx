@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Divider, Form, Pagination, Row, Col, Button, Card } from 'antd';
+import { Table, Input, message, Divider, Form, Pagination, Row, Col, Button, Card, Modal } from 'antd';
 import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
@@ -97,6 +97,14 @@ export default class gatewayList extends React.Component {
             this.loadGatewayList();
         });
     }
+    handlePreviewCancel = () => this.setState({ previewVisible: false });
+
+    handlePreview = imageName => {
+        this.setState({
+            previewImage: `http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
+            previewVisible: true,
+        });
+    };
 
     render() {
 
@@ -133,7 +141,7 @@ export default class gatewayList extends React.Component {
                             title="网关图片"
                             render={(text, record) => (
                                 <span>
-                                    <img style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                                    <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
                                 </span>
                             )}
                         />
@@ -170,6 +178,9 @@ export default class gatewayList extends React.Component {
                         onChange={(pageNum) => this.onPageNumChange(pageNum)} />
 
                 </Card>
+                <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
+                    <img alt="图片" style={{ width: '100%' }} src={this.state.previewImage} />
+                </Modal>
             </div>
 
         );

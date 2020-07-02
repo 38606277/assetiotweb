@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Popover, Progress, Tag } from 'antd';
+import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Popover, Progress, Tag, Modal } from 'antd';
 import { List, Typography } from 'antd';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import './assetmap.css';
@@ -56,7 +56,7 @@ class assetmap extends Component {
             param.keyword = this.state.searchKeyword;
         }
 
-        _gatewayService.getGatewayListAll(param).then(response => {
+        _gatewayService.listEamGatewayByMap(param).then(response => {
             this.setState({
                 dataList: response.data,
             });
@@ -129,10 +129,11 @@ class assetmap extends Component {
 
     //编辑字段对应值
     onValueChange(e) {
+        console.log("onValueChange", e.target);
         let name = e.target.name,
             value = e.target.value.trim();
         this.setState({ [name]: value });
-        this.props.form.setFieldsValue({ [name]: value });
+        //this.props.form.setFieldsValue({ [name]: value });
     }
 
     initMapData = (map, AMap) => {
@@ -187,6 +188,15 @@ class assetmap extends Component {
             console.log(e);
         })
     }
+
+    handlePreviewCancel = () => this.setState({ previewVisible: false });
+
+    handlePreview = imageName => {
+        this.setState({
+            previewImage: `http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
+            previewVisible: true,
+        });
+    };
 
     render() {
         return (
@@ -246,7 +256,7 @@ class assetmap extends Component {
                                     >
                                         <List.Item.Meta style={{ fontSize: '12px' }}
                                             avatar={
-                                                <Avatar src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`} />
+                                                <Avatar onClick={() => this.handlePreview(item.image)} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`} />
                                             }
                                             title={
                                                 <div>
@@ -281,6 +291,11 @@ class assetmap extends Component {
 
                     </Card>
                 </Card>
+
+
+                <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handlePreviewCancel}>
+                    <img alt="图片" style={{ width: '100%' }} src={this.state.previewImage} />
+                </Modal>
 
             </div>
         )
