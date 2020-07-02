@@ -162,7 +162,7 @@ class assetmap extends Component {
         if (this.state.cluster) {
             this.state.cluster.setMap(null);
         }
-        new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 80 });
+        this.state.cluster = new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 80 });
 
     }
 
