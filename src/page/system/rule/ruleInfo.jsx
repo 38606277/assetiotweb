@@ -31,6 +31,8 @@ class RuleInfo extends React.Component{
             autoExpandParent: true,
             checkedKeys: [],
             selectedKeys: [],
+           
+            selectedRowKeys: [],
             tabPosition: 'top',
             treeData:[],
             activeKey:"select",
@@ -642,6 +644,15 @@ class RuleInfo extends React.Component{
                      </Tree>
                   </div>   
         );
+
+        const rowSelection = {
+            selectedRowKeys: this.state.selectedRowKeys,
+            onChange: (selectedRowKeys, selectedRows) => {
+                console.log('selectedRowKeys changed: ', selectedRowKeys);
+                console.log('selectedRows changed: ', selectedRows);
+                this.setState({ selectedRowKeys: selectedRowKeys, selectedRows: selectedRows });
+            },
+        };
        
         return (
             <div id="page-wrapper">
@@ -657,7 +668,8 @@ class RuleInfo extends React.Component{
                         />
                 </Tooltip>
                 <Table dataSource={dataSource} columns={columns}  pagination={false} 
-                showHeader={false} style={{ border: '0'}}/>
+                showHeader={false} style={{ border: '0'}}
+                rowSelection={rowSelection}/>
                  <Pagination current={this.state.pageNum} 
                     total={this.state.total} 
                     onChange={(pageNum) => this.onPageNumChange(pageNum)}/> 
@@ -668,24 +680,7 @@ class RuleInfo extends React.Component{
                 <TabPane tab="功能菜单" key="webFunc">
                     {contents}
                 </TabPane>
-                <TabPane tab="Excel功能" key="func">
-                     {contents}
-                </TabPane>
-                <TabPane tab="数据查询" key="select">
-                    {contents}
-                </TabPane>
-                <TabPane tab="函数" key="function">
-                    {contents}
-                </TabPane>
-                <TabPane tab="多维分析" key="cube">
-                     {contents}
-                </TabPane>
-                <TabPane tab="仪表盘" key="dashboard">
-                    {contents}
-                </TabPane>
-                <TabPane tab="模板" key="template">
-                     {contents}
-                </TabPane>
+               
                
                
                 <TabPane tab="数据权限" key="table">
