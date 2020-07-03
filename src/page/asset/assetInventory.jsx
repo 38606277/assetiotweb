@@ -8,7 +8,8 @@ const Option=Select.Option;
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
 import HttpService from '../../util/HttpService.jsx';
-
+import moment from 'moment';
+import locale from 'antd/lib/date-picker/locale/zh_CN';
 import AssetService from '../../service/AssetService.jsx';
 const _assetService = new AssetService();
 
@@ -32,7 +33,9 @@ class assetInventory extends React.Component {
             dataList: [],
             selectedRows: [],
             selectedRowKeys: [],
-            selected: true
+            selected: true,
+            cityCode:'',
+            receiveTime:''
 
         }
     };
@@ -53,9 +56,10 @@ class assetInventory extends React.Component {
         let param = {};
 
         // 如果是搜索的话，需要传入搜索类型和搜索关键字
-        if (this.state.listType === 'search') {
-            param.keyword = this.state.searchKeyword;
-        }
+        // if (this.state.listType === 'search') {
+            param.cityCode = this.state.cityCode==''?'':this.state.cityCode.join(",");
+            param.receiveTime = this.state.receiveTime;
+        // }
 
         param.pageNum = this.state.pageNum;
         param.perPage = this.state.perPage;
@@ -63,8 +67,8 @@ class assetInventory extends React.Component {
         HttpService.post(url, JSON.stringify(param)).then(response => {
             //message.success('加载成功');
             this.setState({
-                dataList: response.data.list,
-                total: response.data.total
+                dataList: response.list,
+                total: response.total
             });
         }, errMsg => {
             localStorge.errorTips(errMsg);
@@ -90,21 +94,43 @@ class assetInventory extends React.Component {
         }
     }
     refreshClick = () => {
-        this.loadGatewayList();
+        this.props.form.setFieldsValue({ receiveTime: '' ,cityCode:[]});
+        this.setState({
+            listType: 'list',
+            pageNum: 1,
+            receiveTime: '',
+            cityCode:''
+        }, () => {
+            this.loadGatewayList();
+        });
 
     }
     // 搜索
-    onSearch(searchKeyword) {
-        let listType = searchKeyword === '' ? 'list' : 'search';
+    onSearchClick() {
         this.setState({
-            listType: listType,
             pageNum: 1,
-            searchKeyword: searchKeyword
         }, () => {
             this.loadGatewayList();
         });
     }
-
+    selectChange(value){
+        this.setState({
+            cityCode: value
+        }, () => {
+            
+        });
+        this.props.form.setFieldsValue({ cityCode: value });
+    }
+     //选中日期设置值
+     onChangeDate(date, dateString) {
+         console.log(date,dateString);
+        this.setState({
+            receiveTime: dateString
+        }, () => {
+            
+        });
+        this.props.form.setFieldsValue({ receiveTime: dateString });
+    }
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
@@ -141,8 +167,8 @@ class assetInventory extends React.Component {
         return (
             <div id="page-wrapper">
                 <Card title={<b>盘点管理</b>} extra={<span>
-                    <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(true)}>查询</Button>
-                    <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(false)}>重置</Button>
+                    <Button style={{ marginLeft: '10px' }} onClick={() => this.onSearchClick()}>查询</Button>
+                    <Button style={{ marginLeft: '10px' }} onClick={() => this.refreshClick()}>重置</Button>
                     <Button href="#/asset/assetList" style={{ marginLeft: '10px' }}>导出</Button>
                 </span>} >
                     <Row>
@@ -155,17 +181,17 @@ class assetInventory extends React.Component {
                             <Row>
                                 <Col xs={24} sm={12}>
                                     <FormItem {...formItemLayout} label="选择盘点单位">
-                                        {getFieldDecorator('iot_num', {
+                                        {getFieldDecorator('cityCode', {
                                             rules: [{ required: true, message: '请输入物联网标签号!' }],
                                         })(
                                             <Select
                                                 mode="multiple"
                                                 style={{ width: '100%' }}
                                                 placeholder="Please select"
-                                               
+                                                onChange={(value) => this.selectChange(value)}
                                             >
-                                                <Option value="jack">石家庄</Option>
-                                                <Option value="lucy">唐山</Option>
+                                                <Option value="130400000000">石家庄</Option>
+                                                <Option value="130410000000">唐山</Option>
                                                 <Option value="jack">保定</Option>
                                                 <Option value="lucy">邯郸</Option>
                                             </Select>,
@@ -174,10 +200,11 @@ class assetInventory extends React.Component {
                                 </Col>
                                 <Col xs={24} sm={12}>
                                     <FormItem {...formItemLayout} label="选择盘点时间">
-                                        {getFieldDecorator('asset_id', {
+                                        {getFieldDecorator('receiveTime', {
                                             rules: [],
                                         })(
-                                            <DatePicker  />
+                                            <DatePicker format={'YYYY-MM-DD'} name='receiveTime' 
+                                        onChange={(date, dateString) => this.onChangeDate(date, dateString)} locale={locale} />
                                         )}
                                     </FormItem>
                                 </Col>
@@ -186,7 +213,7 @@ class assetInventory extends React.Component {
                             </Row>
                         </Form>
                     </Row>
-                    <Row>
+                    {/* <Row>
                         <Col span={24} style={{ textAlign: 'right' }}>
                             <Button type="primary" htmlType="submit">
                                 查询
@@ -198,7 +225,7 @@ class assetInventory extends React.Component {
                                 <Icon type={this.state.expand ? 'up' : 'down'} />
                             </a>
                         </Col>
-                    </Row>
+                    </Row> */}
                     <Table style={{ marginTop: '16px' }} dataSource={this.state.dataList} rowSelection={rowSelection} 
                      scroll={{ x: 1300 }}
                     rowKey={"gateWay_id"} pagination={false} >
