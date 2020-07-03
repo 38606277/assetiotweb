@@ -16,7 +16,8 @@ a {
     min-height: 780px;
     margin: 0 auto;
     background: url(../images/asset_title.png) no-repeat 0 0 / contain;
-    display: flex;
+    display: -webkit-box;
+    /* display: flex; 会导致不能等比例缩小*/  
     padding: 3.667rem 0.833rem 0;
     background-repeat: no-repeat;
     background-position: 0 0 / cover;

@@ -580,10 +580,10 @@ export default class dashboard extends React.Component {
                     <div class="map">
                         <h3>
                             <span class="icon-cube"></span>
-                    资产数据统计
-                </h3>
+                            资产数据统计
+                        </h3>
                         <div class="chart">
-                            <ReactEcharts style={{ marginRight: '80px', float: 'right', width: '500px', height: '350px' }} option={this.getMapOption()} />
+                            <ReactEcharts style={{ marginRight: '80px', float: 'right', width: '100%', height: '350px' }} option={this.getMapOption()} />
 
                         </div>
                     </div>
@@ -636,7 +636,7 @@ export default class dashboard extends React.Component {
                     </div>
                     <div class="sales panel" style={{ borderLeft: '30px' }}>
                         <h3>资产异常发展趋势</h3>
-                        <ReactEcharts style={{ width: '380px', height: '100px' }} option={this.getLineOption()} />
+                        <ReactEcharts style={{ width: '100%', height: '100px' }} option={this.getLineOption()} />
                     </div>
                     <div class="wrap">
                         <div class="channel panel">
