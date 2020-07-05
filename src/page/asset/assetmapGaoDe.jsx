@@ -42,7 +42,8 @@ class assetampGaoDe extends React.Component {
             listType: 'list',
             searchKeyword: null,
             cluster: null,
-            markers: []
+            markers: [],
+            showDetailFromList: false
         }
     }
 
@@ -52,27 +53,49 @@ class assetampGaoDe extends React.Component {
 
     loadGatewayList() {
         let param = {};
+        let _this = this;
 
         // 如果是搜索的话，需要传入搜索类型和搜索关键字
-        if (this.state.listType === 'search') {
+        let isSearch = this.state.listType === 'search'
+        if (isSearch) {
             param.keyword = this.state.searchKeyword;
         }
 
         _gatewayService.listEamGatewayByMap(param).then(response => {
-            this.setState({
-                dataList: response.data,
-            });
-            this.initMapData(this.state.map, this.state.AMap);
+            if (response.resultCode == '1000') {
+                _this.setState({
+                    dataList: response.data,
+                });
+
+                _this.initMapData(_this.state.map, _this.state.AMap);
+
+                if (isSearch && _this.state.panelDisplay == 'none') {
+                    _this.setState(
+                        {
+                            showDetail: false,
+                            panelDisplay: 'block',
+                        }
+                    )
+                }
+            } else {
+                localStorge.errorTips(response.message);
+            }
+
+
         }, errMsg => {
             localStorge.errorTips(errMsg);
         });
     }
 
     onGatewayItemClick = (gateway) => {
+        this.setState({
+            showDetailFromList: true
+        })
         this.getAddr(gateway);
         let AMap = this.state.AMap;
-        this.state.map.setZoom(15) // [3,19]
+        this.state.map.setZoom(13) // [3,19]
         this.state.map.panTo(new AMap.LngLat(gateway.lng, gateway.rng));
+
     }
 
     getAddr = (gateway) => {
@@ -83,8 +106,6 @@ class assetampGaoDe extends React.Component {
                 }
             )
         }
-
-
 
         //获取网关下的资产数据
 
@@ -163,6 +184,9 @@ class assetampGaoDe extends React.Component {
 
             marker.on('click', function (e) {
                 console.log(gatewayItem)
+                _this.setState({
+                    showDetailFromList: false
+                })
                 _this.getAddr(gatewayItem);
             });
 
@@ -247,10 +271,10 @@ class assetampGaoDe extends React.Component {
     render() {
         return (
             <div className="address" style={{ height: '800px', width: '100%' }}>
-
                 <Card bodyStyle={{ padding: '0px' }} style={{ float: "left", width: "100%", padding: '0px' }}>
                     <div id="mapContainer" style={{ height: '800px' }}></div>
                 </Card>
+
                 <Card
                     bodyStyle={{ padding: '0px', fontSize: '12px' }}
                     headStyle={{ textAlign: 'center', backgroundColor: '#3385FF', color: '#FFF' }}
@@ -272,6 +296,18 @@ class assetampGaoDe extends React.Component {
                             this.state.showDetail ?
                                 (
                                     <div>
+
+                                        {this.state.showDetailFromList ? (<Row>
+                                            <div style={{ color: '#0e89f5' }} onClick={() => {
+                                                this.setState({
+                                                    showDetail: false
+                                                })
+                                            }}> 返回</div>
+                                        </Row>
+                                        ) : (<span />)
+                                        }
+
+
                                         <Row>
                                             <Col span={24}><img onClick={() => {
                                                 window.location.href = `#/asset/gatewayEdit/update/${this.state.gateway_id}`
