@@ -214,7 +214,7 @@ class assetInventory extends React.Component {
                                                     <Option value={city.code}>{city.name}</Option>
                                                 ))}
 
-                                              
+
                                             </Select>,
                                         )}
                                     </FormItem>
@@ -290,10 +290,11 @@ class assetInventory extends React.Component {
 
 
 
-                  
+
                     </Table>
                     <Pagination current={this.state.pageNum}
                         total={this.state.total}
+                        defaultPageSize={this.state.perPage}
                         onChange={(pageNum) => this.onPageNumChange(pageNum)} />
 
                 </Card>

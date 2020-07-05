@@ -175,6 +175,7 @@ export default class gatewayList extends React.Component {
                     </Table>
                     <Pagination current={this.state.pageNum}
                         total={this.state.total}
+                        defaultPageSize={this.state.perPage}
                         onChange={(pageNum) => this.onPageNumChange(pageNum)} />
 
                 </Card>
