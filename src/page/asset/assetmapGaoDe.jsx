@@ -29,6 +29,7 @@ class assetampGaoDe extends React.Component {
         this.state = {
             lng: this.props.match.params.lng ? this.props.match.params.lng : 114.5220818442,
             lat: this.props.match.params.lat ? this.props.match.params.lat : 38.0489583146,
+            actoinZoom: this.props.match.params.lng ? true : false,
             map: null,
             AMap: null,
             panelDisplay: 'none',
@@ -245,7 +246,7 @@ class assetampGaoDe extends React.Component {
             this.state.AMap = AMap;
             this.state.map = new AMap.Map('mapContainer', {
                 center: [this.state.lng, this.state.lat],
-                zoom: 7,// [3,19]
+                zoom: this.state.actoinZoom ? 12 : 7,// [3,19]
                 resizeEnable: true,
             });
 
