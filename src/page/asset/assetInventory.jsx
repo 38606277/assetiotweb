@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Divider,DatePicker , Select,Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
+import { Table, Input, message, Divider, DatePicker, Select, Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
 import 'antd/dist/antd.css';
 const FormItem = Form.Item;
-const Option=Select.Option;
+const Option = Select.Option;
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
 import HttpService from '../../util/HttpService.jsx';
@@ -34,8 +34,8 @@ class assetInventory extends React.Component {
             selectedRows: [],
             selectedRowKeys: [],
             selected: true,
-            cityCode:'',
-            receiveTime:''
+            cityCode: '',
+            receiveTime: ''
 
         }
     };
@@ -57,8 +57,8 @@ class assetInventory extends React.Component {
 
         // 如果是搜索的话，需要传入搜索类型和搜索关键字
         // if (this.state.listType === 'search') {
-            param.cityCode = this.state.cityCode==''?'':this.state.cityCode.join(",");
-            param.receiveTime = this.state.receiveTime;
+        param.cityCode = this.state.cityCode == '' ? '' : this.state.cityCode.join(",");
+        param.receiveTime = this.state.receiveTime;
         // }
 
         param.pageNum = this.state.pageNum;
@@ -94,12 +94,12 @@ class assetInventory extends React.Component {
         }
     }
     refreshClick = () => {
-        this.props.form.setFieldsValue({ receiveTime: '' ,cityCode:[]});
+        this.props.form.setFieldsValue({ receiveTime: '', cityCode: [] });
         this.setState({
             listType: 'list',
             pageNum: 1,
             receiveTime: '',
-            cityCode:''
+            cityCode: ''
         }, () => {
             this.loadGatewayList();
         });
@@ -113,21 +113,21 @@ class assetInventory extends React.Component {
             this.loadGatewayList();
         });
     }
-    selectChange(value){
+    selectChange(value) {
         this.setState({
             cityCode: value
         }, () => {
-            
+
         });
         this.props.form.setFieldsValue({ cityCode: value });
     }
-     //选中日期设置值
-     onChangeDate(date, dateString) {
-         console.log(date,dateString);
+    //选中日期设置值
+    onChangeDate(date, dateString) {
+        console.log(date, dateString);
         this.setState({
             receiveTime: dateString
         }, () => {
-            
+
         });
         this.props.form.setFieldsValue({ receiveTime: dateString });
     }
@@ -203,13 +203,13 @@ class assetInventory extends React.Component {
                                         {getFieldDecorator('receiveTime', {
                                             rules: [],
                                         })(
-                                            <DatePicker format={'YYYY-MM-DD'} name='receiveTime' 
-                                        onChange={(date, dateString) => this.onChangeDate(date, dateString)} locale={locale} />
+                                            <DatePicker format={'YYYY-MM-DD'} name='receiveTime'
+                                                onChange={(date, dateString) => this.onChangeDate(date, dateString)} locale={locale} />
                                         )}
                                     </FormItem>
                                 </Col>
 
-                                
+
                             </Row>
                         </Form>
                     </Row>
@@ -226,20 +226,20 @@ class assetInventory extends React.Component {
                             </a>
                         </Col>
                     </Row> */}
-                    <Table style={{ marginTop: '16px' }} dataSource={this.state.dataList} rowSelection={rowSelection} 
-                     scroll={{ x: 1300 }}
-                    rowKey={"gateWay_id"} pagination={false} >
-                       
+                    <Table style={{ marginTop: '16px' }} dataSource={this.state.dataList} rowSelection={rowSelection}
+                        scroll={{ x: 1300 }}
+                        rowKey={"gateWay_id"} pagination={false} >
+
                         <Column
-                            title="资产编号"
-                            dataIndex="asset_num"
+                            title="资产标签号"
+                            dataIndex="asset_tag"
                         />
                         <Column
                             title="资产名称"
                             dataIndex="asset_name"
                         />
-                         <Column
-                            title="物联网编号"
+                        <Column
+                            title="物联网标签号"
                             dataIndex="iot_num"
 
                         />
@@ -251,14 +251,14 @@ class assetInventory extends React.Component {
                             title="接收时间"
                             dataIndex="receive_time"
                         />
-                       
-                        
+
+
 
                         <Column
                             title="动作"
                             render={(text, record) => (
                                 <span>
-                                    
+
 
                                 </span>
                             )}

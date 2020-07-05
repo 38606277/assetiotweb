@@ -191,7 +191,7 @@ class assetEdit extends React.Component {
             </FormItem>
             <Row>
               <Col xs={24} sm={8}>
-                <FormItem {...formItemLayout} label="物联网编号">
+                <FormItem {...formItemLayout} label="物联网标签号">
                   {getFieldDecorator('iot_num', {
                     rules: [{ required: true, message: '请输入物联网标签号!' }],
                   })(
@@ -199,7 +199,7 @@ class assetEdit extends React.Component {
                   )}
                 </FormItem>
               </Col>
-              
+
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="资产标签号">
                   {getFieldDecorator('asset_tag', {

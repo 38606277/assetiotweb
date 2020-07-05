@@ -878,8 +878,8 @@ class gatewayEdit extends React.Component {
               dataIndex="asset_name"
             />
             <Column
-              title="资产编号"
-              dataIndex="asset_num"
+              title="资产标签号"
+              dataIndex="asset_tag"
             />
             <Column
               title="资产地点"
@@ -923,8 +923,8 @@ class gatewayEdit extends React.Component {
               dataIndex="iot_num"
             />
             <Column
-              title="资产编号"
-              dataIndex="asset_num"
+              title="资产标签号"
+              dataIndex="asset_tag"
             />
             <Column
               title="资产名称"

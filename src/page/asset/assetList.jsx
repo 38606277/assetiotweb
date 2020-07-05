@@ -147,19 +147,19 @@ export default class assetList extends React.Component {
                                 </span>
                             )}
                         />
-                       <Column
+                        <Column
                             title="物联网标签号"
                             dataIndex="iot_num"
                         />
                         <Column
-                            title="资产标签"
+                            title="资产标签号"
                             dataIndex="asset_tag"
                         />
                         <Column
                             title="资产名称"
                             dataIndex="asset_name"
                         />
-                         <Column
+                        <Column
                             title="原值"
                             dataIndex="cost"
                         />

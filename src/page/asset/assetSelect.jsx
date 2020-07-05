@@ -16,7 +16,7 @@ const { Column, ColumnGroup } = Table;
 const _areaService = new AreaService();
 
 
-export default  class assetSelect extends React.Component {
+export default class assetSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -288,8 +288,8 @@ export default  class assetSelect extends React.Component {
               dataIndex="asset_name"
             />
             <Column
-              title="资产编号"
-              dataIndex="asset_num"
+              title="资产标签号"
+              dataIndex="asset_tag"
             />
             <Column
               title="资产地点"

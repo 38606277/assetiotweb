@@ -105,7 +105,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
     class extends React.Component {
         getItemLayout = (props) => {
             return (
-                <Input.Search style={{ marginBottom: '6px' }} addonBefore={props.code} type='text' name='name' placeholder='请输入物联网编号' enterButton="扫描" />
+                <Input.Search style={{ marginBottom: '6px' }} addonBefore={props.code} type='text' name='name' placeholder='请输入物联网标签号' enterButton="扫描" />
             );
         }
         render() {

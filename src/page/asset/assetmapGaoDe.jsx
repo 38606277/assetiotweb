@@ -353,7 +353,7 @@ class assetampGaoDe extends React.Component {
                                                                 </div>
                                                             }
                                                             description={<div>
-                                                                {item.asset_num}<br />
+                                                                {item.asset_tag}<br />
                                                                 {item.iot_num}<br />
                                                                 {item.electricity != null &&
                                                                     (<div>电压：{item.electricity}V<br /></div>)
