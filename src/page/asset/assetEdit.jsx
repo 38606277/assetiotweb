@@ -42,7 +42,7 @@ class assetEdit extends React.Component {
   //初始化加载调用方法
   componentDidMount() {
     if (this.state.action == 'update') {
-      HttpService.post("reportServer/asset/getAssetById", JSON.stringify({ asset_tag: this.state.id }))
+      HttpService.post("reportServer/asset/getAssetById", JSON.stringify({ asset_id: this.state.id }))
         .then(res => {
           if (res.resultCode == "1000") {
             this.props.form.setFieldsValue(res.data);
