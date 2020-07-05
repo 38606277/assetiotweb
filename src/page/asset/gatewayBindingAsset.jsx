@@ -25,8 +25,8 @@ class GatewayBindingAsset extends React.Component {
         };
         this.columns = [
             {
-                title: '资产编号',
-                dataIndex: 'asset_num',
+                title: '资产标签号',
+                dataIndex: 'asset_tag',
                 width: '15%',
             },
             {

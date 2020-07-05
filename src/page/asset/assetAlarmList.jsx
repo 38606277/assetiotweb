@@ -249,12 +249,12 @@ export default class assetAlarmList extends React.Component {
                             dataIndex="alarm_num"
                         />
                         <Column
-                            title="资产编号"
-                            dataIndex="asset_num"
+                            title="资产标签号"
+                            dataIndex="asset_tag"
                         />
 
                         <Column
-                            title="物联网编号"
+                            title="物联网标签号"
                             dataIndex="iot_num"
                         />
                         <Column

@@ -60,9 +60,15 @@ class SelectAreaModal extends React.Component {
       maxLevel: 3
     }
     _areaService.getArea(param).then(response => {
-      this.setState({
-        treeData: response,
-      });
+
+      if (response.resultCode == "1000") {
+        this.setState({
+          treeData: response,
+        });
+      }
+      else {
+        message.error(response.message);
+      }
     }, errMsg => {
       localStorge.errorTips(errMsg);
     });
@@ -81,11 +87,19 @@ class SelectAreaModal extends React.Component {
         maxLevel: maxLevel
       }
       _areaService.getArea(param).then(response => {
-        treeNode.props.dataRef.children = response;
-        this.setState({
-          treeData: [...this.state.treeData],
-        });
-        resolve();
+
+        if (response.resultCode == "1000") {
+          treeNode.props.dataRef.children = response.data;
+          this.setState({
+            treeData: [...this.state.treeData],
+          });
+          resolve();
+        }
+        else {
+          message.error(response.message);
+        }
+
+
       }, errMsg => {
         localStorge.errorTips(errMsg);
       });
@@ -309,9 +323,17 @@ class gatewayEdit extends React.Component {
       maxLevel: 3
     }
     _areaService.getArea(param).then(response => {
-      this.setState({
-        options: response,
-      });
+
+      if (response.resultCode == "1000") {
+        this.setState({
+          options: response.data,
+        });
+
+      }
+      else {
+        message.error(response.message);
+      }
+
     }, errMsg => {
       localStorge.errorTips(errMsg);
     });
@@ -459,11 +481,18 @@ class gatewayEdit extends React.Component {
       maxLevel: 3
     }
     _areaService.getArea(param).then(response => {
-      targetOption.loading = false;
-      targetOption.children = response;
-      this.setState({
-        options: [...this.state.options],
-      });
+
+      if (response.resultCode == "1000") {
+        targetOption.loading = false;
+        targetOption.children = response.data;
+        this.setState({
+          options: [...this.state.options],
+        });
+
+      }
+      else {
+        message.error(response.message);
+      }
     }, errMsg => {
       localStorge.errorTips(errMsg);
     });
@@ -878,8 +907,8 @@ class gatewayEdit extends React.Component {
               dataIndex="asset_name"
             />
             <Column
-              title="资产编号"
-              dataIndex="asset_num"
+              title="资产标签号"
+              dataIndex="asset_tag"
             />
             <Column
               title="资产地点"
@@ -923,8 +952,8 @@ class gatewayEdit extends React.Component {
               dataIndex="iot_num"
             />
             <Column
-              title="资产编号"
-              dataIndex="asset_num"
+              title="资产标签号"
+              dataIndex="asset_tag"
             />
             <Column
               title="资产名称"

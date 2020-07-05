@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Popover, Progress, Tag, Modal } from 'antd';
+import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Popover, Progress, Tag, Modal, Form } from 'antd';
 import { List, Typography } from 'antd';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import './assetmap.css';
@@ -22,11 +22,13 @@ const url = window.getServerUrl();
 
 
 
-class assetmap extends Component {
+class assetampGaoDe extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            lng: this.props.match.params.lng ? this.props.match.params.lng : 114.5220818442,
+            lat: this.props.match.params.lat ? this.props.match.params.lat : 38.0489583146,
             map: null,
             AMap: null,
             panelDisplay: 'none',
@@ -40,7 +42,8 @@ class assetmap extends Component {
             listType: 'list',
             searchKeyword: null,
             cluster: null,
-            markers: []
+            markers: [],
+            showDetailFromList: false
         }
     }
 
@@ -50,23 +53,52 @@ class assetmap extends Component {
 
     loadGatewayList() {
         let param = {};
+        let _this = this;
 
         // 如果是搜索的话，需要传入搜索类型和搜索关键字
-        if (this.state.listType === 'search') {
+        let isSearch = this.state.listType === 'search'
+        if (isSearch) {
             param.keyword = this.state.searchKeyword;
         }
 
         _gatewayService.listEamGatewayByMap(param).then(response => {
-            this.setState({
-                dataList: response.data,
-            });
-            this.initMapData(this.state.map, this.state.AMap);
+            if (response.resultCode == '1000') {
+                _this.setState({
+                    dataList: response.data,
+                });
+
+                _this.initMapData(_this.state.map, _this.state.AMap);
+
+                if (isSearch && _this.state.panelDisplay == 'none') {
+                    _this.setState(
+                        {
+                            showDetail: false,
+                            panelDisplay: 'block',
+                        }
+                    )
+                }
+            } else {
+                localStorge.errorTips(response.message);
+            }
+
+
         }, errMsg => {
             localStorge.errorTips(errMsg);
         });
     }
 
-    getAddr = (gateway, e) => {
+    onGatewayItemClick = (gateway) => {
+        this.setState({
+            showDetailFromList: true
+        })
+        this.getAddr(gateway);
+        let AMap = this.state.AMap;
+        this.state.map.setZoom(13) // [3,19]
+        this.state.map.panTo(new AMap.LngLat(gateway.lng, gateway.rng));
+
+    }
+
+    getAddr = (gateway) => {
         if (this.state.panelDisplay == 'none') {
             this.setState(
                 {
@@ -84,7 +116,8 @@ class assetmap extends Component {
                 gateway_id: gateway.gateway_id,
                 address: gateway.address,
                 addressImg: gateway.image,
-                assetList: response.data
+                assetList: response.data,
+                showDetail: true,
             })
         }, errMsg => {
             localStorge.errorTips(errMsg);
@@ -142,7 +175,7 @@ class assetmap extends Component {
         this.state.markers = [];
         let _this = this;
         for (var i = 0; i < this.state.dataList.length; i++) {
-            // 创建一个 Marker 实例：
+            // 创建一个 Marker 实例
             let gatewayItem = this.state.dataList[i];
             let marker = new AMap.Marker({
                 position: new AMap.LngLat(gatewayItem.lng, gatewayItem.rng),   // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
@@ -151,24 +184,58 @@ class assetmap extends Component {
 
             marker.on('click', function (e) {
                 console.log(gatewayItem)
-                _this.getAddr(gatewayItem, e);
+                _this.setState({
+                    showDetailFromList: false
+                })
+                _this.getAddr(gatewayItem);
             });
 
 
             // 将创建的点标记添加到已有的地图实例：
             //map.add(marker);
+
             this.state.markers.push(marker);
+
+            if (this.state.cluster) {
+                this.state.cluster.setMap(null);
+            }
+            this.state.cluster = new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 80 });
+
+
+
         }
-        if (this.state.cluster) {
-            this.state.cluster.setMap(null);
-        }
-        this.state.cluster = new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 80 });
+    }
+
+    zoomend = () => {
+        console.log('zoomend 当前等级', this.state.map.getZoom())
+
+        // let map = this.state.map;
+        // let AMap = this.state.AMap;
+        // if (map.getZoom() < 10) {
+        //     //map.clearMap();
+        //     if (this.state.cluster) {
+        //         this.state.cluster.setMap(map);
+        //         //this.state.cluster = null;
+        //     } else {
+        //         this.state.cluster = new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 80 });
+        //     }
+
+        // } else {
+        //     //map.clearMap();
+        //     for (let i in this.state.markers) {
+        //         map.add(this.state.markers[i]);
+        //     }
+        //     if (this.state.cluster) {
+        //         this.state.cluster.setMap(null);
+
+        //     }
+        // }
+
 
     }
 
-
     init = () => {
-
+        console.log("初始位置：", this.state.lng, this.state.lat)
         //初始化地图
         AMapLoader.load({
             "key": "034f37e988d8a97079766539387a6a0b",   // 申请好的Web端开发者Key，首次调用 load 时必填
@@ -177,12 +244,15 @@ class assetmap extends Component {
         }).then((AMap) => {
             this.state.AMap = AMap;
             this.state.map = new AMap.Map('mapContainer', {
-                center: [114.5220818442, 38.0489583146],
-                zoom: 7,
+                center: [this.state.lng, this.state.lat],
+                zoom: 7,// [3,19]
                 resizeEnable: true,
             });
+
             this.loadGatewayList();
             //this.initMapData(map, AMap);
+            this.state.map.on('zoomend', this.zoomend);
+
 
         }).catch(e => {
             console.log(e);
@@ -201,10 +271,10 @@ class assetmap extends Component {
     render() {
         return (
             <div className="address" style={{ height: '800px', width: '100%' }}>
-
                 <Card bodyStyle={{ padding: '0px' }} style={{ float: "left", width: "100%", padding: '0px' }}>
                     <div id="mapContainer" style={{ height: '800px' }}></div>
                 </Card>
+
                 <Card
                     bodyStyle={{ padding: '0px', fontSize: '12px' }}
                     headStyle={{ textAlign: 'center', backgroundColor: '#3385FF', color: '#FFF' }}
@@ -222,73 +292,130 @@ class assetmap extends Component {
                     </Row>
                     <Card style={{ display: this.state.panelDisplay }} bodyStyle={{ padding: '5px', fontSize: '12px' }} >
 
-                        <Row>
-                            <Col span={24}><img onClick={() => {
-                                window.location.href = `#/asset/gatewayEdit/update/${this.state.gateway_id}`
-                            }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.addressImg}`} style={{ height: '100px', width: '100%' }} /></Col>
-                        </Row>
-                        <Row style={{ height: '40px', marginTop: '10px', marginLeft: '10px' }}>
-                            <Col span={24} ><Icon type='bank' style={{ marginRight: '8px' }} />
+                        {
+                            this.state.showDetail ?
+                                (
+                                    <div>
 
-                                <a href={`#/asset/assetEdit/update/${this.state.gateway_id}`}>
-                                    {this.state.address}
-                                </a>
-
-                            </Col>
-                        </Row>
-                        <Row style={{ height: '40px', marginLeft: '30px', color: '#0e89f5' }}>
-                            <Col span={8}><Icon type='setting' style={{ marginRight: '8px' }} />详细</Col>
-                            <Col span={8}><Icon type='tag' style={{ marginRight: '8px' }} />分离</Col>
-                            <Col span={8}><Icon type='pushpin' style={{ marginRight: '8px' }} onClick={() => this.props.history.push('/asset/assetEdit/create/0')} />新增</Col>
-                        </Row>
-
-                        <div style={{ height: '350px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
+                                        {this.state.showDetailFromList ? (<Row>
+                                            <div style={{ color: '#0e89f5' }} onClick={() => {
+                                                this.setState({
+                                                    showDetail: false
+                                                })
+                                            }}> 返回</div>
+                                        </Row>
+                                        ) : (<span />)
+                                        }
 
 
-                            <List
-                                bodyStyle={{ padding: '5px', fontSize: '14px', backgroundColor: '#ffffcc' }}
-                                style={{ padding: '5px' }}
-                                dataSource={this.state.assetList}
-                                renderItem={item => (
-                                    <List.Item
+                                        <Row>
+                                            <Col span={24}><img onClick={() => {
+                                                window.location.href = `#/asset/gatewayEdit/update/${this.state.gateway_id}`
+                                            }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.addressImg}`} style={{ height: '100px', width: '100%' }} /></Col>
+                                        </Row>
+                                        <Row style={{ height: '40px', marginTop: '10px', marginLeft: '10px' }}>
+                                            <Col span={24} ><Icon type='bank' style={{ marginRight: '8px' }} />
 
-                                        actions={[]}
-                                    >
-                                        <List.Item.Meta style={{ fontSize: '12px' }}
-                                            avatar={
-                                                <Avatar onClick={() => this.handlePreview(item.image)} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`} />
-                                            }
-                                            title={
-                                                <div>
-                                                    <a href={`#/asset/assetEdit/update/${item.asset_id}`}>
-                                                        {item.asset_name}
-                                                    </a>
+                                                <a href={`#/asset/assetEdit/update/${this.state.gateway_id}`}>
+                                                    {this.state.address}
+                                                </a>
 
-                                                    <Tag style={{ float: 'right' }} color={item.tag_id == null ? 'gray' : 'green'}>{item.tag_id == null ? '未关联' : '正常'}</Tag>
-                                                    <img src={require("./../../asset/wifi.png")}></img>
-                                                </div>
-                                            }
-                                            description={<div>
-                                                {item.asset_num}<br />
-                                                {item.iot_num}<br />
-                                                {item.electricity != null &&
-                                                    (<div>电压：{item.electricity}V<br /></div>)
-                                                }
+                                            </Col>
+                                        </Row>
+                                        <Row style={{ height: '40px', marginLeft: '30px', color: '#0e89f5' }}>
+                                            <Col span={8}><Icon type='setting' style={{ marginRight: '8px' }} />详细</Col>
+                                            <Col span={8}><Icon type='tag' style={{ marginRight: '8px' }} />分离</Col>
+                                            <Col span={8}><Icon type='pushpin' style={{ marginRight: '8px' }} onClick={() => this.props.history.push('/asset/assetEdit/create/0')} />新增</Col>
+                                        </Row>
 
-                                                {item.receive_time != null &&
-                                                    (<div> 更新于：{item.receive_time}<br /></div>)
-                                                }
-                                            </div>
+                                        <div style={{ height: '350px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
+                                            <List
+                                                bodyStyle={{ padding: '5px', fontSize: '14px', backgroundColor: '#ffffcc' }}
+                                                style={{ padding: '5px' }}
+                                                dataSource={this.state.assetList}
+                                                renderItem={item => (
+                                                    <List.Item
 
-                                            }
+                                                        actions={[]}
+                                                    >
+                                                        <List.Item.Meta style={{ fontSize: '12px' }}
+                                                            avatar={
+                                                                <Avatar onClick={() => this.handlePreview(item.image)} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`} />
+                                                            }
+                                                            title={
+                                                                <div>
+                                                                    <a href={`#/asset/assetEdit/update/${item.asset_id}`}>
+                                                                        {item.asset_name}
+                                                                    </a>
+
+                                                                    <Tag style={{ float: 'right' }} color={item.tag_id == null ? 'gray' : 'green'}>{item.tag_id == null ? '未关联' : '正常'}</Tag>
+                                                                    <img src={require("./../../asset/wifi.png")}></img>
+                                                                </div>
+                                                            }
+                                                            description={<div>
+                                                                {item.asset_tag}<br />
+                                                                {item.iot_num}<br />
+                                                                {item.electricity != null &&
+                                                                    (<div>电压：{item.electricity}V<br /></div>)
+                                                                }
+
+                                                                {item.receive_time != null &&
+                                                                    (<div> 更新于：{item.receive_time}<br /></div>)
+                                                                }
+                                                            </div>
+
+                                                            }
+                                                        />
+
+                                                    </List.Item>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+
+                                ) : (
+                                    <div style={{ height: '350px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
+                                        <List
+                                            bodyStyle={{ padding: '5px', fontSize: '14px', backgroundColor: '#ffffcc' }}
+                                            style={{ padding: '5px' }}
+                                            dataSource={this.state.dataList}
+                                            renderItem={item => (
+                                                <List.Item
+                                                    onClick={() => this.onGatewayItemClick(item)}
+                                                    actions={[]}
+                                                    extra={
+                                                        <img
+                                                            width={80}
+                                                            alt="image"
+                                                            src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`}
+                                                            onClick={() => this.handlePreview(item.image)}
+                                                        />
+                                                    }
+                                                >
+                                                    <List.Item.Meta style={{ fontSize: '12px' }}
+
+                                                        title={
+                                                            <div style={{ color: '#3385ff' }}>
+                                                                {item.gateway_id}
+                                                            </div>
+                                                        }
+                                                        description={<div>
+
+                                                            关联资产：{item.assetCount}<br />
+
+                                                            {item.address}
+                                                        </div>
+                                                        }
+                                                    />
+
+                                                </List.Item>
+                                            )}
                                         />
+                                    </div>
+                                )
 
-                                    </List.Item>
-                                )}
-                            />
 
-                        </div>
-
+                        }
                     </Card>
                 </Card>
 
@@ -297,8 +424,8 @@ class assetmap extends Component {
                     <img alt="图片" style={{ width: '100%' }} src={this.state.previewImage} />
                 </Modal>
 
-            </div>
+            </div >
         )
     }
 }
-export default assetmap;
+export default Form.create()(assetampGaoDe);
