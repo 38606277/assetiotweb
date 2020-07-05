@@ -739,7 +739,8 @@ export default class dashboard extends React.Component {
                         </ul>
                     </div>
                     <div class="province">
-                                           <div class="data">
+                      
+                        <div class="data">
                             <ul class="sup">
                                 <li>
                                     <span>北京</span>
