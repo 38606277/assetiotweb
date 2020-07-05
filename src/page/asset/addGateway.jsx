@@ -36,9 +36,15 @@ class AuthTypeInfo extends React.Component {
             maxLevel: 3
         }
         _areaService.getArea(param).then(response => {
-            this.setState({
-                options: response,
-            });
+            if (response.resultCode == "1000") {
+                this.setState({
+                    options: response.data,
+                });
+            }
+            else {
+                message.error(response.message);
+            }
+
         }, errMsg => {
             localStorge.errorTips(errMsg);
         });
@@ -81,11 +87,20 @@ class AuthTypeInfo extends React.Component {
             maxLevel: 3
         }
         _areaService.getArea(param).then(response => {
-            targetOption.loading = false;
-            targetOption.children = response;
-            this.setState({
-                options: [...this.state.options],
-            });
+
+
+            if (response.resultCode == "1000") {
+                targetOption.loading = false;
+                targetOption.children = response.data;
+                this.setState({
+                    options: [...this.state.options],
+                });
+            }
+            else {
+                message.error(response.message);
+            }
+
+
         }, errMsg => {
             localStorge.errorTips(errMsg);
         });

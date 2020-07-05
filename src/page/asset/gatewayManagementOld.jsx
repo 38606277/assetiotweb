@@ -29,7 +29,7 @@ class TreeTest extends React.Component {
             confirmDirty: false,
             _name: this.props.match.params.name,
             treeData: [
-                { "level": "1", "label": "北京市", "value": "11", "isLeaf": false },
+                //{ "level": "1", "label": "北京市", "value": "11", "isLeaf": false },
                 { "level": "1", "label": "河北省", "value": "13", "isLeaf": false }
             ],
             selectedKeys: [],
@@ -56,9 +56,14 @@ class TreeTest extends React.Component {
             maxLevel: 3
         }
         _areaService.getGatewayArea(param).then(response => {
-            this.setState({
-                treeData: response,
-            });
+            if (response.resultCode == "1000") {
+                this.setState({
+                    treeData: response.data,
+                });
+            } else {
+                message.error(response.message);
+            }
+
         }, errMsg => {
             localStorge.errorTips(errMsg);
         });
@@ -72,31 +77,77 @@ class TreeTest extends React.Component {
             }
             let maxLevel = 3
             console.log(treeNode);
-            if (treeNode.props.dataRef.level < maxLevel) { //小于则查询地点
+            if (treeNode.props.dataRef.level == 1) { //小于则查询地点
                 let param = {
                     parentCode: treeNode.props.dataRef.value,
                     maxLevel: maxLevel
                 }
-                _areaService.getGatewayArea(param).then(response => {
-                    treeNode.props.dataRef.children = response;
-                    this.setState({
-                        treeData: [...this.state.treeData],
+                // _areaService.getGatewayArea(param).then(response => {
+                //     treeNode.props.dataRef.children = response;
+                //     this.setState({
+                //         treeData: [...this.state.treeData],
+                //     });
+                //     resolve();
+                // }, errMsg => {
+                //     localStorge.errorTips(errMsg);
+                // });
+
+
+                HttpService.post('reportServer/area/getCityContainingGateway', JSON.stringify(param))
+                    .then(res => {
+                        if (res.resultCode == "1000") {
+                            treeNode.props.dataRef.children = res.data;
+                            this.setState({
+                                treeData: [...this.state.treeData],
+                            });
+                            resolve();
+                        }
+                        else {
+                            message.error(res.message);
+                        }
+
                     });
-                    resolve();
-                }, errMsg => {
-                    localStorge.errorTips(errMsg);
-                });
+
+
+            } else if (treeNode.props.dataRef.level == 2) {
+                let param = {
+                    parentCode: treeNode.props.dataRef.value,
+                    maxLevel: maxLevel
+                }
+
+                HttpService.post('reportServer/area/getDistrictContainingGateway', JSON.stringify(param))
+                    .then(res => {
+                        if (res.resultCode == "1000") {
+                            treeNode.props.dataRef.children = res.data;
+                            this.setState({
+                                treeData: [...this.state.treeData],
+                            });
+                            resolve();
+                        }
+                        else {
+                            message.error(res.message);
+                        }
+
+                    });
+
+
             } else {
 
                 let param = {
                     address_id: treeNode.props.dataRef.value,
                 }
                 _gatewayService.treeGatewayByAddressId(param).then(response => {
-                    treeNode.props.dataRef.children = response;
-                    this.setState({
-                        treeData: [...this.state.treeData],
-                    });
-                    resolve();
+                    if (response.resultCode == "1000") {
+                        treeNode.props.dataRef.children = response.data;
+                        this.setState({
+                            treeData: [...this.state.treeData],
+                        });
+                        resolve();
+                    }
+                    else {
+                        message.error(response.message);
+                    }
+
                 }, errMsg => {
                     localStorge.errorTips(errMsg);
                 });
@@ -281,11 +332,16 @@ class TreeTest extends React.Component {
                     <Col xs={24} sm={20}>
                         <Card title="网关信息">
 
-                            <div style={{ marginBottom: '40px', height: '240px' }}>
+                            <div style={{ marginBottom: '30px', height: '180px' }}>
 
-                                <ReactEcharts style={{ float: 'right', width: '400px', height: '240px', marginRight: '100px' }} option={this.getOption()} />
-                                <h1 style={{ marginBottom: '40px' }}>{this.state.gatewayData.gateway_id}</h1>
-                                <h3>{this.state.gatewayData.address} <img style={{ width: '15px', height: '24px' }} src={require("./../../asset/map.png")} /></h3>
+                                <ReactEcharts style={{ float: 'right', width: '300px', height: '180px', marginRight: '100px' }} option={this.getOption()} />
+                                <h1 style={{ marginBottom: '30px' }}>{this.state.gatewayData.gateway_id}</h1>
+                                <h3 >{this.state.gatewayData.address} <img onClick={() => {
+
+                                    if (this.state.gatewayData.lng != '') {
+                                        window.location.href = `#/asset/assetmapGaoDe/${this.state.gatewayData.lng}/${this.state.gatewayData.rng}`
+                                    }
+                                }} style={{ width: '15px', height: '24px' }} src={require("./../../asset/map.png")} /></h3>
 
                             </div>
 
