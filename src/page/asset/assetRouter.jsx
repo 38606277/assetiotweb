@@ -12,13 +12,14 @@ import dashboard from './dashboard.jsx'
 import assetAlarmList from './assetAlarmList.jsx';
 import gatewayMonitor from './gatewayMonitor.jsx';
 import assetInventory from './assetInventory.jsx';
+import assetCube from './assetCube.jsx';
 
 
 
 
 
-// const assetmap = Loadable({
-//     loader: () => import(/* webpackChunkName: "assetmap" */ './assetmap.jsx'),
+// const assetCube = Loadable({
+//     loader: () => import(/* webpackChunkName: "assetCube" */ './assetCube.jsx'),
 //     loading: loading,
 //     delay: 3000
 // });
@@ -90,10 +91,10 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/gatewayMonitor" component={gatewayMonitor} />
                 <Route path="/asset/assetInventory" component={assetInventory} />
 
-                {/* <Route path="/asset/assetmap" component={assetmap} />
+              <Route path="/asset/assetCube" component={assetCube} />
                 
            
-                <Route path="/assetMonitoring" component={assetMonitoring} />
+                  {/* <Route path="/assetMonitoring" component={assetMonitoring} />
                 <Route path="/gatewayManagement" component={gatewayManagement} />
                 <Route path="/addGateway/:name" component={addGateway} />
                 <Route path="/assetmapGaoDe" component={assetmapGaoDe} />

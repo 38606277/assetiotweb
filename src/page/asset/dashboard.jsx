@@ -725,48 +725,18 @@ export default class dashboard extends React.Component {
                         <h3>资产类别排行</h3>
                         <ul>
                             <li>
-                                <i class="icon-cup1"></i>
-                                可爱多
+                               
+                                传输网设备  3000
                             </li>
                             <li>
-                                <i class="icon-cup2"></i>
-                                娃哈啥
+                                无线及接入设备 200
                             </li>
                             <li>
-                                <i class="icon-cup3"></i>
-                                喜之郎
+                                无线及接入设备 333
                             </li>
                         </ul>
                     </div>
-                    <div class="province">
-                      
-                        <div class="data">
-                            <ul class="sup">
-                                <li>
-                                    <span>北京</span>
-                                    <span>25,179 <s class="icon-up"></s></span>
-                                </li>
-                                <li>
-                                    <span>河北</span>
-                                    <span>23,252 <s class="icon-down"></s></span>
-                                </li>
-                                <li>
-                                    <span>上海</span>
-                                    <span>20,760 <s class="icon-up"></s></span>
-                                </li>
-                                <li>
-                                    <span>江苏</span>
-                                    <span>23,252 <s class="icon-down"></s></span>
-                                </li>
-                                <li>
-                                    <span>山东</span>
-                                    <span>20,760 <s class="icon-up"></s></span>
-                                </li>
-                            </ul>
-                            
-                        </div>
-                    </div>
-                </div>
+                   </div>
                         {/* <h3>资产类别统计</h3>
                         <ReactEcharts style={{ width: '100%', height: '100px' }} option={this.getBarOption()} /> */}
                     </div>

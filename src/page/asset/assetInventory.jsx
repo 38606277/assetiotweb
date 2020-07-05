@@ -270,6 +270,10 @@ class assetInventory extends React.Component {
 
                         />
                         <Column
+                            title="最后接收时间"
+                            dataIndex="receive_time"
+                        />
+                        <Column
                             title="综资基站编号"
                             dataIndex="base_station_code"
 
@@ -283,10 +287,7 @@ class assetInventory extends React.Component {
                             title="地址"
                             dataIndex="address"
                         />
-                        <Column
-                            title="接收时间"
-                            dataIndex="receive_time"
-                        />
+                        
 
 
 
