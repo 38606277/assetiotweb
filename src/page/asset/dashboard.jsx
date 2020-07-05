@@ -484,7 +484,7 @@ export default class dashboard extends React.Component {
                     message.error(res.message);
 
             });
-        window.location.href = "#/asset/assetmapGaoDe/" + this.state.latitude + "/" + this.state.longitude;
+        window.location.href = "#/asset/assetmapGaoDe/" + this.state.longitude+ "/" + this.state.latitude;
     }
 
 
