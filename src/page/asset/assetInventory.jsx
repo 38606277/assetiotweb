@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Divider,DatePicker , Select,Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
+import { Table, Input, message, Divider, DatePicker, Select, Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
 import 'antd/dist/antd.css';
 const FormItem = Form.Item;
-const Option=Select.Option;
+const Option = Select.Option;
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
 import HttpService from '../../util/HttpService.jsx';
@@ -34,14 +34,27 @@ class assetInventory extends React.Component {
             selectedRows: [],
             selectedRowKeys: [],
             selected: true,
-            cityCode:'',
-            receiveTime:''
+            cityCode: '',
+            receiveTime: '',
+            cityList: []
 
         }
     };
     componentDidMount() {
         // To disable submit button at the beginning.
-        this.loadGatewayList();
+
+        //取得城市列表
+        let url = "reportServer/area/getCityByProvince";
+        HttpService.post(url, JSON.stringify({ parentCode: '13' }))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({ cityList: res.data });
+                }
+                else {
+                    message.error(res.message);
+                }
+
+            });
     }
 
     // 页数发生变化的时候
@@ -57,22 +70,28 @@ class assetInventory extends React.Component {
 
         // 如果是搜索的话，需要传入搜索类型和搜索关键字
         // if (this.state.listType === 'search') {
-            param.cityCode = this.state.cityCode==''?'':this.state.cityCode.join(",");
-            param.receiveTime = this.state.receiveTime;
+        param.cityCode = this.state.cityCode == '' ? '' : this.state.cityCode.join(",");
+        param.receiveTime = this.state.receiveTime;
         // }
 
         param.pageNum = this.state.pageNum;
         param.perPage = this.state.perPage;
         let url = "reportServer/asset/getAssetInventory";
-        HttpService.post(url, JSON.stringify(param)).then(response => {
-            //message.success('加载成功');
-            this.setState({
-                dataList: response.list,
-                total: response.total
+        HttpService.post(url, JSON.stringify(param))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({
+                        dataList: res.data.list,
+                        total: res.data.total
+                    });
+                }
+                else {
+                    message.error(res.message);
+                }
+
             });
-        }, errMsg => {
-            localStorge.errorTips(errMsg);
-        });
+
+
 
     }
 
@@ -94,12 +113,12 @@ class assetInventory extends React.Component {
         }
     }
     refreshClick = () => {
-        this.props.form.setFieldsValue({ receiveTime: '' ,cityCode:[]});
+        this.props.form.setFieldsValue({ receiveTime: '', cityCode: [] });
         this.setState({
             listType: 'list',
             pageNum: 1,
             receiveTime: '',
-            cityCode:''
+            cityCode: ''
         }, () => {
             this.loadGatewayList();
         });
@@ -113,21 +132,21 @@ class assetInventory extends React.Component {
             this.loadGatewayList();
         });
     }
-    selectChange(value){
+    selectChange(value) {
         this.setState({
             cityCode: value
         }, () => {
-            
+
         });
         this.props.form.setFieldsValue({ cityCode: value });
     }
-     //选中日期设置值
-     onChangeDate(date, dateString) {
-         console.log(date,dateString);
+    //选中日期设置值
+    onChangeDate(date, dateString) {
+        console.log(date, dateString);
         this.setState({
             receiveTime: dateString
         }, () => {
-            
+
         });
         this.props.form.setFieldsValue({ receiveTime: dateString });
     }
@@ -166,8 +185,8 @@ class assetInventory extends React.Component {
 
         return (
             <div id="page-wrapper">
-                <Card title={<b>盘点管理</b>} extra={<span>
-                    <Button style={{ marginLeft: '10px' }} onClick={() => this.onSearchClick()}>查询</Button>
+                <Card title={<b>资产盘点</b>} extra={<span>
+                    <Button style={{ marginLeft: '10px' }} type="primary" onClick={() => this.onSearchClick()}>查询</Button>
                     <Button style={{ marginLeft: '10px' }} onClick={() => this.refreshClick()}>重置</Button>
                     <Button href="#/asset/assetList" style={{ marginLeft: '10px' }}>导出</Button>
                 </span>} >
@@ -190,10 +209,12 @@ class assetInventory extends React.Component {
                                                 placeholder="Please select"
                                                 onChange={(value) => this.selectChange(value)}
                                             >
-                                                <Option value="130400000000">石家庄</Option>
-                                                <Option value="130410000000">唐山</Option>
-                                                <Option value="jack">保定</Option>
-                                                <Option value="lucy">邯郸</Option>
+
+                                                {this.state.cityList.map(city => (
+                                                    <Option value={city.code}>{city.name}</Option>
+                                                ))}
+
+                                              
                                             </Select>,
                                         )}
                                     </FormItem>
@@ -203,13 +224,13 @@ class assetInventory extends React.Component {
                                         {getFieldDecorator('receiveTime', {
                                             rules: [],
                                         })(
-                                            <DatePicker format={'YYYY-MM-DD'} name='receiveTime' 
-                                        onChange={(date, dateString) => this.onChangeDate(date, dateString)} locale={locale} />
+                                            <DatePicker format={'YYYY-MM-DD'} name='receiveTime'
+                                                onChange={(date, dateString) => this.onChangeDate(date, dateString)} locale={locale} />
                                         )}
                                     </FormItem>
                                 </Col>
 
-                                
+
                             </Row>
                         </Form>
                     </Row>
@@ -226,10 +247,10 @@ class assetInventory extends React.Component {
                             </a>
                         </Col>
                     </Row> */}
-                    <Table style={{ marginTop: '16px' }} dataSource={this.state.dataList} rowSelection={rowSelection} 
-                     scroll={{ x: 1300 }}
-                    rowKey={"gateWay_id"} pagination={false} >
-                       
+                    <Table style={{ marginTop: '16px' }} dataSource={this.state.dataList} rowSelection={rowSelection}
+                        scroll={{ x: 1300 }}
+                        rowKey={"gateWay_id"} pagination={false} >
+
                         <Column
                             title="资产编号"
                             dataIndex="asset_num"
@@ -238,9 +259,24 @@ class assetInventory extends React.Component {
                             title="资产名称"
                             dataIndex="asset_name"
                         />
-                         <Column
+                        <Column
                             title="物联网编号"
                             dataIndex="iot_num"
+
+                        />
+                        <Column
+                            title="网关编号"
+                            dataIndex="gateway_id"
+
+                        />
+                        <Column
+                            title="综资基站编号"
+                            dataIndex="base_station_code"
+
+                        />
+                        <Column
+                            title="综资基站名称"
+                            dataIndex="base_station_name"
 
                         />
                         <Column
@@ -251,10 +287,10 @@ class assetInventory extends React.Component {
                             title="接收时间"
                             dataIndex="receive_time"
                         />
-                       
-                        
 
-                        <Column
+
+
+                        {/* <Column
                             title="动作"
                             render={(text, record) => (
                                 <span>
@@ -262,7 +298,7 @@ class assetInventory extends React.Component {
 
                                 </span>
                             )}
-                        />
+                        /> */}
                     </Table>
                     <Pagination current={this.state.pageNum}
                         total={this.state.total}
