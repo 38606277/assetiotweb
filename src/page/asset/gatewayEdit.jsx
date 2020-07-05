@@ -305,7 +305,7 @@ class gatewayEdit extends React.Component {
       await HttpService.post("reportServer/gateway/getGatewayAssetById", JSON.stringify({ gateway_id: this.state.id }))
         .then(res => {
           if (res.resultCode == "1000") {
-            this.setState({ dataList: res.data })
+            this.setState({ dataList: res.data, asset_selectedRows: res.data })
           }
           else
             message.error(res.message);
