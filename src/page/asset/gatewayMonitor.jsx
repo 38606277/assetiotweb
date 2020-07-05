@@ -66,7 +66,7 @@ export default class gatewayMonitor extends React.Component {
         }, errMsg => {
             localStorge.errorTips(errMsg);
         });
-      
+
     }
 
     onDelButtonClick() {
@@ -86,9 +86,9 @@ export default class gatewayMonitor extends React.Component {
                 });
         }
     }
-    refreshClick=()=> {
+    refreshClick = () => {
         this.loadGatewayList();
-        
+
     }
     // 搜索
     onSearch(searchKeyword) {
@@ -133,7 +133,7 @@ export default class gatewayMonitor extends React.Component {
                         </Col>
                     </Row>
                     <Table dataSource={this.state.dataList} rowSelection={rowSelection} rowKey={"gateWay_id"} pagination={false} >
-                                               <Column
+                        <Column
                             title="网关ID"
                             dataIndex="gateway_id"
 
@@ -142,7 +142,7 @@ export default class gatewayMonitor extends React.Component {
                             title="地址"
                             dataIndex="address"
                         />
-                          <Column
+                        <Column
                             title="接收时间"
                             dataIndex="receive_time"
                         />
@@ -167,6 +167,7 @@ export default class gatewayMonitor extends React.Component {
                     </Table>
                     <Pagination current={this.state.pageNum}
                         total={this.state.total}
+                        defaultPageSize={this.state.perPage}
                         onChange={(pageNum) => this.onPageNumChange(pageNum)} />
 
                 </Card>

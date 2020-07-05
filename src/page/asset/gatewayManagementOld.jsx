@@ -33,7 +33,6 @@ class TreeTest extends React.Component {
                 { "level": "1", "label": "河北省", "value": "13", "isLeaf": false }
             ],
             selectedKeys: [],
-            total: 0,
             pageNum: 1,
             perPage: 5,
             assetList: [],
@@ -206,10 +205,13 @@ class TreeTest extends React.Component {
         param.perPage = this.state.perPage;
         param.gateway_id = this.state.gateway_id;
         _assetService.listEamAssetPageByGatewayId(param).then(response => {
+
             this.setState({
                 assetList: response.data.list,
                 total: response.data.total
             });
+
+
         }, errMsg => {
             localStorge.errorTips(errMsg);
         });
@@ -382,8 +384,10 @@ class TreeTest extends React.Component {
                                     )}
                                 /> */}
                             </Table>
+
                             <Pagination current={this.state.pageNum}
                                 total={this.state.total}
+                                defaultPageSize={this.state.perPage}
                                 onChange={(pageNum) => this.onPageNumChange(pageNum)} />
 
                         </Card>
