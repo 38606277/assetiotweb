@@ -523,12 +523,12 @@ class assetEdit extends React.Component {
                       listType="picture-card"
                       className="avatar-uploader"
                       showUploadList={false}
-                      action="http://127.0.0.1/reportServer/uploadAssetImg/uploadAssetImg"
+                      action={`${window.getServerUrl()}reportServer/uploadAssetImg/uploadAssetImg`}
                       beforeUpload={beforeUpload}
                       onChange={this.handleChange}
                     >
 
-                      {imageUrl ? < img src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                      {imageUrl ? < img src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
 
                     </Upload>
                   )}

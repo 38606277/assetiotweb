@@ -104,7 +104,7 @@ export default class assetList extends React.Component {
 
     handlePreview = imageName => {
         this.setState({
-            previewImage: `http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
+            previewImage: `${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
             previewVisible: true,
         });
     };
@@ -143,7 +143,7 @@ export default class assetList extends React.Component {
                             title="资产图片"
                             render={(text, record) => (
                                 <span>
-                                    <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                                    <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
                                 </span>
                             )}
                         />

@@ -658,7 +658,7 @@ class gatewayEdit extends React.Component {
 
   handlePreview = imageName => {
     this.setState({
-      previewImage: `http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
+      previewImage: `${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
       previewVisible: true,
     });
   };
@@ -863,12 +863,14 @@ class gatewayEdit extends React.Component {
                       listType="picture-card"
                       className="avatar-uploader"
                       showUploadList={false}
-                      action="http://127.0.0.1/reportServer/uploadAssetImg/uploadAssetImg"
+
+
+                      action={`${window.getServerUrl()}reportServer/uploadAssetImg/uploadAssetImg`}
                       beforeUpload={beforeUpload}
                       onChange={this.handleChange}
                     >
 
-                      {imageUrl ? < img src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                      {imageUrl ? < img src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
 
                     </Upload>
                   )}
@@ -893,7 +895,7 @@ class gatewayEdit extends React.Component {
               title="资产图片"
               render={(text, record) => (
                 <span>
-                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
                 </span>
               )}
             />
@@ -943,7 +945,7 @@ class gatewayEdit extends React.Component {
               title="资产图片"
               render={(text, record) => (
                 <span>
-                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
                 </span>
               )}
             />

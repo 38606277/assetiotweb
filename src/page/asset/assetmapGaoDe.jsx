@@ -264,7 +264,7 @@ class assetampGaoDe extends React.Component {
 
     handlePreview = imageName => {
         this.setState({
-            previewImage: `http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
+            previewImage: `${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
             previewVisible: true,
         });
     };
@@ -312,7 +312,7 @@ class assetampGaoDe extends React.Component {
                                         <Row>
                                             <Col span={24}><img onClick={() => {
                                                 window.location.href = `#/asset/gatewayEdit/update/${this.state.gateway_id}`
-                                            }} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.addressImg}`} style={{ height: '100px', width: '100%' }} /></Col>
+                                            }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.addressImg}`} style={{ height: '100px', width: '100%' }} /></Col>
                                         </Row>
                                         <Row style={{ height: '40px', marginTop: '10px', marginLeft: '10px' }}>
                                             <Col span={24} ><Icon type='bank' style={{ marginRight: '8px' }} />
@@ -341,7 +341,7 @@ class assetampGaoDe extends React.Component {
                                                     >
                                                         <List.Item.Meta style={{ fontSize: '12px' }}
                                                             avatar={
-                                                                <Avatar onClick={() => this.handlePreview(item.image)} src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`} />
+                                                                <Avatar onClick={() => this.handlePreview(item.image)} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`} />
                                                             }
                                                             title={
                                                                 <div>
@@ -388,7 +388,7 @@ class assetampGaoDe extends React.Component {
                                                         <img
                                                             width={80}
                                                             alt="image"
-                                                            src={`http://127.0.0.1/reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`}
+                                                            src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`}
                                                             onClick={() => this.handlePreview(item.image)}
                                                         />
                                                     }
