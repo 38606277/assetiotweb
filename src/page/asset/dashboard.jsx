@@ -30,10 +30,71 @@ export default class dashboard extends React.Component {
             dataList: [],
             selectedRows: [],
             selectedRowKeys: [],
-            selected: true
+            selected: true,
+            llongitude: null,
+            latitude: null,
+            asset_num: 0,
+            normal_num: 0,
+            abnormal_num: 0,
+            city_data: [{
+                name: '邯郸市',
+                value: 2
+            }, {
+                name: '邢台市',
+                value: 0
+            }, {
+                name: '衡水市',
+                value: 0
+            }, {
+                name: '石家庄市',
+                value: 0
+            }, {
+                name: '保定市',
+                value: 0
+            }, {
+                name: '沧州市',
+                value: 0
+            }, {
+                name: '廊坊市',
+                value: 0,
+            }, {
+                name: '张家口市',
+                value: 0
+            }, {
+                name: '承德市',
+                value: 0,
+            }, {
+                name: '唐山市',
+                value: 0
+            }, {
+                name: '秦皇岛市',
+                value: 0
+            }],
         };
     }
     componentDidMount() {
+        //查询资产总数
+        // from='';
+        HttpService.post("reportServer/assetquery/getAssetNum", JSON.stringify({}))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({ asset_num: res.data.asset_num, normal_num: res.data.normal_num, abnormal_num: res.data.abnormal_num })
+                }
+                else
+                    message.error(res.message);
+
+            });
+        //查询资产上线按城市
+        HttpService.post("reportServer/assetquery/getAssetNumByCity", JSON.stringify({}))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({ city_data: res.data })
+                }
+                else
+                    message.error(res.message);
+
+            });
+
 
 
     };
@@ -79,7 +140,7 @@ export default class dashboard extends React.Component {
         return option;
     };
 
-    gethbmapOption = () => {
+    gethbmapOption1 = () => {
 
         var option = {
             title: {
@@ -108,27 +169,23 @@ export default class dashboard extends React.Component {
         return option;
     }
 
+
+
     getMapOption = () => {
 
         var option = {
 
-            toolbox: {
-                feature: {
-                    saveAsImage: {
-                        show: true
-                    }
-                }
-            },
+
             visualMap: {
                 show: false,
                 min: 0,
-                max: 45000,
+                max: 50,
                 left: 'left',
                 top: 'bottom',
-                text: ['高', '低'], // 文本，默认为数值文本
+                // text: ['高', '低'], // 文本，默认为数值文本
                 calculable: true,
                 inRange: {
-                    color: ['lightskyblue', 'orangered']
+                    color: ['#142957']
                 }
             },
             series: [{
@@ -139,13 +196,14 @@ export default class dashboard extends React.Component {
                 label: {
                     normal: {
                         show: true,
-                        color: '#d8d8d8',
+                        color: '#A6C84C',
                         areaColor: '#142957',
-                        borderColor: '#0692a4'
+                        borderColor: '#0692a4',
+                        formatter: '{b}\n{c}',
                     },
                     emphasis: {
                         textStyle: {
-                            color: '#fff'
+                            color: '#000'
                         }
                     }
                 },
@@ -154,6 +212,7 @@ export default class dashboard extends React.Component {
                     normal: {
                         borderColor: '#389BB7',
                         areaColor: 'white',
+                        color:'#080A20'
                     },
                     emphasis: {
                         areaColor: '#389BB7',
@@ -161,43 +220,12 @@ export default class dashboard extends React.Component {
                     }
                 },
                 animation: true,
-                data: [{
-                    name: '邯郸市',
-                    value: 18
-                }, {
-                    name: '邢台市',
-                    value: 22036
-                }, {
-                    name: '衡水市',
-                    value: 39825
-                }, {
-                    name: '石家庄市',
-                    value: 48405
-                }, {
-                    name: '保定市',
-                    value: 15212
-                }, {
-                    name: '沧州市',
-                    value: 26681
-                }, {
-                    name: '廊坊市',
-                    value: 11161,
-                }, {
-                    name: '张家口市',
-                    value: 20687
-                }, {
-                    name: '承德市',
-                    value: 51488,
-                }, {
-                    name: '唐山市',
-                    value: 23053
-                }, {
-                    name: '秦皇岛市',
-                    value: 26504
-                }]
-                // animationDurationUpdate: 1000,
-                // animationEasingUpdate: 'quinticInOut'
-            }]
+                data: this.state.city_data,
+                animationDurationUpdate: 1000,
+                animationEasingUpdate: 'quinticInOut'
+            }],
+            // 值域选择，每个图表最多仅有一个值域控件
+
         };
 
 
@@ -231,16 +259,7 @@ export default class dashboard extends React.Component {
                     // 半径模式，另外一种是 area 面积模式
                     roseType: 'radius',
                     // 数据集 value 数据的值 name 数据的名称
-                    data: [
-                        { value: 20, name: '石家庄' },
-                        { value: 5, name: '唐山' },
-                        { value: 15, name: '保定' },
-                        { value: 25, name: '雄安' },
-                        { value: 20, name: '张家口' },
-                        { value: 35, name: '秦皇岛' },
-                        { value: 30, name: '承德' },
-                        { value: 40, name: '沧州' }
-                    ],
+                    data: this.state.city_data,
                     //文字调整
                     label: {
                         fontSize: 10
@@ -421,57 +440,55 @@ export default class dashboard extends React.Component {
         return option;
     }
 
-
-    render() {
-
-        let option = {
-            // 控制提示
-            tooltip: {
-                // 非轴图形，使用item的意思是放到数据对应图形上触发提示
-                trigger: 'item',
-                // 格式化提示内容：
-                // a 代表图表名称 b 代表数据名称 c 代表数据  d代表  当前数据/总数据的比例
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
+       getBarOption = () => {
+       let option = {
+   
+    
+            xAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01]
             },
-            // 控制图表
+            yAxis: {
+              
+                data: ['巴西', '印尼', '美国', '印度', '中国', '世界人口(万)']
+            },
             series: [
                 {
-                    // 图表名称
-                    name: '地区',
-                    // 图表类型
-                    type: 'pie',
-                    // 南丁格尔玫瑰图 有两个圆  内圆半径10%  外圆半径70%
-                    // 百分比基于  图表DOM容器的半径
-                    radius: ['10%', '70%'],
-                    // 图表中心位置 left 50%  top 50% 距离图表DOM容器
-                    center: ['50%', '50%'],
-                    // 半径模式，另外一种是 area 面积模式
-                    roseType: 'radius',
-                    // 数据集 value 数据的值 name 数据的名称
-                    data: [
-                        { value: 20, name: '云南' },
-                        { value: 5, name: '北京' },
-                        { value: 15, name: '山东' },
-                        { value: 25, name: '河北' },
-                        { value: 20, name: '江苏' },
-                        { value: 35, name: '浙江' },
-                        { value: 30, name: '四川' },
-                        { value: 40, name: '湖北' }
-                    ],
-                    //文字调整
-                    label: {
-                        fontSize: 10
-                    },
-                    //引导线
-                    labelLine: {
-                        length: 8,
-                        length2: 10
-                    }
+                    name: '2011年',
+                    type: 'bar',
+                    data: [18203, 23489, 29034, 104970, 131744, 630230]
                 }
-            ],
-            color: ['#006cff', '#60cda0', '#ed8884', '#ff9f7f', '#0096ff', '#9fe6b8', '#32c5e9', '#1d9dff']
+                
+            ]
         };
+    
 
+        return option;
+    }
+
+   
+
+
+
+    onMapClick = {
+        'click': this.clickEchartsPie.bind(this)
+    }
+    async clickEchartsPie(e) {
+        //查询城市的经纬度
+        await HttpService.post("reportServer/area/getPostionByCityName", JSON.stringify({ city_name: e.name }))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({ latitude: res.data.latitude, longitude: res.data.longitude })
+                }
+                else
+                    message.error(res.message);
+
+            });
+        window.location.href = "#/asset/assetmapGaoDe/" + this.state.latitude + "/" + this.state.longitude;
+    }
+
+
+    render() {
 
 
 
@@ -482,33 +499,27 @@ export default class dashboard extends React.Component {
                     <div class="overview panel">
                         <div class="inner">
                             <div class="item">
-                                <h4>2,190</h4>
+                                <h4>{this.state.asset_num}</h4>
                                 <span>
                                     <i class="icon-dot" style={{ color: '#006cff' }}></i>
-                            资产总数
+                            资产数量
                         </span>
                             </div>
                             <div class="item">
-                                <h4>190</h4>
+                                <h4>{this.state.normal_num}</h4>
                                 <span>
                                     <i class="icon-dot" style={{ color: '#6acca3' }}></i>
-                            本月新增
+                            在线数量
                         </span>
                             </div>
                             <div class="item">
-                                <h4>3,001</h4>
+                                <h4>{this.state.abnormal_num}</h4>
                                 <span>
                                     <i class="icon-dot"></i>
-                            运营设备
+                            异常数量
                         </span>
                             </div>
-                            <div class="item">
-                                <h4>108</h4>
-                                <span>
-                                    <i class="icon-dot" ></i>
-                            异常设备
-                        </span>
-                            </div>
+
                         </div>
                     </div>
                     <div class="monitor panel">
@@ -526,21 +537,21 @@ export default class dashboard extends React.Component {
                                     <div class="marquee">
 
                                         <div class="row">
-                                            <span class="col">20190710</span>
-                                            <span class="col">北京市昌平区建材城西路金燕龙写字楼</span>
-                                            <span class="col">1000010</span>
+                                            <span class="col">2020-7-4</span>
+                                            <span class="col">河北省邯郸市邯山区北张庄镇小隐豹桥</span>
+                                            <span class="col">资产异常</span>
                                             <span class="icon-dot"></span>
                                         </div>
                                         <div class="row">
-                                            <span class="col">20190710</span>
+                                            <span class="col">2020-7-4</span>
                                             <span class="col">雄安新区</span>
-                                            <span class="col">1000010</span>
+                                            <span class="col">资产异常</span>
                                             <span class="icon-dot"></span>
                                         </div>
                                         <div class="row">
-                                            <span class="col">20190710</span>
-                                            <span class="col">唐山市路南区</span>
-                                            <span class="col">1000010</span>
+                                            <span class="col">2020-7-4</span>
+                                            <span class="col">河北省 邯郸市 邯山区 邯馆公路 靠近惠民医院</span>
+                                            <span class="col">资产电量低  </span>
                                             <span class="icon-dot"></span>
                                         </div>
                                     </div>
@@ -583,7 +594,11 @@ export default class dashboard extends React.Component {
                             资产数据统计
                         </h3>
                         <div class="chart">
-                            <ReactEcharts style={{ marginRight: '80px', float: 'right', width: '100%', height: '350px' }} option={this.getMapOption()} />
+                            <ReactEcharts
+                                style={{ float: 'right', width: '100%', height: '350px' }}
+                                option={this.getMapOption()}
+                                onEvents={this.onMapClick} />
+
 
                         </div>
                     </div>
@@ -614,7 +629,7 @@ export default class dashboard extends React.Component {
                 </div>
                 <div class="column">
                     <div class="order panel">
-                   
+
                         <div class="inner">
                             <div class="data">
                                 <div class="item">
@@ -634,7 +649,7 @@ export default class dashboard extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div class="sales panel" style={{ borderLeft: '30px' }}>
+                    <div class="sales panel" >
                         <h3>资产异常发展趋势</h3>
                         <ReactEcharts style={{ width: '100%', height: '100px' }} option={this.getLineOption()} />
                     </div>
@@ -681,7 +696,7 @@ export default class dashboard extends React.Component {
                                 <h3></h3>
                                 <div class="chart">
                                     <div class="box">
-                                         {/* <ReactEcharts style={{ marginLeft:'10px', width: '120px', height: '3rem' }} option={this.getGugarOption()} />     */} */}
+                                        {/* <ReactEcharts style={{ marginLeft:'10px', width: '120px', height: '3rem' }} option={this.getGugarOption()} />     */} */}
                                         <div class="label">75<small> %</small></div>
                                     </div>
                                     <div class="data">
@@ -704,15 +719,55 @@ export default class dashboard extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div class="top panel">
-                        <div class="inner">
-                            <div class="all">
-
-                            </div>
-                            <div class="province">
-
-                            </div>
+                    <div class="top panel" >
+                    <div class="inner">
+                    <div class="all">
+                        <h3>资产类别排行</h3>
+                        <ul>
+                            <li>
+                                <i class="icon-cup1"></i>
+                                可爱多
+                            </li>
+                            <li>
+                                <i class="icon-cup2"></i>
+                                娃哈啥
+                            </li>
+                            <li>
+                                <i class="icon-cup3"></i>
+                                喜之郎
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="province">
+                                           <div class="data">
+                            <ul class="sup">
+                                <li>
+                                    <span>北京</span>
+                                    <span>25,179 <s class="icon-up"></s></span>
+                                </li>
+                                <li>
+                                    <span>河北</span>
+                                    <span>23,252 <s class="icon-down"></s></span>
+                                </li>
+                                <li>
+                                    <span>上海</span>
+                                    <span>20,760 <s class="icon-up"></s></span>
+                                </li>
+                                <li>
+                                    <span>江苏</span>
+                                    <span>23,252 <s class="icon-down"></s></span>
+                                </li>
+                                <li>
+                                    <span>山东</span>
+                                    <span>20,760 <s class="icon-up"></s></span>
+                                </li>
+                            </ul>
+                            
                         </div>
+                    </div>
+                </div>
+                        {/* <h3>资产类别统计</h3>
+                        <ReactEcharts style={{ width: '100%', height: '100px' }} option={this.getBarOption()} /> */}
                     </div>
                 </div>
             </div>

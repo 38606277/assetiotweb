@@ -42,7 +42,7 @@ class assetEdit extends React.Component {
   //初始化加载调用方法
   componentDidMount() {
     if (this.state.action == 'update') {
-      HttpService.post("reportServer/asset/getAssetById", JSON.stringify({ asset_id: this.state.id }))
+      HttpService.post("reportServer/asset/getAssetById", JSON.stringify({ asset_tag: this.state.id }))
         .then(res => {
           if (res.resultCode == "1000") {
             this.props.form.setFieldsValue(res.data);
@@ -199,19 +199,10 @@ class assetEdit extends React.Component {
                   )}
                 </FormItem>
               </Col>
-              <Col xs={24} sm={8}>
-                <FormItem {...formItemLayout} label="资产编号">
-                  {getFieldDecorator('asset_id', {
-                    rules: [{ required: true, message: '请输入资产编号!' }],
-                  })(
-                    <Input type='text' addonAfter={<Icon type="setting" onClick={e => this.openModelClick()} />} />
-                  )}
-                </FormItem>
-              </Col>
-
+              
               <Col xs={24} sm={8}>
                 <FormItem {...formItemLayout} label="资产标签号">
-                  {getFieldDecorator('asset_num', {
+                  {getFieldDecorator('asset_tag', {
                     rules: [{ required: true, message: '请输入资产名称!' }],
                   })(
                     <Input type='text' />

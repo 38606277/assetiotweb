@@ -147,29 +147,34 @@ export default class assetList extends React.Component {
                                 </span>
                             )}
                         />
-                        <Column
-                            title="资产ID"
-                            dataIndex="asset_id"
-                        />
-                        <Column
+                       <Column
                             title="物联网标签号"
                             dataIndex="iot_num"
                         />
                         <Column
-                            title="资产编号"
-                            dataIndex="asset_num"
+                            title="资产标签"
+                            dataIndex="asset_tag"
                         />
                         <Column
                             title="资产名称"
                             dataIndex="asset_name"
                         />
+                         <Column
+                            title="原值"
+                            dataIndex="cost"
+                        />
+                        <Column
+                            title="净值"
+                            dataIndex="netValue"
+                        />
+
 
 
                         <Column
                             title="动作"
                             render={(text, record) => (
                                 <span>
-                                    <a href={`#/asset/assetEdit/update/${record.asset_id}`}>编辑</a>
+                                    <a href={`#/asset/assetEdit/update/${record.asset_tag}`}>编辑</a>
                                 </span>
                             )}
                         />

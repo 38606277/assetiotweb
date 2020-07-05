@@ -9,7 +9,6 @@ a {
 .viewport {
     /* 限定大小 */
     margin: 0;
-    padding: 0;
     font-weight: normal;
     min-width: 1024px;
     max-width: 1920px;
@@ -18,14 +17,13 @@ a {
     background: url(../images/asset_title.png) no-repeat 0 0 / contain;
     display: -webkit-box;
     /* display: flex; 会导致不能等比例缩小*/  
-    padding: 3.667rem 0.833rem 0;
+    padding: 0 10px 0 10px;
     background-repeat: no-repeat;
     background-position: 0 0 / cover;
     background-color: #101129;
     line-height: 1.15;
     font-size: 0.5rem;
-    margin: 0;
-    padding: 0;
+
 }
 
 .column {
@@ -420,6 +418,7 @@ a {
 
 .sales {
     height: 10.333rem;
+    border-left-width: 20px;
 }
 
 .sales .caption {
@@ -584,10 +583,12 @@ a {
 
 .top {
     height: 11.8rem;
+    border-left-width: 20px;
 }
 
 .top .inner {
     display: flex;
+    left:0px;
 }
 
 .top .all {
