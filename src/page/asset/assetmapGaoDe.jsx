@@ -65,14 +65,22 @@ class assetampGaoDe extends React.Component {
             if (response.resultCode == '1000') {
                 _this.setState({
                     dataList: response.data,
+                    showDetail: false
                 });
+
+                //搜索后定位至第一个
+                if (0 < response.data.length) {
+                    let AMap = this.state.AMap;
+                    this.state.map.setZoom(10) // [3,19]
+                    this.state.map.panTo(new AMap.LngLat(response.data[0].lng, response.data[0].rng));
+                }
+
 
                 _this.initMapData(_this.state.map, _this.state.AMap);
 
                 if (isSearch && _this.state.panelDisplay == 'none') {
                     _this.setState(
                         {
-                            showDetail: false,
                             panelDisplay: 'block',
                         }
                     )
@@ -199,8 +207,11 @@ class assetampGaoDe extends React.Component {
             if (this.state.cluster) {
                 this.state.cluster.setMap(null);
             }
-            this.state.cluster = new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 80 });
-
+            if (this.state.listType === 'search') {
+                this.state.cluster = new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 60, maxZoom: 10 });
+            } else {
+                this.state.cluster = new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 60, maxZoom: 18 });
+            }
 
 
         }
@@ -208,30 +219,6 @@ class assetampGaoDe extends React.Component {
 
     zoomend = () => {
         console.log('zoomend 当前等级', this.state.map.getZoom())
-
-        // let map = this.state.map;
-        // let AMap = this.state.AMap;
-        // if (map.getZoom() < 10) {
-        //     //map.clearMap();
-        //     if (this.state.cluster) {
-        //         this.state.cluster.setMap(map);
-        //         //this.state.cluster = null;
-        //     } else {
-        //         this.state.cluster = new AMap.MarkerClusterer(map, this.state.markers, { gridSize: 80 });
-        //     }
-
-        // } else {
-        //     //map.clearMap();
-        //     for (let i in this.state.markers) {
-        //         map.add(this.state.markers[i]);
-        //     }
-        //     if (this.state.cluster) {
-        //         this.state.cluster.setMap(null);
-
-        //     }
-        // }
-
-
     }
 
     init = () => {
