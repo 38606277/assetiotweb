@@ -12,7 +12,7 @@
     "dist": "WEBPACK_ENV=online node_modules/.bin/webpack -p  --progress --colors",
     "dist_win": "set WEBPACK_ENV=online&& node_modules/.bin/webpack -p",
     "dev": "webpack-dev-server  --progress --colors --mode development --config ./webpack.dev.config.js",
-    "prod": "webpack --mode production  --max_old_space_size=4096 --config ./webpack.prod.config.js --progress --colors",
+    "prod": "webpack --mode production  --config ./webpack.prod.config.js --progress --colors",
     "analyz": "set NODE_ENV=production npm_config_report=true npm run build"
   },
   "devDependencies": {

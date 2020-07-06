@@ -69,12 +69,6 @@ const AuthTypeRouter = Loadable({
 
 
 
-const dashboardRouter = Loadable({
-    loader: () => import(/* webpackChunkName: "dashboardRouter" */ './page/dashboard/dashboardRouter.jsx'),
-    loading: loading,
-    delay: 3000
-});
-
 
 const assetRouter = Loadable({
     loader: () => import(/* webpackChunkName: "assetRouter" */ './page/asset/assetRouter.jsx'),
@@ -124,7 +118,6 @@ const LayoutRouter = (nextState, replace) => {
             <Layout>
                 <Switch>
                     <Route exact path="/" component={Home} />
-                    <Route path="/dashboard" component={dashboardRouter} />
                     <Route path="/user" component={UserRouter} />
                     <Route path="/dbs" component={DbsRouter} />
                     <Route path="/rule" component={RuleRouter} />

@@ -227,7 +227,7 @@ module.exports = {
                 echarts: {
                     name: 'echarts',
                     test: (module) => {
-                        return /echarts||echarts-for-react/.test(module.context);
+                        return /echarts|echarts-for-react/.test(module.context);
                     },
                     chunks: 'async',
                     priority: 13,

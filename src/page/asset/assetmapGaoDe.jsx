@@ -11,7 +11,6 @@ import "babel-polyfill";
 import GatewayService from '../../service/GatewayService.jsx'
 import AssetService from '../../service/AssetService.jsx'
 import LocalStorge from '../../util/LogcalStorge.jsx';
-import { addTraces } from 'plotly.js';
 
 const localStorge = new LocalStorge();
 const _gatewayService = new GatewayService();

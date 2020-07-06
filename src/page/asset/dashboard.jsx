@@ -6,7 +6,7 @@ import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
 import HttpService from '../../util/HttpService.jsx';
-import { Line, StackedColumn, Column, RingProgress } from '@ant-design/charts';
+
 import './css/index.css';
 import echarts from 'echarts';
 import ReactEcharts from 'echarts-for-react';

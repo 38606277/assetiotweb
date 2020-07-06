@@ -7,7 +7,7 @@ import gatewayList from './gatewayList.jsx';
 import gatewayEdit from './gatewayEdit.jsx';
 import assetmapGaoDe from './assetmapGaoDe.jsx';
 import gatewayManagementOld from './gatewayManagementOld.jsx';
-import Analysis from '../../page/dashboard/analysis.jsx';
+
 import dashboard from './dashboard.jsx'
 import assetAlarmList from './assetAlarmList.jsx';
 import gatewayMonitor from './gatewayMonitor.jsx';
