@@ -124,11 +124,14 @@ export default class assetList extends React.Component {
         });
     };
     handleChange = (info) => {
+        console.log(info);
         if (info.file.status === 'uploading') {
           this.setState({ loading: true });
           return;
         }
         if (info.file.status === 'done') {
+            message.info(info.file.response.data);
+            this.setState({ fileList: [] });
           // Get this url from response in real world.
           // getBase64(info.file.originFileObj, imageUrl => this.setState({
           //   imageUrl,
@@ -160,19 +163,20 @@ export default class assetList extends React.Component {
                         </Col>
                         <Col xs={24} sm={12}>
                             <Button disabled={this.state.selectedRowKeys.length > 0 ? false : true} onClick={() => this.onDelButtonClick()} style={{ float: "right", marginRight: "10px" }}  >删除</Button>
-                            <div  style={{ float: "right", marginRight: "10px" }}><Upload 
-                                accept={".xls, .xlsx"}
-                                listType='text'
-                                beforeUpload={beforeUpload}
-                                action={url}
-                                headers={{
-                                    credentials: JSON.stringify(localStorge.getStorage("userInfo") || "")}
-                                }
-                                defaultFileList={[...fileList]}
-                                onChange={this.handleChange}
-                            >
-                                <Button>导入资产</Button>
-                            </Upload>
+                            <div  style={{ float: "right", marginRight: "10px" }}>
+                                <Upload 
+                                    accept={".xls, .xlsx"}
+                                    listType='text'
+                                    beforeUpload={beforeUpload}
+                                    action={url}
+                                    headers={{
+                                        credentials: JSON.stringify(localStorge.getStorage("userInfo") || "")}
+                                    }
+                                    defaultFileList={[...fileList]}
+                                    onChange={this.handleChange}
+                                >
+                                    <Button>导入资产</Button>
+                                </Upload>
                             </div>
                             {/* <Button href="#/asset/assetEdit/null" style={{ float: "right", marginRight: "10px" }} type="primary">导入资产</Button> */}
                             <Button href="#/asset/assetEdit/create/0" style={{ float: "right", marginRight: "10px" }} type="primary">新建资产</Button>
