@@ -159,7 +159,7 @@ module.exports = {
               
                 react1:{
                     name: 'react1',
-                    test: module => /react-pivottable|react-grid-layout|react-chat-widget|react-codemirror|react-trend/.test(module.context),
+                    test: module => /react-pivottable|react-grid-layout|react-chat-widget|react-codemirror|react-trend|d3|map-box/.test(module.context),
                     chunks: 'async',
                     priority: 13,
                     enforce: true,
@@ -215,15 +215,6 @@ module.exports = {
                     priority: 13,
                     enforce: true,
                 },
-                exportExcel: {
-                    name: 'codemirror',
-                    test: (module) => {
-                        return /js-export-excel/.test(module.context);
-                    },
-                    chunks: 'async',
-                    priority: 13,
-                    enforce: true,
-                },
                 bizcharts: {
                     name: 'bizcharts',
                     test: (module) => {
@@ -236,12 +227,13 @@ module.exports = {
                 echarts: {
                     name: 'echarts',
                     test: (module) => {
-                        return /echarts|echarts-for-react/.test(module.context);
+                        return /echarts||echarts-for-react/.test(module.context);
                     },
                     chunks: 'async',
                     priority: 13,
                     enforce: true,
                 },
+                
                 antv: {
                     name: '@antv',
                     test: (module) => {
