@@ -77,37 +77,6 @@ const assetRouter = Loadable({
 });
 
 
-const assetList = Loadable({
-    loader: () => import(/* webpackChunkName: "assetList" */ './page/asset/assetList.jsx'),
-    loading: loading,
-    delay: 3000
-});
-const assetEdit = Loadable({
-    loader: () => import(/* webpackChunkName: "assetEdit" */ './page/asset/assetEdit.jsx'),
-    loading: loading,
-    delay: 3000
-});
-
-
-
-
-const gatewayManagement = Loadable({
-    loader: () => import(/* webpackChunkName: "gatewayManagement" */ './page/asset/gatewayManagement.jsx'),
-    loading: loading,
-    delay: 3000
-});
-
-const addGateway = Loadable({
-    loader: () => import(/* webpackChunkName: "addGateway" */ './page/asset/addGateway.jsx'),
-    loading: loading,
-    delay: 3000
-});
-
-const gatewayBindingAsset = Loadable({
-    loader: () => import(/* webpackChunkName: "gatewayBindingAsset" */ './page/asset/gatewayBindingAsset.jsx'),
-    loading: loading,
-    delay: 3000
-});
 
 
 
@@ -125,10 +94,6 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/role" component={RoleRouter} />
                     <Route path="/authType" component={AuthTypeRouter} />
                     <Route path="/asset" component={assetRouter} />
-                    <Route path="/assetList" component={assetList} />
-                    <Route path="/gatewayManagement" component={gatewayManagement} />
-                    <Route path="/addGateway/:name" component={addGateway} />
-                    <Route path="/gatewayBindingAsset/:name" component={gatewayBindingAsset} />
                 </Switch>
             </Layout>
         );
