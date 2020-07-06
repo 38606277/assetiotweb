@@ -25,7 +25,7 @@ import assetCube from './assetCube.jsx';
 // });
 
 // const assetmapGaoDe = Loadable({
-//     loader: () => import(/* webpackChunkName: "assetmap" */ './assetmapGaoDe.jsx'),
+//     loader: () => import(/* webpackChunkName: "assetmapGaoDe" */ './assetmapGaoDe.jsx'),
 //     loading: loading,
 //     delay: 3000
 // });
@@ -33,13 +33,13 @@ import assetCube from './assetCube.jsx';
 
 
 // const assetList = Loadable({
-//     loader: () => import(/* webpackChunkName: "assetList" */ './assetList.jsx'),
+//     loader: () => import('./assetList.jsx'),
 //     loading: loading,
 //     delay: 3000
 // });
 
 // const assetEdit = Loadable({
-//     loader: () => import(/* webpackChunkName: "assetEdit" */ './assetEdit.jsx'),
+//     loader: () => import('./assetEdit.jsx'),
 //     loading: loading,
 //     delay: 3000
 // });
