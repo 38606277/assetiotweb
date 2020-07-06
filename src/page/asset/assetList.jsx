@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Divider, Form, Pagination, Row, Col, Button, Card, Modal } from 'antd';
+import { Table, Input, message, Upload, Form, Pagination, Row, Col, Button, Card, Modal } from 'antd';
 import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
@@ -15,7 +15,21 @@ const { Column, ColumnGroup } = Table;
 
 
 
-
+const url=window.getServerUrl()+"/reportServer/asset/importExcel";
+function beforeUpload(file) {
+  let isJPG=false;
+  if(file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type==='application/vnd.ms-excel'){
+    isJPG=true;
+  }
+  if (!isJPG) {
+    message.error('You can only upload XLS file!');
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    message.error('XLS must smaller than 2MB!');
+  }
+  return isJPG && isLt2M;
+}
 export default class assetList extends React.Component {
     constructor(props) {
         super(props);
@@ -27,7 +41,8 @@ export default class assetList extends React.Component {
             selectedRowKeys: [],
             selected: true,
             listType: 'list',
-            searchKeyword: null
+            searchKeyword: null,
+            fileList:[]
         };
 
     }
@@ -108,9 +123,21 @@ export default class assetList extends React.Component {
             previewVisible: true,
         });
     };
-
+    handleChange = (info) => {
+        if (info.file.status === 'uploading') {
+          this.setState({ loading: true });
+          return;
+        }
+        if (info.file.status === 'done') {
+          // Get this url from response in real world.
+          // getBase64(info.file.originFileObj, imageUrl => this.setState({
+          //   imageUrl,
+          //   loading: false,
+          // }));
+        }
+      }
     render() {
-
+        const fileList=this.state.fileList;
         const rowSelection = {
             selectedRowKeys: this.state.selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
@@ -133,7 +160,21 @@ export default class assetList extends React.Component {
                         </Col>
                         <Col xs={24} sm={12}>
                             <Button disabled={this.state.selectedRowKeys.length > 0 ? false : true} onClick={() => this.onDelButtonClick()} style={{ float: "right", marginRight: "10px" }}  >删除</Button>
-                            <Button href="#/asset/assetEdit/null" style={{ float: "right", marginRight: "10px" }} type="primary">导入资产</Button>
+                            <div  style={{ float: "right", marginRight: "10px" }}><Upload 
+                                accept={".xls, .xlsx"}
+                                listType='text'
+                                beforeUpload={beforeUpload}
+                                action={url}
+                                headers={{
+                                    credentials: JSON.stringify(localStorge.getStorage("userInfo") || "")}
+                                }
+                                defaultFileList={[...fileList]}
+                                onChange={this.handleChange}
+                            >
+                                <Button>导入资产</Button>
+                            </Upload>
+                            </div>
+                            {/* <Button href="#/asset/assetEdit/null" style={{ float: "right", marginRight: "10px" }} type="primary">导入资产</Button> */}
                             <Button href="#/asset/assetEdit/create/0" style={{ float: "right", marginRight: "10px" }} type="primary">新建资产</Button>
 
                         </Col>

@@ -1,12 +1,13 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Divider, DatePicker, Select, Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
+import { Table, Input, message, Divider,Upload, DatePicker, Select, Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
 import 'antd/dist/antd.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
+import ExportJsonExcel from "js-export-excel";
 import HttpService from '../../util/HttpService.jsx';
 import moment from 'moment';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
@@ -20,9 +21,6 @@ const _gatewayService = new GatewayService();
 const Search = Input.Search;
 
 const { Column, ColumnGroup } = Table;
-
-
-
 
 class assetInventory extends React.Component {
     constructor(props) {
@@ -40,10 +38,7 @@ class assetInventory extends React.Component {
 
         }
     };
-    componentDidMount() {
-        // To disable submit button at the beginning.
-
-        //取得城市列表
+    componentDidMount() {//取得城市列表
         let url = "reportServer/area/getCityByProvince";
         HttpService.post(url, JSON.stringify({ parentCode: '13' }))
             .then(res => {
@@ -67,13 +62,11 @@ class assetInventory extends React.Component {
     }
     loadGatewayList() {
         let param = {};
-
         // 如果是搜索的话，需要传入搜索类型和搜索关键字
         // if (this.state.listType === 'search') {
         param.cityCode = this.state.cityCode == '' ? '' : this.state.cityCode.join(",");
         param.receiveTime = this.state.receiveTime;
         // }
-
         param.pageNum = this.state.pageNum;
         param.perPage = this.state.perPage;
         let url = "reportServer/asset/getAssetInventory";
@@ -88,16 +81,11 @@ class assetInventory extends React.Component {
                 else {
                     message.error(res.message);
                 }
-
             });
-
-
-
     }
 
     onDelButtonClick() {
         if (confirm('确认删除吗？')) {
-
             HttpService.post('reportServer/gateway/DeleteGateway', JSON.stringify({ gatewayLines: this.state.selectedRows }))
                 .then(res => {
                     if (res.resultCode == "1000") {
@@ -108,9 +96,39 @@ class assetInventory extends React.Component {
                     else {
                         message.error(res.message);
                     }
-
                 });
         }
+    }
+
+    //导出到Excel
+    excel = () => {
+        let param = {};
+        param.cityCode = this.state.cityCode == '' ? '' : this.state.cityCode.join(",");
+        param.receiveTime = this.state.receiveTime;
+        let url = "reportServer/asset/execqueryToExcel";
+        HttpService.post(url, JSON.stringify(param))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    var option = {};
+                    let dataTable = [], keyList = [];
+                    dataTable=["资产标签号", "资产名称", "物联网编号", "网关编号", "最后接收时间", "综资基站编号", "综资基站名称", "地址"];
+                    keyList=["asset_tag","asset_name","iot_num","gateway_id","receive_time","base_station_code","base_station_name","address"];
+                    option.fileName = "资产盘点.xls";
+                    option.datas = [
+                        {
+                            sheetData: res.data.list,
+                            sheetName: 'sheet',
+                            sheetFilter: keyList,
+                            sheetHeader: dataTable,
+                        }
+                    ];
+                    var toExcel = new ExportJsonExcel(option); //new
+                    toExcel.saveExcel();
+                }
+                else {
+                    message.error(res.message);
+                }
+            });
     }
     refreshClick = () => {
         this.props.form.setFieldsValue({ receiveTime: '', cityCode: [] });
@@ -122,7 +140,6 @@ class assetInventory extends React.Component {
         }, () => {
             this.loadGatewayList();
         });
-
     }
     // 搜索
     onSearchClick() {
@@ -142,7 +159,6 @@ class assetInventory extends React.Component {
     }
     //选中日期设置值
     onChangeDate(date, dateString) {
-        console.log(date, dateString);
         this.setState({
             receiveTime: dateString
         }, () => {
@@ -150,7 +166,9 @@ class assetInventory extends React.Component {
         });
         this.props.form.setFieldsValue({ receiveTime: dateString });
     }
+    
     render() {
+        
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: {
@@ -188,7 +206,7 @@ class assetInventory extends React.Component {
                 <Card title={<b>资产盘点</b>} extra={<span>
                     <Button style={{ marginLeft: '10px' }} type="primary" onClick={() => this.onSearchClick()}>查询</Button>
                     <Button style={{ marginLeft: '10px' }} onClick={() => this.refreshClick()}>重置</Button>
-                    <Button href="#/asset/assetList" style={{ marginLeft: '10px' }}>导出</Button>
+                    <Button onClick={() => this.excel()} style={{ marginLeft: '10px' }}>导出</Button>
                 </span>} >
                     <Row>
                         <Form >
