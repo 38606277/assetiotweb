@@ -233,7 +233,7 @@ a {
 
 .monitor .marquee {
     /* //infinite永久调用动画 */
-    animation: row 10s linear infinite;
+    animation: row 15s linear infinite;
 }
 
 

@@ -97,6 +97,16 @@ handleSubmit (e) {
         sm: { span: 16 },
       },
     };
+    const oneColumnLayout = {
+      labelCol: {
+        xs: { span: 8 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 16 },
+        sm: { span: 16 },
+      },
+    };
     const tailFormItemLayout = {
       wrapperCol: {
         xs: {
@@ -187,11 +197,11 @@ handleSubmit (e) {
           </Row>
          <Row>
            <Col  xs={24} sm={12}>
-         <FormItem {...formItemLayout} label='Sql'>
+         <FormItem {...oneColumnLayout} label='Sql'>
                         {getFieldDecorator('auth_sql', {
                           rules: [{ required: true, message: '请输入Sql!', whitespace: true }],
                         })(
-                          <TextArea  type='text' name='auth_sql'  onChange={(e) => this.onValueChange(e)}></TextArea>
+                          <TextArea   rows={12} type='text' name='auth_sql'  onChange={(e) => this.onValueChange(e)}></TextArea>
                         )}
                       </FormItem>
         

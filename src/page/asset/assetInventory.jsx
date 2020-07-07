@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Divider,Upload, DatePicker, Select, Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
+import { Table, Input, message, Divider, Upload, DatePicker, Select, Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
 import 'antd/dist/antd.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -15,6 +15,9 @@ import AssetService from '../../service/AssetService.jsx';
 const _assetService = new AssetService();
 
 
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
+
 
 import GatewayService from '../../service/GatewayService.jsx'
 const _gatewayService = new GatewayService();
@@ -26,6 +29,8 @@ class assetInventory extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            action: this.props.match.params.action,
+            id: this.props.match.params.id,
             pageNum: 1,
             perPage: 10,
             dataList: [],
@@ -34,7 +39,8 @@ class assetInventory extends React.Component {
             selected: true,
             cityCode: '',
             receiveTime: '',
-            cityList: []
+            cityList: [],
+            loading:false
 
         }
     };
@@ -111,8 +117,8 @@ class assetInventory extends React.Component {
                 if (res.resultCode == "1000") {
                     var option = {};
                     let dataTable = [], keyList = [];
-                    dataTable=["资产标签号", "资产名称", "物联网编号", "网关编号", "最后接收时间", "综资基站编号", "综资基站名称", "地址"];
-                    keyList=["asset_tag","asset_name","iot_num","gateway_id","receive_time","base_station_code","base_station_name","address"];
+                    dataTable = ["资产标签号", "资产名称", "物联网编号", "网关编号", "最后接收时间", "综资基站编号", "综资基站名称", "地址"];
+                    keyList = ["asset_tag", "asset_name", "iot_num", "gateway_id", "receive_time", "base_station_code", "base_station_name", "address"];
                     option.fileName = "资产盘点.xls";
                     option.datas = [
                         {
@@ -166,9 +172,9 @@ class assetInventory extends React.Component {
         });
         this.props.form.setFieldsValue({ receiveTime: dateString });
     }
-    
+
     render() {
-        
+
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: {
@@ -216,10 +222,10 @@ class assetInventory extends React.Component {
                                 )}
                             </FormItem>
                             <Row>
-                                <Col xs={24} sm={12}>
+                                <Col xs={24} sm={8}>
                                     <FormItem {...formItemLayout} label="选择盘点单位">
                                         {getFieldDecorator('cityCode', {
-                                            rules: [{ required: true, message: '请输入物联网标签号!' }],
+                                            rules: [{ required: true, message: '选择盘点单位!' }],
                                         })(
                                             <Select
                                                 mode="multiple"
@@ -237,7 +243,7 @@ class assetInventory extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col xs={24} sm={12}>
+                                <Col xs={24} sm={8}>
                                     <FormItem {...formItemLayout} label="选择盘点时间">
                                         {getFieldDecorator('receiveTime', {
                                             rules: [],
@@ -247,6 +253,22 @@ class assetInventory extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
+                                {/* <Col xs={24} sm={8}>
+                                    <FormItem {...formItemLayout} label="选择资产状态">
+                                        {getFieldDecorator('asset_state', {
+                                            rules: [],
+                                        })(
+                                            <Select
+                                                style={{ width: '100%' }}
+                                                placeholder="Please select"
+                                            >
+                                                <Option value='all'>全部</Option>
+                                                <Option value='normal'>正常</Option>
+                                                <Option value='abnormal'>异常</Option>
+                                            </Select>,
+                                        )}
+                                    </FormItem>
+                                </Col> */}
 
 
                             </Row>
@@ -269,6 +291,11 @@ class assetInventory extends React.Component {
                         scroll={{ x: 1300 }}
                         rowKey={"gateWay_id"} pagination={false} >
 
+                        <Column
+                            title="序号"
+                            width="50px"
+                            render={(text,record,index)=>`${((this.state.pageNum-1)*this.state.perPage)+index + 1}`}
+                        />
                         <Column
                             title="资产标签号"
                             dataIndex="asset_tag"
@@ -305,7 +332,7 @@ class assetInventory extends React.Component {
                             title="地址"
                             dataIndex="address"
                         />
-                        
+
 
 
 
@@ -314,7 +341,13 @@ class assetInventory extends React.Component {
                     <Pagination current={this.state.pageNum}
                         total={this.state.total}
                         defaultPageSize={this.state.perPage}
-                        onChange={(pageNum) => this.onPageNumChange(pageNum)} />
+                        loading={this.state.loading}
+                        onChange={(pageNum) => this.onPageNumChange(pageNum)}
+                        showTotal={ ((total) => {
+                            return `共 ${total} 条`;
+                          })}
+                    
+                        />
 
                 </Card>
             </div>

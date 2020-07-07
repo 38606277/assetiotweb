@@ -36,6 +36,7 @@ export default class dashboard extends React.Component {
             asset_num: 0,
             normal_num: 0,
             abnormal_num: 0,
+            alarm_data: [],
             city_data: [{
                 name: '邯郸市',
                 value: 2
@@ -89,6 +90,16 @@ export default class dashboard extends React.Component {
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.setState({ city_data: res.data })
+                }
+                else
+                    message.error(res.message);
+
+            });
+        //查询资产预警信息
+        HttpService.post("reportServer/assetquery/getAssetAlarm", JSON.stringify({}))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({ alarm_data: res.data })
                 }
                 else
                     message.error(res.message);
@@ -212,7 +223,7 @@ export default class dashboard extends React.Component {
                     normal: {
                         borderColor: '#389BB7',
                         areaColor: 'white',
-                        color:'#080A20'
+                        color: '#080A20'
                     },
                     emphasis: {
                         areaColor: '#389BB7',
@@ -440,16 +451,16 @@ export default class dashboard extends React.Component {
         return option;
     }
 
-       getBarOption = () => {
-       let option = {
-   
-    
+    getBarOption = () => {
+        let option = {
+
+
             xAxis: {
                 type: 'value',
                 boundaryGap: [0, 0.01]
             },
             yAxis: {
-              
+
                 data: ['巴西', '印尼', '美国', '印度', '中国', '世界人口(万)']
             },
             series: [
@@ -458,15 +469,15 @@ export default class dashboard extends React.Component {
                     type: 'bar',
                     data: [18203, 23489, 29034, 104970, 131744, 630230]
                 }
-                
+
             ]
         };
-    
+
 
         return option;
     }
 
-   
+
 
 
 
@@ -484,7 +495,7 @@ export default class dashboard extends React.Component {
                     message.error(res.message);
 
             });
-        window.location.href = "#/asset/assetmapGaoDe/" + this.state.longitude+ "/" + this.state.latitude;
+        window.location.href = "#/asset/assetmapGaoDe/" + this.state.longitude + "/" + this.state.latitude;
     }
 
 
@@ -499,21 +510,21 @@ export default class dashboard extends React.Component {
                     <div class="overview panel">
                         <div class="inner">
                             <div class="item">
-                                <h4>{this.state.asset_num}</h4>
+                                <h4> <a href="#/asset/assetInventory">{this.state.asset_num}</a></h4>
                                 <span>
                                     <i class="icon-dot" style={{ color: '#006cff' }}></i>
                             资产数量
                         </span>
                             </div>
                             <div class="item">
-                                <h4>{this.state.normal_num}</h4>
+                                <h4><a href="#/asset/assetInventory">{this.state.normal_num}</a></h4>
                                 <span>
                                     <i class="icon-dot" style={{ color: '#6acca3' }}></i>
                             在线数量
                         </span>
                             </div>
                             <div class="item">
-                                <h4>{this.state.abnormal_num}</h4>
+                                <h4><a href="#/asset/assetInventory">{this.state.abnormal_num}</a></h4>
                                 <span>
                                     <i class="icon-dot"></i>
                             异常数量
@@ -525,35 +536,26 @@ export default class dashboard extends React.Component {
                     <div class="monitor panel">
                         <div class="inner">
                             <div class="tabs">
-                                <a href="javascript:;" data-index="0" class="active">异常资产监控</a>
+                                <a href="#/asset/assetAlarmList" data-index="0" class="active">异常资产监控</a>
                             </div>
                             <div class="content" style={{ display: 'block' }}>
                                 <div class="head">
                                     <span class="col">故障时间</span>
-                                    <span class="col">设备地址</span>
+                                    <span class="col">资产名称</span>
                                     <span class="col">异常代码</span>
                                 </div>
                                 <div class="marquee-view">
                                     <div class="marquee">
+                                        {this.state.alarm_data.map(alarm => (
+                                            <div class="row">
+                                                <span class="col" style={{ width: "4.2rem" }}>{alarm.alarm_time}</span>
+                                                <span class="col"> <a href="#/asset/assetAlarmList">{alarm.asset_name}</a></span>
+                                                <span class="col">{alarm.alarm_type}</span>
+                                                <span class="icon-dot"></span>
+                                            </div>
 
-                                        <div class="row">
-                                            <span class="col">2020-7-4</span>
-                                            <span class="col">河北省邯郸市邯山区北张庄镇小隐豹桥</span>
-                                            <span class="col">资产异常</span>
-                                            <span class="icon-dot"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col">2020-7-4</span>
-                                            <span class="col">雄安新区</span>
-                                            <span class="col">资产异常</span>
-                                            <span class="icon-dot"></span>
-                                        </div>
-                                        <div class="row">
-                                            <span class="col">2020-7-4</span>
-                                            <span class="col">河北省 邯郸市 邯山区 邯馆公路 靠近惠民医院</span>
-                                            <span class="col">资产电量低  </span>
-                                            <span class="icon-dot"></span>
-                                        </div>
+                                        ))}
+
                                     </div>
                                 </div>
                             </div>
@@ -720,23 +722,23 @@ export default class dashboard extends React.Component {
                         </div>
                     </div>
                     <div class="top panel" >
-                    <div class="inner">
-                    <div class="all">
-                        <h3>资产类别排行</h3>
-                        <ul>
-                            <li>
-                               
-                                传输网设备  3000
+                        <div class="inner">
+                            <div class="all">
+                                <h3>资产类别排行</h3>
+                                <ul>
+                                    <li>
+
+                                        传输网设备  3000
                             </li>
-                            <li>
-                                无线及接入设备 200
+                                    <li>
+                                        无线及接入设备 200
                             </li>
-                            <li>
-                                无线及接入设备 333
+                                    <li>
+                                        无线及接入设备 333
                             </li>
-                        </ul>
-                    </div>
-                   </div>
+                                </ul>
+                            </div>
+                        </div>
                         {/* <h3>资产类别统计</h3>
                         <ReactEcharts style={{ width: '100%', height: '100px' }} option={this.getBarOption()} /> */}
                     </div>
