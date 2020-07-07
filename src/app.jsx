@@ -77,6 +77,11 @@ const assetRouter = Loadable({
 });
 
 
+const OrgManagerRouter = Loadable({
+    loader: () => import(/* webpackChunkName: "OrgManagerRouter" */ './page/system/org/OrgManagerRouter.jsx'),
+    loading: loading,
+    delay: 3000
+});
 
 
 
@@ -94,6 +99,7 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/role" component={RoleRouter} />
                     <Route path="/authType" component={AuthTypeRouter} />
                     <Route path="/asset" component={assetRouter} />
+                    <Route path="/org" component={OrgManagerRouter} />
                 </Switch>
             </Layout>
         );
