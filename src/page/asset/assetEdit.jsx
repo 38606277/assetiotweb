@@ -33,7 +33,8 @@ class assetEdit extends React.Component {
       id: this.props.match.params.id,
       enabled: '1',
       loading: false,
-      imageUrl: ''
+      imageUrl: '',
+      isReadOnly: this.props.match.params.action == 'readOnly'
     };
 
 
@@ -41,7 +42,7 @@ class assetEdit extends React.Component {
 
   //初始化加载调用方法
   componentDidMount() {
-    if (this.state.action == 'update') {
+    if (this.state.action == 'update' || this.state.isReadOnly) {
       HttpService.post("reportServer/asset/getAssetById", JSON.stringify({ asset_id: this.state.id }))
         .then(res => {
           if (res.resultCode == "1000") {
@@ -177,16 +178,16 @@ class assetEdit extends React.Component {
 
     return (
       <div id="page-wrapper">
-        <Card title={<b>{this.state._id == 'null' ? '新建资产标签' : '编辑资产标签'}</b>}
+        <Card title={<b> {this.state.isReadOnly ? '资产详情' : this.state.action == 'update' ? '编辑资产标签' : '新建资产标签'}</b>}
           extra={<span>
-            <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(true)}>保存并关闭</Button>
-            <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(false)}>保存</Button>
+            <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(true)} disabled={this.state.isReadOnly}>保存并关闭</Button>
+            <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(false)} disabled={this.state.isReadOnly}>保存</Button>
             <Button href="#/asset/assetList" style={{ marginLeft: '10px' }}>返回</Button>
           </span>} >
           <Form >
             <FormItem style={{ display: 'none' }}>
               {getFieldDecorator('asset_id')(
-                <Input type='text' />
+                <Input type='text' readOnly={this.state.isReadOnly} />
               )}
             </FormItem>
             <Row>
@@ -195,7 +196,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('iot_num', {
                     rules: [{ required: true, message: '请输入物联网标签号!' }],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -205,7 +206,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('asset_tag', {
                     rules: [{ required: true, message: '请输入资产名称!' }],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -216,7 +217,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('asset_name', {
                     rules: [{ required: true, message: '请输入资产名称!' }],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -228,7 +229,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('typeCode', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -238,7 +239,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('typeName', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -250,7 +251,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('productor', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -260,7 +261,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('model', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -270,7 +271,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('amount', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -283,7 +284,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('startDate', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -293,7 +294,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('lifeInYears', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -303,7 +304,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('lifeInMonth', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -315,7 +316,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('dutyDeptName', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -326,7 +327,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('dutyCode', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -335,7 +336,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('dutyName', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -347,7 +348,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('useDeptName', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -358,7 +359,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('userCode', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -367,7 +368,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('userName', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -379,7 +380,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('addressCode', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -390,7 +391,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('addressName', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -399,7 +400,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('cost', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -414,7 +415,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('netValue', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -423,7 +424,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('netQuota', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -433,7 +434,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('residualValue', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -446,7 +447,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('periodDepreciation', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -458,7 +459,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('yearDepreciation', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -468,7 +469,7 @@ class assetEdit extends React.Component {
 
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -480,7 +481,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('periodImpairment', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -491,7 +492,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('yearImpairment', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -500,7 +501,7 @@ class assetEdit extends React.Component {
                   {getFieldDecorator('cumulativeImpairment', {
                     rules: [{}],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
 
                 </FormItem>
@@ -526,6 +527,7 @@ class assetEdit extends React.Component {
                       action={`${window.getServerUrl()}reportServer/uploadAssetImg/uploadAssetImg`}
                       beforeUpload={beforeUpload}
                       onChange={this.handleChange}
+                      disabled={this.state.isReadOnly}
                     >
 
                       {imageUrl ? < img src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}

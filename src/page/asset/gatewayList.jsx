@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Divider, Form, Pagination, Row, Col, Button, Card, Modal } from 'antd';
+import { Table, Input, message, Form, Pagination, Row, Col, Button, Card, Modal, Divider } from 'antd';
 import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
@@ -167,8 +167,9 @@ export default class gatewayList extends React.Component {
                             title="动作"
                             render={(text, record) => (
                                 <span>
+                                    <a href={`#/asset/gatewayEdit/readOnly/${record.gateway_id}`}>查看</a>
+                                    <Divider type="vertical" />
                                     <a href={`#/asset/gatewayEdit/update/${record.gateway_id}`}>编辑</a>
-
                                 </span>
                             )}
                         />

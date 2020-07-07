@@ -350,10 +350,7 @@ class TreeTest extends React.Component {
                             {/* <Button onClick={this.showModal} type="primary" icon="database" style={{ marginBottom: '10px' }}>新增</Button> */}
 
                             <Table dataSource={this.state.assetList} rowKey={"asset_id"} pagination={false} >
-                                <Column
-                                    title="资产ID"
-                                    dataIndex="asset_id"
-                                />
+
                                 <Column
                                     title="物联网标签号"
                                     dataIndex="iot_num"
@@ -365,6 +362,10 @@ class TreeTest extends React.Component {
                                 <Column
                                     title="资产名称"
                                     dataIndex="asset_name"
+                                />
+                                <Column
+                                    title="责任人"
+                                    dataIndex="dutyName"
                                 />
                                 <Column
                                     title="资产状态"

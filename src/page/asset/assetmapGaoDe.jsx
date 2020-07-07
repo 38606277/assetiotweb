@@ -32,9 +32,7 @@ class assetampGaoDe extends React.Component {
             map: null,
             AMap: null,
             panelDisplay: 'none',
-            gateway_id: '',
-            address: '',
-            addressImg: '',
+            gateway: {},
             assetList: [
             ],
             dataList: [],
@@ -121,9 +119,7 @@ class assetampGaoDe extends React.Component {
         _assetService.getEamAssetListByGatewayId(param).then(response => {
 
             this.setState({
-                gateway_id: gateway.gateway_id,
-                address: gateway.address,
-                addressImg: gateway.image,
+                gateway: gateway,
                 assetList: response.data,
                 showDetail: true,
             })
@@ -296,26 +292,35 @@ class assetampGaoDe extends React.Component {
 
 
                                         <Row>
-                                            <Col span={24}><img onClick={() => {
-                                                window.location.href = `#/asset/gatewayEdit/update/${this.state.gateway_id}`
-                                            }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.addressImg}`} style={{ height: '100px', width: '100%' }} /></Col>
+                                            <Col span={24}><img onClick={() => this.handlePreview(this.state.gateway.image)}
+                                                // onClick={() => {
+                                                //     window.location.href = `#/asset/gatewayEdit/update/${this.state.gateway.gateway_id}`
+                                                // }} 
+                                                src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.gateway.image}`} style={{ height: '100px', width: '100%' }} /></Col>
                                         </Row>
                                         <Row style={{ height: '40px', marginTop: '10px', marginLeft: '10px' }}>
-                                            <Col span={24} ><Icon type='bank' style={{ marginRight: '8px' }} />
 
-                                                <a href={`#/asset/assetEdit/update/${this.state.gateway_id}`}>
-                                                    {this.state.address}
-                                                </a>
 
-                                            </Col>
+
+                                            <a href={`#/asset/gatewayEdit/update/${this.state.gateway.gateway_id}`}>
+                                                {this.state.gateway.gateway_name}
+
+                                            </a>
+                                            <div style={{ marginTop: '5px' }}><Icon type='bank' style={{ marginRight: '8px' }} />{this.state.gateway.address}</div>
+                                            <div style={{ marginTop: '5px' }}>
+                                                经度:{this.state.gateway.lng} &nbsp;&nbsp;&nbsp;&nbsp; 纬度:{this.state.gateway.rng}
+                                            </div>
+
                                         </Row>
-                                        <Row style={{ height: '40px', marginLeft: '30px', color: '#0e89f5' }}>
+
+
+                                        {/* <Row style={{ height: '40px', marginLeft: '30px', color: '#0e89f5' }}>
                                             <Col span={8}><Icon type='setting' style={{ marginRight: '8px' }} />详细</Col>
                                             <Col span={8}><Icon type='tag' style={{ marginRight: '8px' }} />分离</Col>
                                             <Col span={8}><Icon type='pushpin' style={{ marginRight: '8px' }} onClick={() => this.props.history.push('/asset/assetEdit/create/0')} />新增</Col>
-                                        </Row>
+                                        </Row> */}
 
-                                        <div style={{ height: '350px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
+                                        <div style={{ marginTop: '30px', height: '350px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
                                             <List
                                                 bodyStyle={{ padding: '5px', fontSize: '14px', backgroundColor: '#ffffcc' }}
                                                 style={{ padding: '5px' }}
@@ -336,12 +341,16 @@ class assetampGaoDe extends React.Component {
                                                                     </a>
 
                                                                     <Tag style={{ float: 'right' }} color={item.tag_id == null ? 'gray' : 'green'}>{item.tag_id == null ? '未关联' : '正常'}</Tag>
-                                                                    <img src={require("./../../asset/wifi.png")}></img>
+                                                                    {/* <img src={require("./../../asset/wifi.png")}></img> */}
                                                                 </div>
                                                             }
                                                             description={<div>
-                                                                {item.asset_tag}<br />
-                                                                {item.iot_num}<br />
+                                                                资产标签：{item.asset_tag}<br />
+                                                                物联网标签：{item.iot_num}<br />
+                                                                资产原值：{item.cost}<br />
+                                                                资产净额：{item.netQuota}<br />
+                                                                责任人：{item.dutyName}<br />
+                                                                启用日期：{item.startDate}<br />
                                                                 {item.electricity != null &&
                                                                     (<div>电压：{item.electricity}V<br /></div>)
                                                                 }
@@ -368,7 +377,7 @@ class assetampGaoDe extends React.Component {
                                             dataSource={this.state.dataList}
                                             renderItem={item => (
                                                 <List.Item
-                                                    onClick={() => this.onGatewayItemClick(item)}
+
                                                     actions={[]}
                                                     extra={
                                                         <img
@@ -382,14 +391,13 @@ class assetampGaoDe extends React.Component {
                                                     <List.Item.Meta style={{ fontSize: '12px' }}
 
                                                         title={
-                                                            <div style={{ color: '#3385ff' }}>
-                                                                {item.gateway_id}
-                                                            </div>
+                                                            <a onClick={() => this.onGatewayItemClick(item)} style={{ color: '#3385ff' }}>
+                                                                {item.gateway_name}
+                                                            </a>
                                                         }
                                                         description={<div>
-
-                                                            关联资产：{item.assetCount}<br />
-
+                                                            网关编号：{item.gateway_id}<br />
+                                                            关联资产数：{item.assetCount}<br />
                                                             {item.address}
                                                         </div>
                                                         }

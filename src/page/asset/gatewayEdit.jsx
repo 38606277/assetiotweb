@@ -255,6 +255,7 @@ class gatewayEdit extends React.Component {
     this.state = {
       action: this.props.match.params.action,
       id: this.props.match.params.id,
+      isReadOnly: this.props.match.params.action == 'readOnly',
       enabled: '1',
       confirmDirty: false,
       authtype_id: this.props.match.params.name,
@@ -286,7 +287,7 @@ class gatewayEdit extends React.Component {
 
   //初始化加载调用方法
   async componentDidMount() {
-    if (this.state.action == 'update') {
+    if (this.state.action == 'update' || this.state.isReadOnly) {
       //加载主表
       await HttpService.post("reportServer/gateway/getGatewayById", JSON.stringify({ gateway_id: this.state.id }))
         .then(res => {
@@ -750,15 +751,15 @@ class gatewayEdit extends React.Component {
 
     return (
       <div id="page-wrapper">
-        <Card title={<b>编辑网关</b>} bordered={false} extra={<span>
-          <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(true)}>保存并关闭</Button>
-          <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(false)}>保存</Button>
+        <Card title={<b>{this.state.isReadOnly ? '网关详情' : this.state.action == 'update' ? '编辑网关' : '新建网关'}</b>} bordered={false} extra={<span>
+          <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(true)} disabled={this.state.isReadOnly}>保存并关闭</Button>
+          <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(false)} disabled={this.state.isReadOnly}>保存</Button>
           <Button href="#/asset/gatewayList" style={{ marginLeft: '10px' }}>返回</Button>
         </span>} bodyStyle={{ paddingBottom: '0px' }}>
           <Form >
             <FormItem style={{ display: 'none' }}>
               {getFieldDecorator('asset_id')(
-                <Input type='text' />
+                <Input type='text' readOnly={this.state.isReadOnly} />
               )}
             </FormItem>
             <Row>
@@ -766,15 +767,17 @@ class gatewayEdit extends React.Component {
                 <FormItem {...formItemLayout} label="网关编号">
                   {getFieldDecorator('gateway_id', {
                     rules: [{ required: true, message: '请输入网关编号!' }],
-                  })(
-                    <Search
-                      type='text'
-                      enterButton="自动获取"
-                      onSearch={(value) => {
-                        this.getGatewayStatus(value);
-                      }}
-                    />
-                  )}
+                  })
+                    (
+                      <Search
+                        type='text'
+                        enterButton={(<Button type="primary" disabled={this.state.isReadOnly} >自动获取</Button>)}
+                        onSearch={(value) => {
+                          this.getGatewayStatus(value);
+                        }}
+                        readOnly={this.state.isReadOnly}
+                      />
+                    )}
                 </FormItem>
               </Col>
               <Col xs={24} sm={12}>
@@ -785,10 +788,12 @@ class gatewayEdit extends React.Component {
 
                     <Search
                       type='text'
-                      enterButton="选择"
+
+                      enterButton={(<Button type="primary" disabled={this.state.isReadOnly} >选择</Button>)}
                       onSearch={(value) => {
                         this.showSelectAddress();
                       }}
+                      readOnly={this.state.isReadOnly}
                     />
                   )}
                 </FormItem>
@@ -802,11 +807,13 @@ class gatewayEdit extends React.Component {
                     rules: [{ required: true, message: '请输入网关地址' }],
                   })(
                     <Search
+                      readOnly
                       type='text'
-                      enterButton="选择"
+                      enterButton={(<Button type="primary" disabled={this.state.isReadOnly} >选择</Button>)}
                       onSearch={(value) => {
                         this.showSelectArea();
                       }}
+                      readOnly
                     />
                   )}
                 </FormItem>
@@ -835,7 +842,7 @@ class gatewayEdit extends React.Component {
                   {getFieldDecorator('lng', {
                     rules: [{ required: true, message: '请输入网关编号!' }],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -844,7 +851,7 @@ class gatewayEdit extends React.Component {
                   {getFieldDecorator('rng', {
                     rules: [{ required: true, message: '请输入网关地址' }],
                   })(
-                    <Input type='text' />
+                    <Input type='text' readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -863,11 +870,10 @@ class gatewayEdit extends React.Component {
                       listType="picture-card"
                       className="avatar-uploader"
                       showUploadList={false}
-
-
                       action={`${window.getServerUrl()}reportServer/uploadAssetImg/uploadAssetImg`}
                       beforeUpload={beforeUpload}
                       onChange={this.handleChange}
+                      disabled={this.state.isReadOnly}
                     >
 
                       {imageUrl ? < img src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
@@ -884,9 +890,9 @@ class gatewayEdit extends React.Component {
           <div style={{ paddingBottom: '16px' }}>
             <span style={{ verticalAlign: 'middle', fontSize: '16px' }}><strong>关联资产</strong></span>
             <span style={{ float: "right", verticalAlign: 'middle' }}>
-              <Button style={{ marginLeft: '10px' }} onClick={() => this.showModal('tagList')}>标签新增</Button>
-              <Button style={{ marginLeft: '10px' }} onClick={() => this.showModal('assetList')}>资产新增</Button>
-              <Button disabled={this.state.selectedRowKeys.length > 0 ? false : true} style={{ marginLeft: '10px' }} onClick={() => this.onDeleteLinesClick()}>删除</Button>
+              <Button style={{ marginLeft: '10px' }} onClick={() => this.showModal('tagList')} disabled={this.state.isReadOnly}>标签新增</Button>
+              <Button style={{ marginLeft: '10px' }} onClick={() => this.showModal('assetList')} disabled={this.state.isReadOnly}>资产新增</Button>
+              <Button disabled={this.state.selectedRowKeys.length > 0 ? false : true} style={{ marginLeft: '10px' }} onClick={() => this.onDeleteLinesClick()} disabled={this.state.isReadOnly}>删除</Button>
             </span>
           </div>
 
@@ -915,16 +921,6 @@ class gatewayEdit extends React.Component {
             <Column
               title="资产地点"
               dataIndex="address"
-            />
-
-            <Column
-              title="动作"
-              render={(text, record) => (
-                <span>
-                  <a href={`#/asset/GateWayEdit/update/${record.gateWay_id}`}>删除</a>
-
-                </span>
-              )}
             />
           </Table>
         </div>

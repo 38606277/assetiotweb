@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Upload, Form, Pagination, Row, Col, Button, Card, Modal } from 'antd';
+import { Table, Input, message, Upload, Form, Pagination, Row, Col, Button, Card, Modal, Divider } from 'antd';
 import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
@@ -15,20 +15,20 @@ const { Column, ColumnGroup } = Table;
 
 
 
-const url=window.getServerUrl()+"/reportServer/asset/importExcel";
+const url = window.getServerUrl() + "/reportServer/asset/importExcel";
 function beforeUpload(file) {
-  let isJPG=false;
-  if(file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type==='application/vnd.ms-excel'){
-    isJPG=true;
-  }
-  if (!isJPG) {
-    message.error('You can only upload XLS file!');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error('XLS must smaller than 2MB!');
-  }
-  return isJPG && isLt2M;
+    let isJPG = false;
+    if (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || file.type === 'application/vnd.ms-excel') {
+        isJPG = true;
+    }
+    if (!isJPG) {
+        message.error('You can only upload XLS file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+        message.error('XLS must smaller than 2MB!');
+    }
+    return isJPG && isLt2M;
 }
 export default class assetList extends React.Component {
     constructor(props) {
@@ -42,7 +42,7 @@ export default class assetList extends React.Component {
             selected: true,
             listType: 'list',
             searchKeyword: null,
-            fileList:[]
+            fileList: []
         };
 
     }
@@ -126,21 +126,21 @@ export default class assetList extends React.Component {
     handleChange = (info) => {
         console.log(info);
         if (info.file.status === 'uploading') {
-          this.setState({ loading: true });
-          return;
+            this.setState({ loading: true });
+            return;
         }
         if (info.file.status === 'done') {
             message.info(info.file.response.data);
             this.setState({ fileList: [] });
-          // Get this url from response in real world.
-          // getBase64(info.file.originFileObj, imageUrl => this.setState({
-          //   imageUrl,
-          //   loading: false,
-          // }));
+            // Get this url from response in real world.
+            // getBase64(info.file.originFileObj, imageUrl => this.setState({
+            //   imageUrl,
+            //   loading: false,
+            // }));
         }
-      }
+    }
     render() {
-        const fileList=this.state.fileList;
+        const fileList = this.state.fileList;
         const rowSelection = {
             selectedRowKeys: this.state.selectedRowKeys,
             onChange: (selectedRowKeys, selectedRows) => {
@@ -163,14 +163,15 @@ export default class assetList extends React.Component {
                         </Col>
                         <Col xs={24} sm={12}>
                             <Button disabled={this.state.selectedRowKeys.length > 0 ? false : true} onClick={() => this.onDelButtonClick()} style={{ float: "right", marginRight: "10px" }}  >删除</Button>
-                            <div  style={{ float: "right", marginRight: "10px" }}>
-                                <Upload 
+                            <div style={{ float: "right", marginRight: "10px" }}>
+                                <Upload
                                     accept={".xls, .xlsx"}
                                     listType='text'
                                     beforeUpload={beforeUpload}
                                     action={url}
                                     headers={{
-                                        credentials: JSON.stringify(localStorge.getStorage("userInfo") || "")}
+                                        credentials: JSON.stringify(localStorge.getStorage("userInfo") || "")
+                                    }
                                     }
                                     defaultFileList={[...fileList]}
                                     onChange={this.handleChange}
@@ -219,6 +220,8 @@ export default class assetList extends React.Component {
                             title="动作"
                             render={(text, record) => (
                                 <span>
+                                    <a href={`#/asset/assetEdit/readOnly/${record.asset_id}`}>查看</a>
+                                    <Divider type="vertical" />
                                     <a href={`#/asset/assetEdit/update/${record.asset_id}`}>编辑</a>
                                 </span>
                             )}
