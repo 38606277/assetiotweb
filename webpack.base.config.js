@@ -171,6 +171,24 @@ module.exports = {
                     priority: 11,
                     enforce: true,
                 },
+                   excel: {
+                    name: 'excel',
+                    test: (module) => {
+                        return  /_js-export-excel@1.1.3@js-export-excel|_zrender@4.3.1@zrender/.test(module.context)
+                    },
+                    chunks: 'async',
+                    priority: 13,
+                    enforce: true,
+                },
+                reactdraggable: {
+                    name: 'reactdraggable',
+                    test: (module) => {
+                        return  /_core-js@2.6.11@core-js|_react-draggable@4.4.3@react-draggable|_react-draggable@4.4.3@react-draggable|_core-js@2.6.11@core-js/.test(module.context)
+                    },
+                    chunks: 'async',
+                    priority: 13,
+                    enforce: true,
+                },
                 plotly:{
                     name: 'plotly',
                     test: module => /plotly/.test(module.context),
