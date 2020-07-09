@@ -506,14 +506,16 @@ export default class dashboard extends React.Component {
 
         return (
             <div class="viewport" >
+
                 <div class="column">
-                    <div class="overview panel">
+                    <div class="sales panel">
+                        <h3>物联网资产统计</h3>
                         <div class="inner">
                             <div class="item">
                                 <h4> <a href="#/asset/assetInventory">{this.state.asset_num}</a></h4>
                                 <span>
-                                    <i class="icon-dot" style={{ color: '#006cff' }}></i>
-                            资产数量
+
+                                    资产数量
                         </span>
                             </div>
                             <div class="item">
@@ -532,6 +534,10 @@ export default class dashboard extends React.Component {
                             </div>
 
                         </div>
+                    </div>
+                    <div class="sales panel" >
+                        <h3>异常资产统计</h3>
+                        <ReactEcharts style={{ width: '100%', height: '100px' }} option={this.getLineOption()} />
                     </div>
                     <div class="monitor panel">
                         <div class="inner">
@@ -579,15 +585,7 @@ export default class dashboard extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div class="point panel">
-                        <div class="inner">
-                            <h3>点位分布统计</h3>
-                            <div class="chart">
-                                <ReactEcharts style={{ width: '400px', height: '180px' }} option={this.getOption()} />
-                            </div>
 
-                        </div>
-                    </div>
                 </div>
                 <div class="column" style={{ marginTop: '80px' }}>
                     <div class="map">
@@ -606,7 +604,7 @@ export default class dashboard extends React.Component {
                     </div>
                     <div class="users panel">
                         <div class="inner">
-                            <h3>全省资产总量统计</h3>
+                            <h3>基站网络类型统计</h3>
                             <div class="chart">
                                 <ReactEcharts style={{ width: '500px', height: '130px' }} option={this.getOption2()} />
                                 <div class="data">
@@ -630,30 +628,24 @@ export default class dashboard extends React.Component {
                     </div>
                 </div>
                 <div class="column">
-                    <div class="order panel">
 
+                    <div class="point panel">
                         <div class="inner">
-                            <div class="data">
-                                <div class="item">
-                                    <h4>1000</h4>
-                                    <span>
-                                        <i class="icon-dot" style={{ color: '#ed3f35' }}></i>
-                                异常数量
-                            </span>
-                                </div>
-                                <div class="item">
-                                    <h4>990</h4>
-                                    <span>
-                                        <i class="icon-dot" style={{ color: '#eacf19' }}></i>
-                                异常处理
-                            </span>
-                                </div>
+                            <h3>点位分布统计</h3>
+                            <div class="chart">
+                                <ReactEcharts style={{ width: '400px', height: '180px' }} option={this.getOption()} />
                             </div>
+
                         </div>
                     </div>
-                    <div class="sales panel" >
-                        <h3>资产异常发展趋势</h3>
-                        <ReactEcharts style={{ width: '100%', height: '100px' }} option={this.getLineOption()} />
+                    <div class="point panel">
+                        <div class="inner">
+                            <h3>点位分布统计</h3>
+                            <div class="chart">
+                                <ReactEcharts style={{ width: '400px', height: '180px' }} option={this.getOption()} />
+                            </div>
+
+                        </div>
                     </div>
                     <div class="wrap">
                         <div class="channel panel">
@@ -721,27 +713,7 @@ export default class dashboard extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div class="top panel" >
-                        <div class="inner">
-                            <div class="all">
-                                <h3>资产类别排行</h3>
-                                <ul>
-                                    <li>
 
-                                        传输网设备  3000
-                            </li>
-                                    <li>
-                                        无线及接入设备 200
-                            </li>
-                                    <li>
-                                        无线及接入设备 333
-                            </li>
-                                </ul>
-                            </div>
-                        </div>
-                        {/* <h3>资产类别统计</h3>
-                        <ReactEcharts style={{ width: '100%', height: '100px' }} option={this.getBarOption()} /> */}
-                    </div>
                 </div>
             </div>
 
