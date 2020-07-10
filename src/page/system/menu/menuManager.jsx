@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Table, Tabs } from 'antd';
+import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Table, Tabs, message } from 'antd';
 import { DndProvider, DragSource, DropTarget } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import update from 'immutability-helper';
@@ -53,9 +53,17 @@ const WrapTabNode = DropTarget('DND_NODE', cardTarget, connect => ({
  * 拖拽标签栏 Drag & Drop node 
  */
 class DraggableTabs extends React.Component {
-  state = {
-    order: [],
-  };
+
+  constructor(props) {
+    super(props);
+    this.state = { ...props }
+
+    console.log('DraggableTabs', this.state)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.state = { ...nextProps }
+  }
 
   moveTabNode = (dragKey, hoverKey) => {
     const newOrder = this.state.order.slice();
@@ -76,6 +84,9 @@ class DraggableTabs extends React.Component {
     this.setState({
       order: newOrder,
     });
+    //console.log(dragIndex, hoverIndex, dragKey)
+
+    this.state.onTabsDataChanage(dragIndex, hoverIndex)
   };
 
   renderTabBar = (props, DefaultTabBar) => (
@@ -221,8 +232,12 @@ class DragSortingTable extends React.Component {
           $splice: [[dragIndex, 1], [hoverIndex, 0, dragRow]],
         },
       }),
-    );
-  };
+    )
+
+    this.state.onTableDataChanage(this.state.func_pid, this.state.dataList);
+
+    console.log('当前列表', this.state.dataList)
+  }
 
   render() {
 
@@ -255,8 +270,8 @@ export default class MenuManager extends React.Component {
     columns: [
       {
         title: '序号',
-        dataIndex: 'number',
-        key: 'number',
+        dataIndex: 'order',
+        key: 'order'
       },
       {
         title: '名称',
@@ -295,6 +310,72 @@ export default class MenuManager extends React.Component {
       });
   }
 
+  onAddMenuClick = () => {
+
+  }
+
+  onDeleteMenuClick = () => {
+
+  }
+
+  onSaveMenuClick = () => {
+    HttpService.post('reportServer/menu//updateMenuTreeListOrder', JSON.stringify({ menuTreeList: this.state.dataTreeList }))
+      .then(res => {
+        if (res.resultCode == "1000") {
+          message.success(res.message);
+          this.loadData()
+        }
+        else {
+          message.error(res.message);
+        }
+
+      });
+
+    console.log("dataTreeList",)
+  }
+
+  //列表排序后回调
+  onTableDataChanage(func_pid, dataList) {
+    let { dataTreeList } = this.state;
+    //循环找到菜单 
+    for (let i in dataTreeList) {
+      let menuItem = dataTreeList[i];
+      if (menuItem.func_id == func_pid) {
+        menuItem.children = dataList;
+        break;
+      }
+    }
+
+  }
+  onTabsDataChanage(oldIndex, newIndex) {
+    let { dataTreeList } = this.state;
+    let data = dataTreeList.splice(oldIndex, 1);
+    console.log("data", data)
+    dataTreeList.splice(newIndex, 0, data[0]);
+    this.state.dataTreeList = dataTreeList;
+    console.log("onTabsDataChanage", this.state.dataTreeList)
+  }
+
+
+  // TabPaneList(props) {
+  //   let { dataTreeList, columns } = props;
+  //   let items = [];
+  //   for (let i = 0; i < dataTreeList.length; i++) {
+  //     let item = dataTreeList[i];
+  //     console.log('item', item)
+  //     items.push(<TabPane tab={item.func_name} key={i}>
+  //       <DragSortingTable
+  //         columns={columns}
+  //         dataList={item.children}
+  //         func_pid={item.func_id}
+  //         onTableDataChanage={(func_pid, dataList) => { this.onTableDataChanage(func_pid, dataList) }}
+  //       />
+  //     </TabPane>);
+  //   }
+
+  //   return ({ items });
+  // }
+
 
   render() {
     let { dataTreeList } = this.state;
@@ -302,23 +383,32 @@ export default class MenuManager extends React.Component {
     console.log('dataTreeList', dataTreeList)
     for (let i = 0; i < dataTreeList.length; i++) {
       let item = dataTreeList[i];
-      console.log('item', item)
+
       items.push(<TabPane tab={item.func_name} key={i}>
         <DragSortingTable
           columns={this.state.columns}
           dataList={item.children}
+          func_pid={item.func_id}
+          onTableDataChanage={(func_pid, dataList) => { this.onTableDataChanage(func_pid, dataList) }}
         />
       </TabPane>);
     }
-    console.log('items', items)
+    console.log('重新执行了 render', items)
     return (
 
-
-      <DraggableTabs>
-
-        {items}
-
-      </DraggableTabs>
+      <div id="page-wrapper">
+        <Card title="组织架构">
+          {/* <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onAddMenuClick()}>新增</Button>
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onDeleteMenuClick()}>删除</Button> */}
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onSaveMenuClick()}>保存</Button>
+          <DraggableTabs
+            onTabsDataChanage={(oldIndex, newIndex) => { this.onTabsDataChanage(oldIndex, newIndex) }}
+            order={[]}
+          >
+            {items}
+          </DraggableTabs>
+        </Card>
+      </div>
 
     );
   }
