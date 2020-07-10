@@ -24,12 +24,6 @@ export default class AssetService {
         return HttpService.post(url, JSON.stringify(param));
     }
 
-    //删除资产
-    deleteAsset(param) {
-        let url = "reportServer/asset/deleteAsset";
-        return HttpService.post(url, JSON.stringify(param));
-    }
-
     //绑定物联网标签
     bindEamTag(param) {
         let url = "reportServer/asset/bindEamTag";

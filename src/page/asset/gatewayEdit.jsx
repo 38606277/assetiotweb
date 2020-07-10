@@ -411,7 +411,7 @@ class gatewayEdit extends React.Component {
             });
         }
         if (closed) {
-          window.location.href = "#/asset/assetList";
+          window.location.href = "#/asset/gatewayList";
         }
       }
     });

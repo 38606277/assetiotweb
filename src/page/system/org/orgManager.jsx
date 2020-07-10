@@ -13,12 +13,10 @@ class OrgManager extends React.Component {
     this.state = {
       action: 'create',
       treeData: [],
-      selectedKeys: ["2"],
-      expandedKeys: [2],
+      checkedKeys: [],
+      selectedKeys: [],
+      expandedKeys: [],
       autoExpandParent: true,
-
-
-
     };
   }
 
@@ -103,48 +101,104 @@ class OrgManager extends React.Component {
 
 
   onSelect = (selectedKeys, info) => {
-
-    let param = {
-      org_id: selectedKeys[0]
+    if (info.selected) {
+      let param = {
+        org_id: selectedKeys[0]
+      }
+      HttpService.post('reportServer/org/getOrgByID', JSON.stringify(param))
+        .then(res => {
+          if (res.resultCode == "1000") {
+            this.props.form.setFieldsValue(res.data);
+          }
+          else {
+            message.error(res.message);
+          }
+        });
     }
-    HttpService.post('reportServer/org/getOrgByID', JSON.stringify(param))
-      .then(res => {
-        if (res.resultCode == "1000") {
-          this.props.form.setFieldsValue(res.data);
-        }
-        else {
-          message.error(res.message);
-        }
-      });
-
     console.log('onSelect', info);
     console.log('selectedKeys', selectedKeys);
     this.setState({ selectedKeys });
   };
-  // onSelect = (selectedKeys, info) => {
-  //   console.log('onSelect', selectedKeys, info)
-  //   // if (info.selected) {
-  //   //   //点击节点
-  //   //   this.props.form.setFieldsValue(info.node.props.dataRef);
-  //   //   this.setState({
-  //   //     action: 'edit',
-  //   //     selectNode: info.node.props.dataRef
-  //   //   })
 
-  //   // }
-  // }
+  /** 
+   * 选中节点 并递归选中子节点
+   */
+  onCheck = (checkedKeys, info) => {
+    if (info.checked) { //选中
+      this.arrayAddItem(this.state.checkedKeys, info.node.props.dataRef.id);
+      this.recursiveChecked(info.node.props.dataRef.children, true);
+
+    } else {//取消选中
+      this.arrayRemoveItem(this.state.checkedKeys, info.node.props.dataRef.id)
+      this.recursiveChecked(info.node.props.dataRef.children, false);
+    }
+    this.setState({ checkedKeys: this.state.checkedKeys });
+    console.log('onCheck', checkedKeys, info);
+    console.log('this.state.checkedKeys', this.state.checkedKeys)
+
+
+  }
+
+  //数组移除
+  arrayRemoveItem(array, id) {
+    for (let index in array) {
+      let item = array[index];
+      if (item == id) {
+        array.splice(index, 1);
+        console.log('移除', id)
+      }
+    }
+  }
+  //数组添加
+  arrayAddItem(array, id) {
+    let boo = true;
+    for (let index in array) {
+      let item = array[index];
+      if (item == id) {
+        boo = false;
+        break;
+      }
+    }
+    if (boo) {
+      array.push(id);
+      console.log('添加', id);
+    }
+  }
+
+  //递归选中子节点
+  recursiveChecked(children, isSelect) {
+    console.log('recursiveChecked', children)
+    for (let i in children) {
+      let child = children[i];
+      if (isSelect) { //添加
+        this.arrayAddItem(this.state.checkedKeys, child.id);
+      } else {//删除
+        this.arrayRemoveItem(this.state.checkedKeys, child.id)
+      }
+      this.recursiveChecked(child.children, isSelect);
+    }
+
+  }
+
 
   /**
    * 删除组织
    */
   onDeleteOrgClick = () => {
-    if (this.state.selectNode) {
-      let params = { org_id: this.state.selectNode.org_id }
-      HttpService.post('reportServer/org/deleteByOrgId', JSON.stringify(params))
+    if (0 < this.state.checkedKeys.length) {
+
+      let ids = [];
+      for (let i in this.state.checkedKeys) {
+        ids.push({ org_id: this.state.checkedKeys[i] });
+      }
+      let params = { org_ids: ids };
+
+      HttpService.post('reportServer/org/deleteByOrgIds', JSON.stringify(params))
         .then(res => {
           if (res.resultCode == "1000") {
             // 删除完成需要刷新 
             message.success("删除成功");
+            this.getOrgTree();
           }
           else {
             message.error(res.message);
@@ -169,6 +223,7 @@ class OrgManager extends React.Component {
           message.success("创建成功");
           //返回ID,选中ID
           this.setState({ selectedKeys: [res.data] });
+          this.arrayAddItem(this.state.expandedKeys, org_id)
         }
         else {
           message.error(res.message);
@@ -232,7 +287,7 @@ class OrgManager extends React.Component {
   };
 
 
-   onSaveOrgClick = () => {
+  onSaveOrgClick = () => {
     this.props.form.validateFieldsAndScroll((err, values) => {
 
       if (!err) {
@@ -250,9 +305,9 @@ class OrgManager extends React.Component {
             else {
               message.error(res.message);
             }
-           
+
           });
-         
+
       }
     });
   }
@@ -315,10 +370,8 @@ class OrgManager extends React.Component {
               checkedKeys={this.state.checkedKeys}
               onSelect={this.onSelect}
               selectedKeys={this.state.selectedKeys}
+              checkStrictly
             >
-
-
-              >
               {this.renderTreeNodes(this.state.treeData)}
             </Tree>
           </Card>

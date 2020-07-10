@@ -83,6 +83,11 @@ const OrgManagerRouter = Loadable({
     delay: 3000
 });
 
+const MenuManagerRouter = Loadable({
+    loader: () => import(/* webpackChunkName: "MenuManagerRouter" */ './page/system/menu/MenuManagerRouter.jsx'),
+    loading: loading,
+    delay: 3000
+});
 
 
 
@@ -100,6 +105,7 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/authType" component={AuthTypeRouter} />
                     <Route path="/asset" component={assetRouter} />
                     <Route path="/org" component={OrgManagerRouter} />
+                    <Route path="/menu" component={MenuManagerRouter} />
                 </Switch>
             </Layout>
         );
