@@ -1,12 +1,13 @@
 import React from 'react';
-import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Table, Tabs, message } from 'antd';
+import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Table, Tabs, message, Divider, Modal } from 'antd';
 import { DndProvider, DragSource, DropTarget } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import update from 'immutability-helper';
 import HttpService from '../../../util/HttpService.jsx';
 const { TabPane } = Tabs;
-let dragingIndex = -1;
+const { confirm } = Modal;
 
+let dragingIndex = -1;
 
 
 class TabNode extends React.Component {
@@ -90,6 +91,7 @@ class DraggableTabs extends React.Component {
   };
 
   renderTabBar = (props, DefaultTabBar) => (
+
     <DefaultTabBar {...props}>
       {node => (
         <WrapTabNode key={node.key} index={node.key} moveTabNode={this.moveTabNode}>
@@ -97,6 +99,8 @@ class DraggableTabs extends React.Component {
         </WrapTabNode>
       )}
     </DefaultTabBar>
+
+
   );
 
   render() {
@@ -201,10 +205,6 @@ const DragableBodyRow = DropTarget('row', rowTarget, (connect, monitor) => ({
   }))(BodyRow),
 );
 
-
-
-
-
 /**
  * 拖拽表格
  */
@@ -214,6 +214,10 @@ class DragSortingTable extends React.Component {
     super(props);
     this.state = { ...props }
     console.log('DragSortingTable', this.state)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.state = { ...nextProps }
   }
 
   components = {
@@ -287,6 +291,22 @@ export default class MenuManager extends React.Component {
         title: '类别',
         dataIndex: 'func_type',
         key: 'func_type',
+      },
+      {
+        title: '操作',
+        dataIndex: 'func_type',
+        key: 'func_type',
+        render: (text, record, index) => {
+          return (
+            <span>
+              <a href={`#/menu/menuEdit/update/${record.func_id}`}>编辑</a>
+              <Divider type="vertical" />
+              <a onClick={() => {
+                this.onDeleteMenuClick(record)
+              }}>删除</a>
+            </span>
+          )
+        }
       }
     ]
   };
@@ -310,16 +330,36 @@ export default class MenuManager extends React.Component {
       });
   }
 
-  onAddMenuClick = () => {
+  onDeleteMenuClick = (menu) => {
+    let _this = this;
+    confirm({
+      title: `温馨提示`,
+      content: `是否确认删除${menu.func_name}?`,
+      okText: '确定',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        HttpService.post('reportServer/menu/deleteMenu', JSON.stringify({ func_id: menu.func_id }))
+          .then(res => {
+            if (res.resultCode == "1000") {
+              message.success(res.message);
+              _this.loadData()
+            }
+            else {
+              message.error(res.message);
+            }
+          });
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
 
-  }
-
-  onDeleteMenuClick = () => {
 
   }
 
   onSaveMenuClick = () => {
-    HttpService.post('reportServer/menu//updateMenuTreeListOrder', JSON.stringify({ menuTreeList: this.state.dataTreeList }))
+    HttpService.post('reportServer/menu/updateMenuTreeListOrder', JSON.stringify({ menuTreeList: this.state.dataTreeList }))
       .then(res => {
         if (res.resultCode == "1000") {
           message.success(res.message);
@@ -357,26 +397,6 @@ export default class MenuManager extends React.Component {
   }
 
 
-  // TabPaneList(props) {
-  //   let { dataTreeList, columns } = props;
-  //   let items = [];
-  //   for (let i = 0; i < dataTreeList.length; i++) {
-  //     let item = dataTreeList[i];
-  //     console.log('item', item)
-  //     items.push(<TabPane tab={item.func_name} key={i}>
-  //       <DragSortingTable
-  //         columns={columns}
-  //         dataList={item.children}
-  //         func_pid={item.func_id}
-  //         onTableDataChanage={(func_pid, dataList) => { this.onTableDataChanage(func_pid, dataList) }}
-  //       />
-  //     </TabPane>);
-  //   }
-
-  //   return ({ items });
-  // }
-
-
   render() {
     let { dataTreeList } = this.state;
     let items = [];
@@ -384,7 +404,15 @@ export default class MenuManager extends React.Component {
     for (let i = 0; i < dataTreeList.length; i++) {
       let item = dataTreeList[i];
 
-      items.push(<TabPane tab={item.func_name} key={i}>
+      items.push(<TabPane tab={(<div>
+        {item.func_name}
+        <Icon h onClick={() => {
+          window.location.href = `#/menu/menuEdit/update/${item.func_id}`
+        }} style={{ marginLeft: '6px' }} type="edit" />
+        <Icon type="close" onClick={() => {
+          this.onDeleteMenuClick(item)
+        }} />
+      </div>)} key={i}>
         <DragSortingTable
           columns={this.state.columns}
           dataList={item.children}
@@ -398,8 +426,7 @@ export default class MenuManager extends React.Component {
 
       <div id="page-wrapper">
         <Card title="组织架构">
-          {/* <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onAddMenuClick()}>新增</Button>
-          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onDeleteMenuClick()}>删除</Button> */}
+          <Button type="primary" style={{ marginLeft: '10px' }} href="#/menu/menuEdit/create/0" >新增</Button>
           <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onSaveMenuClick()}>保存</Button>
           <DraggableTabs
             onTabsDataChanage={(oldIndex, newIndex) => { this.onTabsDataChanage(oldIndex, newIndex) }}
