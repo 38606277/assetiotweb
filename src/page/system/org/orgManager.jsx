@@ -262,9 +262,12 @@ onValueChange(e){
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         let formInfo = this.props.form.getFieldsValue();
-        if(undefined!=formInfo.org_id && null!=formInfo.org_id && ""!=formInfo.org_id){
+        if(null!=formInfo.org_id && ""!=formInfo.org_id){
           message.warning("数据已存在，不能再次新增，请点击【保存】按钮！");
           return false;
+        }
+        if(undefined==formInfo.org_id){
+          formInfo.org_id='';
         }
         HttpService.post('reportServer/org/createOrg', JSON.stringify(formInfo))
         .then(res => {
