@@ -1,12 +1,37 @@
 import React from 'react';
-import { Form, Input, Select, Button, Card, Row, Col, Tree, message } from 'antd';
+import { Form, Input, Select, Button, Card, Row, Col, Tree, message, TreeSelect } from 'antd';
 import LocalStorge from '../../../util/LogcalStorge.jsx';
 import HttpService from '../../../util/HttpService.jsx';
 // import EditableTree from './EditableTree.js';
 const localStorge = new LocalStorge();
 const FormItem = Form.Item;
 const { TreeNode } = Tree;
-
+const key = "children";
+function parseJson(arr) {
+  arr = arr.slice()
+  function toParse(arr) {
+      arr.forEach(function (item) {
+        var value=item.children;
+        for(var j in item){
+          if(j=='id'){
+            //把要删除menuBnt的值拿出来赋到新的key中
+            item["value"]=item.id;
+            //删除旧的menuBnt
+            delete item.id;
+          }
+          if(j=='name'){
+            //把要删除menuBnt的值拿出来赋到新的key中
+            item["title"]=item.name;
+            //删除旧的menuBnt
+            delete item.name;
+          }
+        }
+        toParse(value);
+      })
+      return arr
+  }
+ return toParse(arr)
+}
 class OrgManager extends React.Component {
   constructor(props) {
     super(props);
@@ -17,6 +42,13 @@ class OrgManager extends React.Component {
       selectedKeys: [],
       expandedKeys: [],
       autoExpandParent: true,
+      options : [],
+      org_id:'',
+      org_num:'',
+      org_name:'',
+      org_type:'',
+      address:'',
+      org_pid:'0',
     };
   }
 
@@ -29,7 +61,10 @@ class OrgManager extends React.Component {
     HttpService.post('reportServer/org/getOrgTree', JSON.stringify({}))
       .then(res => {
         if (res.resultCode == "1000") {
-          this.setState({ treeData: res.data });
+          let treeDataList=JSON.parse(JSON.stringify(res.data));
+          this.setState({ treeData: res.data,
+           options: parseJson(treeDataList)
+         });
         }
         else {
           message.error(res.message);
@@ -208,32 +243,45 @@ class OrgManager extends React.Component {
       message.error('请选择需要删除的组织')
     }
   }
+//编辑字段对应值
+onValueChange(e){
+  let name = e.target.name,
+      value = e.target.value.trim();
+      this.setState({[name]:value});  
+      
+     this.props.form.setFieldsValue({[name]:value});
 
+}
   /**
    * 添加组织
    */
   async onAddOrgClick() {
 
-    let org_id = this.state.selectedKeys[0]
+    //let org_id = this.state.selectedKeys[0];
     //新境节点并，提交
-    let aNode = { org_type: 1, org_num: '0000', org_name: '未命名', org_pid: org_id };
-    await HttpService.post('reportServer/org/createOrg', JSON.stringify(aNode))
-      .then(res => {
-        if (res.resultCode == "1000") {
-          message.success("创建成功");
-          //返回ID,选中ID
-          this.setState({ selectedKeys: [res.data] });
-          this.arrayAddItem(this.state.expandedKeys, org_id)
-        }
-        else {
-          message.error(res.message);
-        }
-      });
-    await this.getOrgTree();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        let formInfo = this.props.form.getFieldsValue();
+        HttpService.post('reportServer/org/createOrg', JSON.stringify(formInfo))
+        .then(res => {
+          if (res.resultCode == "1000") {
+            message.success("创建成功");
+            this.getOrgTree();
+            //返回ID,选中ID
+            // this.setState({ selectedKeys: [res.data] });
+            // this.arrayAddItem(this.state.expandedKeys, org_id)
+          }
+          else {
+            message.error(res.message);
+          }
+        });
+      }
+    });
+    // await this.getOrgTree();
     //  // selectedKeys=["35"];
     //  let s=this.state.selectedKeys;
     //   this.setState({selectedKeys:s});
-    this.onSelect(this.state.selectedKeys, null);
+    //this.onSelect(this.state.selectedKeys, null);
 
     //选中当前节点
     // this.setState({ selectedKeys });
@@ -289,31 +337,28 @@ class OrgManager extends React.Component {
 
   onSaveOrgClick = () => {
     this.props.form.validateFieldsAndScroll((err, values) => {
-
       if (!err) {
-
         let formInfo = this.props.form.getFieldsValue();
-
         HttpService.post('reportServer/org/updateOrgByOrgId', JSON.stringify(formInfo))
           .then(res => {
             if (res.resultCode == "1000") {
               //修改成功需要刷新列表
               message.success("保存成功");
               this.getOrgTree();
-
             }
             else {
               message.error(res.message);
             }
-
           });
-
       }
     });
   }
-
-
-
+ 
+  resetForm=()=>{
+    const {form} =this.props;
+    form.resetFields();
+    console.log(this.props.form.getFieldsValue());
+  }
   renderTreeNodes = data =>
     data.map(item => {
       if (item.children) {
@@ -325,7 +370,11 @@ class OrgManager extends React.Component {
       }
       return <TreeNode key={item.id} title={item.name} isLeaf={item.isLeaf == 1} dataRef={item} />;
     });
-
+    
+    onSelectChange = value => {
+      this.setState({ org_id:value==undefined ? '0' : value });
+    };
+    
   render() {
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
@@ -379,6 +428,7 @@ class OrgManager extends React.Component {
 
         <Col xs={24} sm={18}>
           <Card title={<b> {this.state.action == 'create' ? '新增组织' : '编辑组织'} </b>} bordered={false} extra={<span>
+            <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.resetForm()}>重置</Button>
             <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onAddOrgClick()}>新增</Button>
             <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onDeleteOrgClick()}>删除</Button>
             <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onSaveOrgClick()}>保存</Button>
@@ -391,11 +441,11 @@ class OrgManager extends React.Component {
                 )}
               </FormItem>
 
-              <FormItem style={{ display: 'none' }}>
+              {/* <FormItem style={{ display: 'none' }}>
                 {getFieldDecorator('org_pid')(
                   <Input type='text' />
                 )}
-              </FormItem>
+              </FormItem> */}
 
               <Row>
                 <Col xs={24} sm={12}>
@@ -403,7 +453,7 @@ class OrgManager extends React.Component {
                     {getFieldDecorator('org_num', {
                       rules: [{ required: true, message: '请输入组织编号' }],
                     })(
-                      <Input type='text' />
+                      <Input type='text' name='org_num' />
                     )}
                   </FormItem>
                 </Col>
@@ -412,7 +462,7 @@ class OrgManager extends React.Component {
                     {getFieldDecorator('org_name', {
                       rules: [{ required: true, message: '请输入组织名称' }],
                     })(
-                      <Input type='text' />
+                      <Input type='text' name='org_name' />
                     )}
                   </FormItem>
                 </Col>
@@ -424,7 +474,7 @@ class OrgManager extends React.Component {
                     {getFieldDecorator('org_type', {
                       rules: [{ required: true, message: '请输入组织类别' }],
                     })(
-                      <Input type='text' />
+                      <Input type='text' name='org_type' />
                     )}
                   </FormItem>
                 </Col>
@@ -433,7 +483,27 @@ class OrgManager extends React.Component {
                     {getFieldDecorator('address', {
                       rules: [{ required: true, message: '请输入地址信息' }],
                     })(
-                      <Input type='text' />
+                      <Input type='text' name='address' />
+                    )}
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={24} sm={12}>
+                  <FormItem {...formItemLayout} label="父节点">
+                    {getFieldDecorator('org_pid', {
+                      rules: [{ required: false, message: '请选择父节点' }],
+                    })(
+                      <TreeSelect
+                        allowClear="true"
+                        style={{ width: '100%' }}
+                        value={this.state.org_pid}
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        treeData={this.state.options}
+                        placeholder="请选择父节点"
+                        treeDefaultExpandAll
+                        onChange={this.onSelectChange}
+                      />
                     )}
                   </FormItem>
                 </Col>
