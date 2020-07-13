@@ -74,6 +74,7 @@ export default class dashboard extends React.Component {
         };
     }
     componentDidMount() {
+        window.collapsedToggle(true);
         //查询资产总数
         // from='';
         HttpService.post("reportServer/assetquery/getAssetNum", JSON.stringify({}))

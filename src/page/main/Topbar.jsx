@@ -31,8 +31,10 @@ export default class TopBar extends React.Component {
             userIcon: '',
             fileIcon: '../../asset/down.png'
         };
-
+        window.collapsedToggle = this.collapsedToggle;
     }
+
+
     // 组件加载完成
     componentDidMount() {
         window.addEventListener('resize', this.handleResize.bind(this)) //监听窗口大小改变
@@ -57,7 +59,7 @@ export default class TopBar extends React.Component {
         HttpService.post('/reportServer/appConfig/getWebAppTitle', null).then(res => {
             this.setState({ title: res.data });
         });
-       
+
     }
 
     //组件即将销毁
@@ -222,6 +224,7 @@ export default class TopBar extends React.Component {
     handleVisibleChange = (visible) => {
         this.setState({ visible });
     }
+
     toggle = () => {
         this.setState({
             collapsed: !this.state.collapsed,
@@ -230,6 +233,16 @@ export default class TopBar extends React.Component {
         });
 
     }
+
+    collapsedToggle = (collapsed) => {
+        console.log('collapsedToggle', collapsed)
+        this.setState({
+            collapsed: collapsed,
+        }, function () {
+            this.props.callbackParent(collapsed);
+        });
+    }
+
     onCollapse(collapsed) {
         this.setState({ collapsed });
     }
@@ -251,7 +264,7 @@ export default class TopBar extends React.Component {
         HttpService.getFile('reportServer/file/downExcelInstall').then(res => res.blob().then(blob => {
             let a = document.createElement('a');
             let url = window.URL.createObjectURL(blob);
-            let filename ='ibas.msi'; //res.headers.get('Content-Disposition');
+            let filename = 'ibas.msi'; //res.headers.get('Content-Disposition');
             if (filename) {
                 // filename = filename.match(/\"(.*)\"/)[1]; //提取文件名
                 a.href = url;
@@ -273,7 +286,7 @@ export default class TopBar extends React.Component {
         if (this.state.redirect) {
             return <Redirect push to="/login" />; //or <Redirect push to="/sample?a=xxx&b=yyy" /> 传递更多参数
         }
-        
+
 
         const ss = this.state.ishow;
         let contsss = null;
@@ -378,7 +391,7 @@ export default class TopBar extends React.Component {
                 <div style={{ float: 'left', background: '#2f96e2' }} >
 
                     <a href="javascript:;">
-                        <img alt="logo" style={{paddingLeft:'10px', width: '100px', height: '30px' }} src={logo} />
+                        <img alt="logo" style={{ paddingLeft: '10px', width: '100px', height: '30px' }} src={logo} />
                         <span className="logodiv">{this.state.title}</span>
                     </a>
                     {/* <Button type="primary" onClick={this.toggleCollapsed} style={{ marginBottom: 16, marginLeft: 20 }}>
@@ -410,16 +423,16 @@ export default class TopBar extends React.Component {
                             visible={this.state.visible}
                             onVisibleChange={this.handleVisibleChange}
                         >
-                            
+
                             <Button type="primary" style={{ background: 'transparent', borderColor: 'transparent' }} onClick={() => this.onselect('2')}>
                                 <Icon type="bell" style={{ fontSize: '18px', color: '#ffffff', background: 'transparent' }} />
                             </Button>
-                          
+
                             <Button type="primary" onClick={() => this.onselect('4')} style={{ background: 'transparent', borderColor: 'transparent' }}>
                                 <Avatar size="{32}" icon="user" />
                             </Button>
                         </Popover>
-                       
+
                     </Tooltip>
 
                 </div>
