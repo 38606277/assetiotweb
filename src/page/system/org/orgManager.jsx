@@ -262,6 +262,10 @@ onValueChange(e){
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         let formInfo = this.props.form.getFieldsValue();
+        if(undefined!=formInfo.org_id && null!=formInfo.org_id && ""!=formInfo.org_id){
+          message.warning("数据已存在，不能再次新增，请点击【保存】按钮！");
+          return false;
+        }
         HttpService.post('reportServer/org/createOrg', JSON.stringify(formInfo))
         .then(res => {
           if (res.resultCode == "1000") {
@@ -498,7 +502,7 @@ onValueChange(e){
                         allowClear="true"
                         style={{ width: '100%' }}
                         value={this.state.org_pid}
-                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        dropdownStyle={{ maxHeight: 260, overflow: 'auto' }}
                         treeData={this.state.options}
                         placeholder="请选择父节点"
                         treeDefaultExpandAll
