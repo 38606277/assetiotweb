@@ -12,6 +12,7 @@ const ruleSevie =new RuleService();
 const Search=Input.Search;
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
+import './ruleInfo.css'
 
 
 class RuleInfo extends React.Component{
@@ -31,7 +32,7 @@ class RuleInfo extends React.Component{
             autoExpandParent: true,
             checkedKeys: [],
             selectedKeys: [],
-           
+            rowId:0,
             selectedRowKeys: [],
             tabPosition: 'top',
             treeData:[],
@@ -185,6 +186,18 @@ class RuleInfo extends React.Component{
         return  this.parentNodes;
     }
 
+    
+//   renderTreeNodes = data =>
+//   data.map(item => {
+//     if (item.children) {
+//       return (
+//         <TreeNode title={item.title} key={item.key} dataRef={item}>
+//           {this.renderTreeNodes(item.children)}
+//         </TreeNode>
+//       );
+//     }
+//     return <TreeNode key={item.id} title={item.name} isLeaf={item.isLeaf == 1} dataRef={item} />;
+//   });
       renderTreeNodes = (data) => {
         return data.map((item) => {
           if (item.children) {
@@ -615,6 +628,21 @@ class RuleInfo extends React.Component{
                 message.success("保存成功");
             });
     }
+
+    // 选中行
+  onClickRow = (record) => {
+    return {
+      onClick: () => {
+        this.setState({
+          rowId: record.id,
+        });
+      },
+    };
+  }
+  setRowClassName = (record) => {
+    return record.id === this.state.rowId ? 'clickRowStyl' : '';
+  }
+
     render(){
         this.state.list.map((item,index)=>{
             item.key=index;
@@ -659,17 +687,17 @@ class RuleInfo extends React.Component{
             <Card title="角色列表"  style={{float:"left",width:"20%"}}>
                 <Tooltip>
                     <Search
-                        style={{ maxWidth: 190,marginBottom:'10px' ,marginLeft: '-20px', marginRight: '-30px', border: '0'}}
+                        style={{ maxWidth: 190,marginBottom:'10px' , border: '0'}}
                         placeholder={this.state.roleName==''?'请输入...':this.state.roleName}
-                        enterButton="查询"
+                       
                         onSearch={value => this.onSearch(value)}
                         onChange={(e) => this.onValueChange(e)}
                         value={this.state.roleName}
                         />
                 </Tooltip>
                 <Table dataSource={dataSource} columns={columns}  pagination={false} 
-                showHeader={false} style={{ border: '0'}}
-                rowSelection={rowSelection}/>
+                showHeader={false} style={{ border: '0'}}  rowClassName={this.setRowClassName}
+                />
                  <Pagination current={this.state.pageNum} 
                     total={this.state.total} 
                     onChange={(pageNum) => this.onPageNumChange(pageNum)}/> 

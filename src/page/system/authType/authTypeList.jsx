@@ -56,6 +56,14 @@ class AuthTypeList extends React.Component{
             dataIndex: 'name',
             key: 'name'
           },{
+            title: '权限类型',
+            dataIndex: 'authtype_class',
+            key: 'authtype_class'
+          },{
+            title: '数据类型',
+            dataIndex: 'data_type',
+            key: 'data_type'
+          },{
             title: '操作',
             dataIndex: '操作',
             render: (text, record) => (

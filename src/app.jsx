@@ -57,7 +57,7 @@ const Home = Loadable({
 
 
 const Auth = Loadable({
-    loader: () => import( /* webpackChunkName: "Auth" */ './page/user/Auth.jsx'),
+    loader: () => import( /* webpackChunkName: "Auth" */ './page/system/auth/auth.jsx'),
     loading: loading,
     delay: 3000
 });

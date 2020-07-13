@@ -146,11 +146,14 @@ handleSubmit (e) {
           </Row> 
          <Row>
             <Col xs={24} sm={12}>
-                      <FormItem {...formItemLayout} label='权限类型分类' >
+                      <FormItem {...formItemLayout} label='数据类型' >
                         {getFieldDecorator('authtype_class', {
                           rules: [{ required: true, message: '请输入权限类型分类!', whitespace: true }],
                         })(
-                          <Input  type='text' name='authtype_class'  />
+                          <Select>
+                             <Option value='table'>表</Option>
+                             <Option value='tree'>树</Option>
+                          </Select>
                         )}
                       </FormItem>
               </Col>

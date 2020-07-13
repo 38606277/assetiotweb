@@ -90,21 +90,7 @@ class assetInventory extends React.Component {
             });
     }
 
-    onDelButtonClick() {
-        if (confirm('确认删除吗？')) {
-            HttpService.post('reportServer/gateway/DeleteGateway', JSON.stringify({ gatewayLines: this.state.selectedRows }))
-                .then(res => {
-                    if (res.resultCode == "1000") {
-                        message.success("删除成功！");
-                        this.loadGatewayList();
-                        this.setState({ selectedRowKeys: [], selectedRows: [] });
-                    }
-                    else {
-                        message.error(res.message);
-                    }
-                });
-        }
-    }
+ 
 
     //导出到Excel
     excel = () => {
