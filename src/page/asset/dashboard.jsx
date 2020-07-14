@@ -34,8 +34,13 @@ export default class dashboard extends React.Component {
             llongitude: null,
             latitude: null,
             asset_num: 0,
+            assetCost:0,
+            assetNumber:0,
             normal_num: 0,
             abnormal_num: 0,
+            gatewayNumber: 0,
+            assetAlarmNumber:0,
+            pendAssetAlarmNumber:0,
             alarm_data: [],
             city_data: [{
                 name: '邯郸市',
@@ -80,7 +85,11 @@ export default class dashboard extends React.Component {
         HttpService.post("reportServer/assetquery/getAssetNum", JSON.stringify({}))
             .then(res => {
                 if (res.resultCode == "1000") {
-                    this.setState({ asset_num: res.data.asset_num, normal_num: res.data.normal_num, abnormal_num: res.data.abnormal_num })
+                    this.setState({ asset_num: res.data.asset_num, 
+                        normal_num: res.data.normal_num, 
+                        abnormal_num: res.data.abnormal_num,
+                        assetCost:res.data.assetCost,
+                        assetNumber:res.data.assetNumber })
                 }
                 else
                     message.error(res.message);
@@ -107,7 +116,18 @@ export default class dashboard extends React.Component {
 
             });
 
+            //查询资产异常信息
+            HttpService.post("reportServer/assetquery/getAssetAlarmNum", JSON.stringify({}))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({ gatewayNumber: res.data.gatewayNumber,
+                        assetAlarmNumber:res.data.assetAlarmNumber,
+                        pendAssetAlarmNumber:res.data.pendAssetAlarmNumber})
+                }
+                else
+                    message.error(res.message);
 
+            });
 
     };
     getGugarOption = () => {
@@ -653,14 +673,14 @@ export default class dashboard extends React.Component {
                         </span>
                                 </div>
                                 <div class="item">
-                                    <h4><a href="#/asset/assetInventory">{this.state.normal_num}</a></h4>
+                                    <h4><a href="#/asset/assetInventory">{this.state.assetCost}</a></h4>
                                     <span>
                                         <i class="icon-dot" style={{ color: '#6acca3' }}></i>
                             资产原值
                         </span>
                                 </div>
                                 <div class="item">
-                                    <h4><a href="#/asset/assetInventory">{this.state.abnormal_num}</a></h4>
+                                    <h4><a href="#/asset/assetInventory">{this.state.assetNumber}</a></h4>
                                     <span>
                                         <i class="icon-dot"></i>
                             资产条数
@@ -675,21 +695,21 @@ export default class dashboard extends React.Component {
                         <div>
                             <div class="content">
                                 <div class="item">
-                                    <h4> <a href="#/asset/assetInventory">{this.state.asset_num}</a></h4>
+                                    <h4> <a href="#/asset/assetInventory">{this.state.gatewayNumber}</a></h4>
                                     <span>
 
-                                        异常资产数量
+                                        异常网关数量
                         </span>
                                 </div>
                                 <div class="item">
-                                    <h4><a href="#/asset/assetInventory">{this.state.normal_num}</a></h4>
+                                    <h4><a href="#/asset/assetInventory">{this.state.assetAlarmNumber}</a></h4>
                                     <span>
                                         <i class="icon-dot" style={{ color: '#6acca3' }}></i>
                            异常资产条数
                         </span>
                                 </div>
                                 <div class="item">
-                                    <h4><a href="#/asset/assetInventory">{this.state.abnormal_num}</a></h4>
+                                    <h4><a href="#/asset/assetInventory">{this.state.pendAssetAlarmNumber}</a></h4>
                                     <span>
                                         <i class="icon-dot"></i>
                             待处理
