@@ -617,9 +617,10 @@ export default class dashboard extends React.Component {
                 // 数据                                  
                 data: [40, 64, 191, 324, 290, 330, 310, 213, 180, 200, 180, 79],
                 // 图表类型                                  
-                type: 'line',
+                type: 'bar',
                 // 圆滑连接                                  
-                smooth: true,
+                // smooth: true,
+                 barWidth : '40%',
                 itemStyle: {
                     color: '#ed3f35'  // 线颜色
                 }
@@ -807,10 +808,10 @@ export default class dashboard extends React.Component {
 
                     <div class="point panel">
                       
-                            <h3>资产场景分布</h3>
-                            <div class="chart">
-                            <ReactEcharts style={{ width: '500px', height: '250px' }} option={this.getLineOption()} />
-                            </div>
+                        <h3>资产场景分布</h3>
+                        <div class="chart">
+                        <ReactEcharts style={{ width: '500px', height: '250px' }} option={this.getLineOption()} />
+                        </div>
 
                    
                     </div>
