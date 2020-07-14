@@ -247,7 +247,8 @@ export default class dashboard extends React.Component {
 
 
     getOption = () => {
-        let option = {
+
+      let  option = {
             // 控制提示
             tooltip: {
                 // 非轴图形，使用item的意思是放到数据对应图形上触发提示
@@ -271,7 +272,16 @@ export default class dashboard extends React.Component {
                     // 半径模式，另外一种是 area 面积模式
                     roseType: 'radius',
                     // 数据集 value 数据的值 name 数据的名称
-                    data: this.state.city_data,
+                    data: [
+                        { value: 20, name: '云南' },
+                        { value: 5, name: '北京' },
+                        { value: 15, name: '山东' },
+                        { value: 25, name: '河北' },
+                        { value: 20, name: '江苏' },
+                        { value: 35, name: '浙江' },
+                        { value: 30, name: '四川' },
+                        { value: 40, name: '湖北' }
+                    ],
                     //文字调整
                     label: {
                         fontSize: 10
@@ -285,53 +295,92 @@ export default class dashboard extends React.Component {
             ],
             color: ['#006cff', '#60cda0', '#ed8884', '#ff9f7f', '#0096ff', '#9fe6b8', '#32c5e9', '#1d9dff']
         };
+
+        // let option = {
+        //     // 控制提示
+        //     tooltip: {
+        //         // 非轴图形，使用item的意思是放到数据对应图形上触发提示
+        //         trigger: 'item',
+        //         // 格式化提示内容：
+        //         // a 代表图表名称 b 代表数据名称 c 代表数据  d代表  当前数据/总数据的比例
+        //         formatter: "{a} <br/>{b} : {c} ({d}%)"
+        //     },
+        //     // 控制图表
+        //     series: [
+        //         {
+        //             // 图表名称
+        //             name: '地区',
+        //             // 图表类型
+        //             type: 'pie',
+        //             // 南丁格尔玫瑰图 有两个圆  内圆半径10%  外圆半径70%
+        //             // 百分比基于  图表DOM容器的半径
+        //             radius: ['10%', '70%'],
+        //             // 图表中心位置 left 50%  top 50% 距离图表DOM容器
+        //             center: ['50%', '50%'],
+        //             // 半径模式，另外一种是 area 面积模式
+        //             roseType: 'radius',
+        //             // 数据集 value 数据的值 name 数据的名称
+        //             data: this.state.city_data,
+        //             //文字调整
+        //             label: {
+        //                 fontSize: 10
+        //             },
+        //             //引导线
+        //             labelLine: {
+        //                 length: 8,
+        //                 length2: 10
+        //             }
+        //         }
+        //     ],
+        //     color: ['#006cff', '#60cda0', '#ed8884', '#ff9f7f', '#0096ff', '#9fe6b8', '#32c5e9', '#1d9dff']
+        // };
         return option;
 
     };
-    getLineOption = () => {
-        var option = {
-            // 给echarts图设置背景色
-            //backgroundColor: '#FBFBFB',  // -----------> // 给echarts图设置背景色
-            color: ['#7FFF00'],
-            tooltip: {
-                trigger: 'axis'
-            },
+    // getLineOption = () => {
+    //     var option = {
+    //         // 给echarts图设置背景色
+    //         //backgroundColor: '#FBFBFB',  // -----------> // 给echarts图设置背景色
+    //         color: ['#7FFF00'],
+    //         tooltip: {
+    //             trigger: 'axis'
+    //         },
 
-            grid: {
-                x: 40,
-                y: 30,
-                x2: 5,
-                y2: 20
+    //         grid: {
+    //             x: 40,
+    //             y: 30,
+    //             x2: 5,
+    //             y2: 20
 
-            },
-            calculable: true,
-
-
-            xAxis: [{
-                type: 'category',
-                data: ['1月', '2月', '3月', '4月', '5月'],
-                axisLabel: {
-                    color: "#7FFF00" //刻度线标签颜色
-                }
-            }],
-            yAxis: [{
-
-                type: 'value',
-                axisLabel: {
-                    color: "#7FFF00" //刻度线标签颜色
-                }
-            }],
-            series: [{
-                name: '人次',
-                type: 'line',
-                data: [800, 300, 500, 800, 300, 600],
-
-            }]
-        };
+    //         },
+    //         calculable: true,
 
 
-        return option;
-    }
+    //         xAxis: [{
+    //             type: 'category',
+    //             data: ['1月', '2月', '3月', '4月', '5月'],
+    //             axisLabel: {
+    //                 color: "#7FFF00" //刻度线标签颜色
+    //             }
+    //         }],
+    //         yAxis: [{
+
+    //             type: 'value',
+    //             axisLabel: {
+    //                 color: "#7FFF00" //刻度线标签颜色
+    //             }
+    //         }],
+    //         series: [{
+    //             name: '人次',
+    //             type: 'line',
+    //             data: [800, 300, 500, 800, 300, 600],
+
+    //         }]
+    //     };
+
+
+    //     return option;
+    // }
 
 
     getOption2 = () => {
@@ -477,7 +526,90 @@ export default class dashboard extends React.Component {
 
         return option;
     }
+    getLineOption = () => {
+        var option = {
+            //鼠标提示工具
+            tooltip: {
+                trigger: 'axis'
+            },
+            xAxis: {
+                // 类目类型                                  
+                type: 'category',
+                // x轴刻度文字                                  
+                data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                axisTick: {
+                    show: false//去除刻度线
+                },
+                axisLabel: {
+                    color: '#4c9bfd'//文本颜色
+                },
+                axisLine: {
+                    show: false//去除轴线  
+                },
+                boundaryGap: false//去除轴内间距
+            },
+            yAxis: {
+                // 数据作为刻度文字                                  
+                type: 'value',
+                axisTick: {
+                    show: false//去除刻度线
+                },
+                axisLabel: {
+                    color: '#4c9bfd'//文本颜色
+                },
+                axisLine: {
+                    show: false//去除轴线  
+                },
+                boundaryGap: false//去除轴内间距
+            },
+            //图例组件
+            legend: {
+                textStyle: {
+                    color: '#4c9bfd' // 图例文字颜色
+    
+                },
+                right: '10%'//距离右边10%
+            },
+            // 设置网格样式
+            grid: {
+                show: true,// 显示边框
+                top: '20%',
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                borderColor: '#012f4a',// 边框颜色
+                containLabel: true // 包含刻度文字在内
+            },
+            series: [{
+                name: '资产原值',
+                // 数据                                  
+                data: [24, 40, 101, 134, 90, 230, 210, 230, 120, 230, 210, 120],
+                // 图表类型                                  
+                type: 'line',
+                // 圆滑连接                                  
+                smooth: true,
+                itemStyle: {
+                    color: '#00f2f1'  // 线颜色
+                }
+            },
+            {
+                name: '资产条数',
+                // 数据                                  
+                data: [40, 64, 191, 324, 290, 330, 310, 213, 180, 200, 180, 79],
+                // 图表类型                                  
+                type: 'line',
+                // 圆滑连接                                  
+                smooth: true,
+                itemStyle: {
+                    color: '#ed3f35'  // 线颜色
+                }
+            }]
+        };
 
+        return option;
+    }
+   
+    
 
 
 
@@ -631,7 +763,7 @@ export default class dashboard extends React.Component {
                     <div class="users panel">
                             <h3>基站网络类型统计</h3>
                             <div class="chart">
-                                <ReactEcharts style={{ width: '500px', height: '130px' }} option={this.getOption()} />
+                                <ReactEcharts style={{ width: '400px', height: '200px' }} option={this.getOption()} />
                                 <div class="data">
                                     <div class="item">
                                         <h4>120,899</h4>
@@ -657,7 +789,7 @@ export default class dashboard extends React.Component {
                       
                             <h3>资产场景分布</h3>
                             <div class="chart">
-                            <ReactEcharts style={{ width: '500px', height: '130px' }} option={this.getOption2()} />
+                            <ReactEcharts style={{ width: '500px', height: '250px' }} option={this.getLineOption()} />
                             </div>
 
                    
@@ -666,7 +798,7 @@ export default class dashboard extends React.Component {
                       
                             <h3>资产类别统计</h3>
                             <div class="chart">
-                                <ReactEcharts style={{ width: '400px', height: '180px' }} option={this.getOption2()} />
+                                <ReactEcharts style={{ width: '500px', height: '250px' }} option={this.getOption2()} />
                             </div>
 
                     </div>

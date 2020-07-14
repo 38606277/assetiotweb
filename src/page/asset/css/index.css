@@ -297,7 +297,7 @@ a {
 /* 点位 */
 
 .point {
-    height: 20.167rem;
+    height: 20.367rem;
 }
 
 .point .chart {
@@ -371,7 +371,7 @@ a {
 /* 用户模块 */
 
 .users {
-    height: 14.167rem;
+    height: 15.167rem;
     display: flex;
 }
 
