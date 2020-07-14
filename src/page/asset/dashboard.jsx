@@ -509,39 +509,65 @@ export default class dashboard extends React.Component {
             <div class="viewport" >
 
                 <div class="column">
-                    <div class="sales panel">
+                    <div class="allasset panel">
                         <h3>物联网资产统计</h3>
-                        <div class="inner">
-                            <div class="item">
-                                <h4> <a href="#/asset/assetInventory">{this.state.asset_num}</a></h4>
-                                <span>
+                        <div>
+                            <div class="content">
+                                <div class="item">
+                                    <h4> <a href="#/asset/assetInventory">{this.state.asset_num}</a></h4>
+                                    <span>
 
-                                    资产数量
+                                       基站数量
                         </span>
-                            </div>
-                            <div class="item">
-                                <h4><a href="#/asset/assetInventory">{this.state.normal_num}</a></h4>
-                                <span>
-                                    <i class="icon-dot" style={{ color: '#6acca3' }}></i>
-                            在线数量
+                                </div>
+                                <div class="item">
+                                    <h4><a href="#/asset/assetInventory">{this.state.normal_num}</a></h4>
+                                    <span>
+                                        <i class="icon-dot" style={{ color: '#6acca3' }}></i>
+                            资产原值
                         </span>
-                            </div>
-                            <div class="item">
-                                <h4><a href="#/asset/assetInventory">{this.state.abnormal_num}</a></h4>
-                                <span>
-                                    <i class="icon-dot"></i>
-                            异常数量
+                                </div>
+                                <div class="item">
+                                    <h4><a href="#/asset/assetInventory">{this.state.abnormal_num}</a></h4>
+                                    <span>
+                                        <i class="icon-dot"></i>
+                            资产条数
                         </span>
-                            </div>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
-                    <div class="sales panel" >
-                        <h3>异常资产统计</h3>
-                        <ReactEcharts style={{ width: '100%', height: '100px' }} option={this.getLineOption()} />
+                    <div class="abnormal panel" >
+                    <h3>异常资产统计</h3>
+                        <div>
+                            <div class="content">
+                                <div class="item">
+                                    <h4> <a href="#/asset/assetInventory">{this.state.asset_num}</a></h4>
+                                    <span>
+
+                                        异常资产数量
+                        </span>
+                                </div>
+                                <div class="item">
+                                    <h4><a href="#/asset/assetInventory">{this.state.normal_num}</a></h4>
+                                    <span>
+                                        <i class="icon-dot" style={{ color: '#6acca3' }}></i>
+                           异常资产条数
+                        </span>
+                                </div>
+                                <div class="item">
+                                    <h4><a href="#/asset/assetInventory">{this.state.abnormal_num}</a></h4>
+                                    <span>
+                                        <i class="icon-dot"></i>
+                            待处理
+                        </span>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                     <div class="monitor panel">
-                        <div class="inner">
                             <div class="tabs">
                                 <a href="#/asset/assetAlarmList" data-index="0" class="active">异常资产监控</a>
                             </div>
@@ -564,7 +590,6 @@ export default class dashboard extends React.Component {
                                         ))}
 
                                     </div>
-                                </div>
                             </div>
                             <div class="content">
                                 <div class="head">
@@ -604,10 +629,9 @@ export default class dashboard extends React.Component {
                         </div>
                     </div>
                     <div class="users panel">
-                        <div class="inner">
                             <h3>基站网络类型统计</h3>
                             <div class="chart">
-                                <ReactEcharts style={{ width: '500px', height: '130px' }} option={this.getOption2()} />
+                                <ReactEcharts style={{ width: '500px', height: '130px' }} option={this.getOption()} />
                                 <div class="data">
                                     <div class="item">
                                         <h4>120,899</h4>
@@ -625,97 +649,28 @@ export default class dashboard extends React.Component {
                                     </div>
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 <div class="column">
 
                     <div class="point panel">
-                        <div class="inner">
-                            <h3>点位分布统计</h3>
+                      
+                            <h3>资产场景分布</h3>
                             <div class="chart">
-                                <ReactEcharts style={{ width: '400px', height: '180px' }} option={this.getOption()} />
+                            <ReactEcharts style={{ width: '500px', height: '130px' }} option={this.getOption2()} />
                             </div>
 
-                        </div>
+                   
                     </div>
                     <div class="point panel">
-                        <div class="inner">
-                            <h3>点位分布统计</h3>
+                      
+                            <h3>资产类别统计</h3>
                             <div class="chart">
-                                <ReactEcharts style={{ width: '400px', height: '180px' }} option={this.getOption()} />
+                                <ReactEcharts style={{ width: '400px', height: '180px' }} option={this.getOption2()} />
                             </div>
 
-                        </div>
                     </div>
-                    <div class="wrap">
-                        <div class="channel panel">
-                            <div class="inner">
-                                <h3>资产分布</h3>
-                                <div class="data">
-                                    <div class="item">
-                                        <h4>39 <small>%</small></h4>
-                                        <span>
-                                            <i class="icon-plane"></i>
-                                    机场
-                                </span>
-                                    </div>
-                                    <div class="item">
-                                        <h4>28 <small>%</small></h4>
-                                        <span>
-                                            <i class="icon-bag"></i>
-                                    商场
-                                </span>
-                                    </div>
-                                </div>
-                                <div class="data">
-                                    <div class="item">
-                                        <h4>20 <small>%</small></h4>
-                                        <span>
-                                            <i class="icon-train"></i>
-                                    地铁
-                                </span>
-                                    </div>
-                                    <div class="item">
-                                        <h4>13 <small>%</small></h4>
-                                        <span>
-                                            <i class="icon-bus"></i>
-                                    火车站
-                                </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="quarter panel">
-                            <div class="inner">
-                                <h3></h3>
-                                <div class="chart">
-                                    <div class="box">
-                                        {/* <ReactEcharts style={{ marginLeft:'10px', width: '120px', height: '3rem' }} option={this.getGugarOption()} />     */} */}
-                                        <div class="label">75<small> %</small></div>
-                                    </div>
-                                    <div class="data">
-                                        <div class="item">
-                                            <h4>1,321</h4>
-                                            <span>
-                                                <i class="icon-dot" ></i>
-                                        转资额(万元)
-                                    </span>
-                                        </div>
-                                        <div class="item">
-                                            <h4>150%</h4>
-                                            <span>
-                                                <i class="icon-dot" ></i>
-                                        同比增长
-                                    </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                  </div>
             </div>
 
 

@@ -42,7 +42,7 @@ a {
     box-sizing: border-box;
     border: 2px solid red;
     border-image: url(../images/border.png) 51 38 21 132;
-    border-width: 2.125rem 1.583rem 0.875rem 5.5rem;
+    border-width: 1.125rem 1.583rem 0.875rem 1.5rem;
     position: relative;
     margin-bottom: 0.833rem;
 }
@@ -64,10 +64,60 @@ a {
 }
 
 
+
+/*allasset  */
+
+.allasset {
+    height: 10rem;
+}
+
+.allasset .content {
+    display: flex;
+    margin-top: 1rem;
+    justify-content: space-between;
+}
+.allasset h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1.167rem;
+    color: #fff;
+}
+
+.allasset span {
+    display: block;
+    color: #4c9bfd;
+    font-size: 0.667rem;
+}
+
+/*abnormal  */
+
+.abnormal {
+    height: 10rem;
+}
+
+.abnormal .content {
+    display: flex;
+    margin-top: 1rem;
+    justify-content: space-between;
+}
+.abnormal h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1.167rem;
+    color: #fff;
+}
+
+.abnormal span {
+    display: block;
+    color: #4c9bfd;
+    font-size: 0.667rem;
+}
+
+
+
+
 /* 概览区域 */
 
 .overview {
-    height: 4.583rem;
+    height: 8.583rem;
 }
 
 .overview .inner {
@@ -247,7 +297,7 @@ a {
 /* 点位 */
 
 .point {
-    height: 14.167rem;
+    height: 20.167rem;
 }
 
 .point .chart {
