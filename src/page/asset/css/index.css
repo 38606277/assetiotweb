@@ -408,7 +408,9 @@ a {
     color: #4c9bfd;
     font-size: 0.667rem;
 }
-
+.content .item {
+    text-align: center;
+}
 
 /* 订单 */
 

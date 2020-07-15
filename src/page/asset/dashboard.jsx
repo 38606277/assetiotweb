@@ -6,6 +6,7 @@ import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
 import HttpService from '../../util/HttpService.jsx';
+import Script from 'react-load-script';
 
 import './css/index.css';
 import echarts from 'echarts';
@@ -21,6 +22,31 @@ const RingProgress_config = {
     color: ['#30BF78', '#E8EDF3'],
 };
 
+function fmoney(s, n)
+{
+   n = n > 0 && n <= 20 ? n : 2;
+   s = parseFloat((s + "").replace(/[^\d\.-]/g, "")).toFixed(n) + "";
+   var l = s.split(".")[0].split("").reverse(),
+   r = s.split(".")[1];
+   var t = "";
+   for(var i = 0; i < l.length; i ++ )
+   {
+      t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? "," : "");
+   }
+   return t.split("").reverse().join("") + "." + r;
+}
+
+function numFormat(num) {
+    if(num >= 10000) {
+        num = fmoney(Math.abs(num/1000)/10,2) + '万';
+    } else if (num >= 1000) {
+        num = fmoney(Math.abs(num/100)/10,2) + '千';
+    }else{
+        num = fmoney(num,2) + '元';
+    }
+ 
+    return num;
+}
 export default class dashboard extends React.Component {
     constructor(props) {
         super(props);
@@ -88,11 +114,11 @@ export default class dashboard extends React.Component {
                     this.setState({ asset_num: res.data.asset_num, 
                         normal_num: res.data.normal_num, 
                         abnormal_num: res.data.abnormal_num,
-                        assetCost:res.data.assetCost,
+                        assetCost:numFormat(res.data.assetCost==null?0:res.data.assetCost),
                         assetNumber:res.data.assetNumber })
-                }
-                else
+                }else{
                     message.error(res.message);
+                }
 
             });
         //查询资产上线按城市
@@ -100,9 +126,9 @@ export default class dashboard extends React.Component {
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.setState({ city_data: res.data })
-                }
-                else
+                }else{
                     message.error(res.message);
+                }
 
             });
         //查询资产预警信息
@@ -110,10 +136,9 @@ export default class dashboard extends React.Component {
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.setState({ alarm_data: res.data })
-                }
-                else
+                }else{
                     message.error(res.message);
-
+                }
             });
 
             //查询资产异常信息
@@ -131,9 +156,6 @@ export default class dashboard extends React.Component {
 
     };
     getGugarOption = () => {
-
-
-
         var option = {
             series: [
                 {
@@ -173,7 +195,6 @@ export default class dashboard extends React.Component {
     };
 
     gethbmapOption1 = () => {
-
         var option = {
             title: {
                 text: '',
@@ -201,13 +222,8 @@ export default class dashboard extends React.Component {
         return option;
     }
 
-
-
     getMapOption = () => {
-
         var option = {
-
-
             visualMap: {
                 show: false,
                 min: 0,
@@ -259,15 +275,11 @@ export default class dashboard extends React.Component {
             // 值域选择，每个图表最多仅有一个值域控件
 
         };
-
-
-
         return option;
     }
 
 
     getOption = () => {
-
       let  option = {
             // 控制提示
             tooltip: {
@@ -402,7 +414,6 @@ export default class dashboard extends React.Component {
     //     return option;
     // }
 
-
     getOption2 = () => {
         var item = {
             name: '',
@@ -492,7 +503,6 @@ export default class dashboard extends React.Component {
             ],
             // 控制x轴
             series: [
-
                 {
                     // series配置
                     // 颜色
@@ -523,14 +533,11 @@ export default class dashboard extends React.Component {
 
     getBarOption = () => {
         let option = {
-
-
             xAxis: {
                 type: 'value',
                 boundaryGap: [0, 0.01]
             },
             yAxis: {
-
                 data: ['巴西', '印尼', '美国', '印度', '中国', '世界人口(万)']
             },
             series: [
@@ -539,11 +546,8 @@ export default class dashboard extends React.Component {
                     type: 'bar',
                     data: [18203, 23489, 29034, 104970, 131744, 630230]
                 }
-
             ]
         };
-
-
         return option;
     }
     getLineOption = () => {
@@ -626,15 +630,9 @@ export default class dashboard extends React.Component {
                 }
             }]
         };
-
         return option;
     }
    
-    
-
-
-
-
     onMapClick = {
         'click': this.clickEchartsPie.bind(this)
     }
@@ -652,15 +650,10 @@ export default class dashboard extends React.Component {
         window.location.href = "#/asset/assetmapGaoDe/" + this.state.longitude + "/" + this.state.latitude;
     }
 
-
     render() {
-
-
-
-
         return (
             <div class="viewport" >
-
+            <Script url="../../../public/carrotsearch.foamtree.js"/> 
                 <div class="column">
                     <div class="allasset panel">
                         <h3>物联网资产统计</h3>
@@ -668,26 +661,22 @@ export default class dashboard extends React.Component {
                             <div class="content">
                                 <div class="item">
                                     <h4> <a href="#/asset/assetInventory">{this.state.asset_num}</a></h4>
-                                    <span>
-
-                                       基站数量
-                        </span>
+                                    <span>基站数量</span>
                                 </div>
                                 <div class="item">
                                     <h4><a href="#/asset/assetInventory">{this.state.assetCost}</a></h4>
                                     <span>
                                         <i class="icon-dot" style={{ color: '#6acca3' }}></i>
-                            资产原值
-                        </span>
+                                        资产原值
+                                    </span>
                                 </div>
                                 <div class="item">
                                     <h4><a href="#/asset/assetInventory">{this.state.assetNumber}</a></h4>
                                     <span>
                                         <i class="icon-dot"></i>
-                            资产条数
-                        </span>
+                                        资产条数
+                                    </span>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -697,26 +686,22 @@ export default class dashboard extends React.Component {
                             <div class="content">
                                 <div class="item">
                                     <h4> <a href="#/asset/assetInventory">{this.state.gatewayNumber}</a></h4>
-                                    <span>
-
-                                        异常网关数量
-                        </span>
+                                    <span>异常网关数量</span>
                                 </div>
                                 <div class="item">
                                     <h4><a href="#/asset/assetInventory">{this.state.assetAlarmNumber}</a></h4>
                                     <span>
                                         <i class="icon-dot" style={{ color: '#6acca3' }}></i>
-                           异常资产条数
-                        </span>
+                                        异常资产条数
+                                    </span>
                                 </div>
                                 <div class="item">
                                     <h4><a href="#/asset/assetInventory">{this.state.pendAssetAlarmNumber}</a></h4>
                                     <span>
                                         <i class="icon-dot"></i>
-                            待处理
-                        </span>
+                                        待处理
+                                    </span>
                                 </div>
-
                             </div>
                         </div>
                     </div>
