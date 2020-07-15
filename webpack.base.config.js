@@ -159,7 +159,7 @@ module.exports = {
               
                 react1:{
                     name: 'react1',
-                    test: module => /react-pivottable|react-grid-layout|react-chat-widget|react-codemirror|react-trend|d3|map-box/.test(module.context),
+                    test: module => /react-pivottable|react-grid-layout|react-chat-widget|react-codemirror|react-trend|d3|map-box|_sortablejs@1.10.2@sortablejs|_react-dnd@11.1.3/.test(module.context),
                     chunks: 'async',
                     priority: 13,
                     enforce: true,
