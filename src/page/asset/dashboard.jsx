@@ -67,6 +67,8 @@ export default class dashboard extends React.Component {
             gatewayNumber: 0,
             assetAlarmNumber:0,
             pendAssetAlarmNumber:0,
+            typeName:[],
+            typeNum:[],
             alarm_data: [],
             city_data: [{
                 name: '邯郸市',
@@ -153,6 +155,21 @@ export default class dashboard extends React.Component {
                     message.error(res.message);
 
             });
+             //查询资产异常信息
+             HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
+             .then(res => {
+                 if (res.resultCode == "1000") {
+                     console.log(res.data.typeName.split(","))
+                    this.setState({ typeName: res.data.typeName.split(","),
+                        typeNum:res.data.typeNum.split(",")
+                    });
+                 }else{
+                    message.error(res.message);
+                 }
+                     
+ 
+             });
+            
 
     };
     getGugarOption = () => {
@@ -465,7 +482,7 @@ export default class dashboard extends React.Component {
                     // 使用类目，必须有data属性
                     type: 'category',
                     // 使用 data 中的数据设为刻度文字
-                    data: ['石家庄', '唐山', '雄安', '保定', '廊坊', '', '......', '', '张家口', '承德', '邯郸', '成都', '邢台'],
+                    data: this.state.typeName,
                     // 刻度设置
                     axisTick: {
                         // true意思：图形在刻度中间
@@ -475,7 +492,12 @@ export default class dashboard extends React.Component {
                     },
                     //文字
                     axisLabel: {
-                        color: '#4c9bfd'
+                        color: '#4c9bfd',
+                        // interval:0,
+                        // rotate:50,
+                        formatter: function (value) {
+                            return value.split("").join("\n")
+                        }
                     }
                 }
             ],
@@ -524,7 +546,7 @@ export default class dashboard extends React.Component {
                     // 柱子宽度
                     barWidth: '60%',
                     // 数据
-                    data: [2100, 1900, 1700, 1560, 1400, item, item, item, 900, 750, 600, 480, 240]
+                    data: this.state.typeNum
                 }
             ]
         };
