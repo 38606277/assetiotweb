@@ -74,7 +74,7 @@ class assetCube extends React.Component {
                     <Button style={{ marginLeft: '10px' }} onClick={() => this.refreshClick()}>重置</Button>
                     <Button onClick={() => this.excel()} style={{ marginLeft: '10px' }}>导出</Button>
                 </span>} >
-                    <Row>
+                    {/* <Row>
                         <Form >
                             <FormItem style={{ display: 'none' }}>
                                 {getFieldDecorator('asset_id')(
@@ -114,7 +114,7 @@ class assetCube extends React.Component {
 
                             </Row>
                         </Form>
-                    </Row>
+                    </Row> */}
 
                 </Card>
                 <PivotTableUI

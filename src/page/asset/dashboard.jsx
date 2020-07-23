@@ -6,7 +6,7 @@ import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
 import HttpService from '../../util/HttpService.jsx';
-import Script from 'react-load-script';
+import Script from 'react-load-script';
 
 import './css/index.css';
 import echarts from 'echarts';
@@ -22,29 +22,27 @@ const RingProgress_config = {
     color: ['#30BF78', '#E8EDF3'],
 };
 
-function fmoney(s, n)
-{
-   n = n > 0 && n <= 20 ? n : 2;
-   s = parseFloat((s + "").replace(/[^\d\.-]/g, "")).toFixed(n) + "";
-   var l = s.split(".")[0].split("").reverse(),
-   r = s.split(".")[1];
-   var t = "";
-   for(var i = 0; i < l.length; i ++ )
-   {
-      t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? "," : "");
-   }
-   return t.split("").reverse().join("") + "." + r;
+function fmoney(s, n) {
+    n = n > 0 && n <= 20 ? n : 2;
+    s = parseFloat((s + "").replace(/[^\d\.-]/g, "")).toFixed(n) + "";
+    var l = s.split(".")[0].split("").reverse(),
+        r = s.split(".")[1];
+    var t = "";
+    for (var i = 0; i < l.length; i++) {
+        t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? "," : "");
+    }
+    return t.split("").reverse().join("") + "." + r;
 }
 
 function numFormat(num) {
-    if(num >= 10000) {
-        num = fmoney(Math.abs(num/1000)/10,2) + '万';
+    if (num >= 10000) {
+        num = fmoney(Math.abs(num / 1000) / 10, 2) + '万';
     } else if (num >= 1000) {
-        num = fmoney(Math.abs(num/100)/10,2) + '千';
-    }else{
-        num = fmoney(num,2) + '元';
+        num = fmoney(Math.abs(num / 100) / 10, 2) + '千';
+    } else {
+        num = fmoney(num, 2) + '元';
     }
- 
+
     return num;
 }
 export default class dashboard extends React.Component {
@@ -60,16 +58,18 @@ export default class dashboard extends React.Component {
             llongitude: null,
             latitude: null,
             asset_num: 0,
-            assetCost:0,
-            assetNumber:0,
+            assetCost: 0,
+            baseStationNum:0,
+            assetNumber: 0,
             normal_num: 0,
             abnormal_num: 0,
             gatewayNumber: 0,
-            assetAlarmNumber:0,
-            pendAssetAlarmNumber:0,
-            typeName:[],
-            typeNum:[],
+            assetAlarmNumber: 0,
+            pendAssetAlarmNumber: 0,
+            typeName: [],
+            typeNum: [],
             alarm_data: [],
+            netTypeNum:[],
             city_data: [{
                 name: '邯郸市',
                 value: 2
@@ -113,22 +113,41 @@ export default class dashboard extends React.Component {
         HttpService.post("reportServer/assetquery/getAssetNum", JSON.stringify({}))
             .then(res => {
                 if (res.resultCode == "1000") {
-                    this.setState({ asset_num: res.data.asset_num, 
-                        normal_num: res.data.normal_num, 
+                    this.setState({
+                        asset_num: res.data.asset_num,
+                        normal_num: res.data.normal_num,
                         abnormal_num: res.data.abnormal_num,
-                        assetCost:numFormat(res.data.assetCost==null?0:res.data.assetCost),
-                        assetNumber:res.data.assetNumber })
-                }else{
+                        baseStationNum:res.data.baseStationNum,    
+                        assetCost: numFormat(res.data.assetCost == null ? 0 : res.data.assetCost),
+                        assetNumber: res.data.assetNumber
+                    })
+                } else {
                     message.error(res.message);
                 }
 
             });
+
+        //    //查询基站总数
+        //    HttpService.post("reportServer/assetquery/getBaseStationNum", JSON.stringify({}))
+        //    .then(res => {
+        //        if (res.resultCode == "1000") {
+        //            this.setState({
+        //             baseStationNum: res.data,
+        //            });
+        //        } else {
+        //            message.error(res.message);
+        //        }
+   
+   
+        //    });
+           
+
         //查询资产上线按城市
         HttpService.post("reportServer/assetquery/getAssetNumByCity", JSON.stringify({}))
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.setState({ city_data: res.data })
-                }else{
+                } else {
                     message.error(res.message);
                 }
 
@@ -138,38 +157,54 @@ export default class dashboard extends React.Component {
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.setState({ alarm_data: res.data })
-                }else{
+                } else {
                     message.error(res.message);
                 }
             });
 
-            //查询资产异常信息
-            HttpService.post("reportServer/assetquery/getAssetAlarmNum", JSON.stringify({}))
+        //查询资产异常信息
+        HttpService.post("reportServer/assetquery/getAssetAlarmNum", JSON.stringify({}))
             .then(res => {
                 if (res.resultCode == "1000") {
-                    this.setState({ gatewayNumber: res.data.gatewayNumber,
-                        assetAlarmNumber:res.data.assetAlarmNumber,
-                        pendAssetAlarmNumber:res.data.pendAssetAlarmNumber})
+                    this.setState({
+                        gatewayNumber: res.data.gatewayNumber,
+                        assetAlarmNumber: res.data.assetAlarmNumber,
+                        pendAssetAlarmNumber: res.data.pendAssetAlarmNumber
+                    })
                 }
                 else
                     message.error(res.message);
 
             });
-             //查询资产异常信息
-             HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
-             .then(res => {
-                 if (res.resultCode == "1000") {
-                     console.log(res.data.typeName.split(","))
-                    this.setState({ typeName: res.data.typeName.split(","),
-                        typeNum:res.data.typeNum.split(",")
+        //查询资产异常信息
+        HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    console.log(res.data.typeName.split(","))
+                    this.setState({
+                        typeName: res.data.typeName.split(","),
+                        typeNum: res.data.typeNum.split(",")
                     });
-                 }else{
+                } else {
                     message.error(res.message);
-                 }
-                     
- 
-             });
-            
+                }
+
+
+            });
+
+             //查询网络类型信息
+        HttpService.post("reportServer/assetquery/getNetTypeNum", JSON.stringify({}))
+        .then(res => {
+            if (res.resultCode == "1000") {
+                this.setState({
+                    netTypeNum: res.data,
+                });
+            } else {
+                message.error(res.message);
+            }
+
+
+        });
 
     };
     getGugarOption = () => {
@@ -297,52 +332,36 @@ export default class dashboard extends React.Component {
 
 
     getOption = () => {
-      let  option = {
-            // 控制提示
+        let option = {
+           
             tooltip: {
-                // 非轴图形，使用item的意思是放到数据对应图形上触发提示
                 trigger: 'item',
-                // 格式化提示内容：
-                // a 代表图表名称 b 代表数据名称 c 代表数据  d代表  当前数据/总数据的比例
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                formatter: '{b} <br/> {c} ({d}%)'
             },
-            // 控制图表
+            legend: {
+                orient: 'vertical',
+                left: 'right',
+                textStyle:{//图例文字的样式
+                    color:'#ccc',
+                    fontSize:16
+                },
+                data: ['2G', '3G', '4G', '5G']
+            },
+            color:['#f6da22','#bbe2e8','#6cacde'],
             series: [
                 {
-                    // 图表名称
-                    name: '地区',
-                    // 图表类型
+                    name: '',
                     type: 'pie',
-                    // 南丁格尔玫瑰图 有两个圆  内圆半径10%  外圆半径70%
-                    // 百分比基于  图表DOM容器的半径
-                    radius: ['10%', '70%'],
-                    // 图表中心位置 left 50%  top 50% 距离图表DOM容器
-                    center: ['50%', '50%'],
-                    // 半径模式，另外一种是 area 面积模式
-                    roseType: 'radius',
-                    // 数据集 value 数据的值 name 数据的名称
-                    data: [
-                        { value: 20, name: '云南' },
-                        { value: 5, name: '北京' },
-                        { value: 15, name: '山东' },
-                        { value: 25, name: '河北' },
-                        { value: 20, name: '江苏' },
-                        { value: 35, name: '浙江' },
-                        { value: 30, name: '四川' },
-                        { value: 40, name: '湖北' }
-                    ],
-                    //文字调整
-                    label: {
-                        fontSize: 10
-                    },
-                    //引导线
-                    labelLine: {
-                        length: 8,
-                        length2: 10
+                    data: this.state.netTypeNum,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
                     }
                 }
-            ],
-            color: ['#006cff', '#60cda0', '#ed8884', '#ff9f7f', '#0096ff', '#9fe6b8', '#32c5e9', '#1d9dff']
+            ]
         };
 
         // let option = {
@@ -582,7 +601,7 @@ export default class dashboard extends React.Component {
                 // 类目类型                                  
                 type: 'category',
                 // x轴刻度文字                                  
-                data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                data: ['火车站', '商场', '学校', '公园', '铁路', '公路', '山地', '野外', '社区', '村庄', '景点', '办公场所'],
                 axisTick: {
                     show: false//去除刻度线
                 },
@@ -612,7 +631,7 @@ export default class dashboard extends React.Component {
             legend: {
                 textStyle: {
                     color: '#4c9bfd' // 图例文字颜色
-    
+
                 },
                 right: '10%'//距离右边10%
             },
@@ -646,7 +665,7 @@ export default class dashboard extends React.Component {
                 type: 'bar',
                 // 圆滑连接                                  
                 // smooth: true,
-                 barWidth : '40%',
+                barWidth: '40%',
                 itemStyle: {
                     color: '#ed3f35'  // 线颜色
                 }
@@ -654,7 +673,7 @@ export default class dashboard extends React.Component {
         };
         return option;
     }
-   
+
     onMapClick = {
         'click': this.clickEchartsPie.bind(this)
     }
@@ -675,14 +694,14 @@ export default class dashboard extends React.Component {
     render() {
         return (
             <div class="viewport" >
-            <Script url="../../../public/carrotsearch.foamtree.js"/> 
+                <Script url="../../../public/carrotsearch.foamtree.js" />
                 <div class="column">
                     <div class="allasset panel">
                         <h3>物联网资产统计</h3>
                         <div>
                             <div class="content">
                                 <div class="item">
-                                    <h4> <a href="#/asset/assetInventory">{this.state.asset_num}</a></h4>
+                                    <h4> <a href="#/asset/assetInventory">{this.state.baseStationNum}</a></h4>
                                     <span>基站数量</span>
                                 </div>
                                 <div class="item">
@@ -703,7 +722,7 @@ export default class dashboard extends React.Component {
                         </div>
                     </div>
                     <div class="abnormal panel" >
-                    <h3>异常资产统计</h3>
+                        <h3>异常资产统计</h3>
                         <div>
                             <div class="content">
                                 <div class="item">
@@ -728,28 +747,28 @@ export default class dashboard extends React.Component {
                         </div>
                     </div>
                     <div class="monitor panel">
-                            <div class="tabs">
-                                <a href="#/asset/assetAlarmList" data-index="0" class="active">异常资产监控</a>
+                        <div class="tabs">
+                            <a href="#/asset/assetAlarmList" data-index="0" class="active">异常资产监控</a>
+                        </div>
+                        <div class="content" style={{ display: 'block' }}>
+                            <div class="head">
+                                <span class="col">故障时间</span>
+                                <span class="col">资产名称</span>
+                                <span class="col">异常代码</span>
                             </div>
-                            <div class="content" style={{ display: 'block' }}>
-                                <div class="head">
-                                    <span class="col">故障时间</span>
-                                    <span class="col">资产名称</span>
-                                    <span class="col">异常代码</span>
+                            <div class="marquee-view">
+                                <div class="marquee">
+                                    {this.state.alarm_data.map(alarm => (
+                                        <div class="row">
+                                            <span class="col" style={{ width: "4.2rem" }}>{alarm.alarm_time}</span>
+                                            <span class="col"> <a href="#/asset/assetAlarmList">{alarm.asset_name}</a></span>
+                                            <span class="col">{alarm.alarm_type}</span>
+                                            <span class="icon-dot"></span>
+                                        </div>
+
+                                    ))}
+
                                 </div>
-                                <div class="marquee-view">
-                                    <div class="marquee">
-                                        {this.state.alarm_data.map(alarm => (
-                                            <div class="row">
-                                                <span class="col" style={{ width: "4.2rem" }}>{alarm.alarm_time}</span>
-                                                <span class="col"> <a href="#/asset/assetAlarmList">{alarm.asset_name}</a></span>
-                                                <span class="col">{alarm.alarm_type}</span>
-                                                <span class="icon-dot"></span>
-                                            </div>
-
-                                        ))}
-
-                                    </div>
                             </div>
                             <div class="content">
                                 <div class="head">
@@ -789,48 +808,33 @@ export default class dashboard extends React.Component {
                         </div>
                     </div>
                     <div class="users panel">
-                            <h3>基站网络类型统计</h3>
-                            <div class="chart">
-                                <ReactEcharts style={{ width: '400px', height: '200px' }} option={this.getOption()} />
-                                <div class="data">
-                                    <div class="item">
-                                        <h4>120,899</h4>
-                                        <span>
-                                            <i class="icon-dot" style={{ color: '#ed3f35' }}></i>
-                                    用户总量
-                                </span>
-                                    </div>
-                                    <div class="item">
-                                        <h4>248</h4>
-                                        <span>
-                                            <i class="icon-dot" style={{ color: '#eacf19' }}></i>
-                                    本月新增
-                                </span>
-                                    </div>
-                                </div>
-                            </div>
+                        <h3>基站网络类型统计</h3>
+                        <div class="chart">
+                            <ReactEcharts style={{ width: '400px', height: '200px' }} option={this.getOption()} />
+                            
+                        </div>
                     </div>
                 </div>
                 <div class="column">
 
                     <div class="point panel">
-                      
+
                         <h3>资产场景分布</h3>
                         <div class="chart">
-                        <ReactEcharts style={{ width: '500px', height: '250px' }} option={this.getLineOption()} />
+                            <ReactEcharts style={{ width: '500px', height: '250px' }} option={this.getLineOption()} />
                         </div>
 
-                   
-                    </div>
-                    <div class="point panel">
-                      
-                            <h3>资产类别统计</h3>
-                            <div class="chart">
-                                <ReactEcharts style={{ width: '500px', height: '250px' }} option={this.getOption2()} />
-                            </div>
 
                     </div>
-                  </div>
+                    <div class="point panel">
+
+                        <h3>资产类别统计</h3>
+                        <div class="chart">
+                            <ReactEcharts style={{ width: '500px', height: '250px' }} option={this.getOption2()} />
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
 

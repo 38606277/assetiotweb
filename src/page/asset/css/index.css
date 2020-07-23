@@ -374,40 +374,15 @@ a {
 .users {
     height: 15.167rem;
     display: flex;
+    flex-direction: column;
+
 }
 
 .users .chart {
-    display: flex;
-    margin-top: 1rem;
+    
 }
 
-.users .bar {
-    width: 24.5rem;
-    height: 10rem;
-}
 
-.users .data {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 7rem;
-    padding: 1.5rem 1.25rem;
-    box-sizing: border-box;
-    background-image: url(../images/rect.png);
-    background-size: cover;
-}
-
-.users h4 {
-    margin-bottom: 0.5rem;
-    font-size: 1.167rem;
-    color: #fff;
-}
-
-.users span {
-    display: block;
-    color: #4c9bfd;
-    font-size: 0.667rem;
-}
 .content .item {
     text-align: center;
 }
