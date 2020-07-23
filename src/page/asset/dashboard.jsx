@@ -70,6 +70,9 @@ export default class dashboard extends React.Component {
             typeName:[],
             typeNum:[],
             alarm_data: [],
+            twog:'',
+            threeg:'',
+            fourg:'',
             city_data: [{
                 name: '邯郸市',
                 value: 2
@@ -159,15 +162,25 @@ export default class dashboard extends React.Component {
              HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
              .then(res => {
                  if (res.resultCode == "1000") {
-                     console.log(res.data.typeName.split(","))
                     this.setState({ typeName: res.data.typeName.split(","),
                         typeNum:res.data.typeNum.split(",")
                     });
                  }else{
                     message.error(res.message);
                  }
-                     
- 
+             });
+
+             //查询资产异常信息
+             HttpService.post("reportServer/assetquery/getAssetJZType", JSON.stringify({}))
+             .then(res => {
+                 if (res.resultCode == "1000") {
+                    this.setState({ twog: res.data[0].total,
+                        threeg:res.data[1].total,
+                        fourg:res.data[2].total
+                    });
+                 }else{
+                    message.error(res.message);
+                 }  
              });
             
 
@@ -315,21 +328,16 @@ export default class dashboard extends React.Component {
                     type: 'pie',
                     // 南丁格尔玫瑰图 有两个圆  内圆半径10%  外圆半径70%
                     // 百分比基于  图表DOM容器的半径
-                    radius: ['10%', '70%'],
+                    radius: '50%',
                     // 图表中心位置 left 50%  top 50% 距离图表DOM容器
                     center: ['50%', '50%'],
                     // 半径模式，另外一种是 area 面积模式
-                    roseType: 'radius',
+                    //roseType: 'radius',
                     // 数据集 value 数据的值 name 数据的名称
                     data: [
-                        { value: 20, name: '云南' },
-                        { value: 5, name: '北京' },
-                        { value: 15, name: '山东' },
-                        { value: 25, name: '河北' },
-                        { value: 20, name: '江苏' },
-                        { value: 35, name: '浙江' },
-                        { value: 30, name: '四川' },
-                        { value: 40, name: '湖北' }
+                        { value: this.state.twog, name: '2G' },
+                        { value: this.state.threeg, name: '3G' },
+                        { value: this.state.fourg, name: '4G' }
                     ],
                     //文字调整
                     label: {
@@ -788,11 +796,11 @@ export default class dashboard extends React.Component {
 
                         </div>
                     </div>
-                    <div class="users panel">
-                            <h3>基站网络类型统计</h3>
+                    <div class="panel">
+                            <div><h3>基站网络类型统计</h3></div>
                             <div class="chart">
                                 <ReactEcharts style={{ width: '400px', height: '200px' }} option={this.getOption()} />
-                                <div class="data">
+                                {/* <div class="data">
                                     <div class="item">
                                         <h4>120,899</h4>
                                         <span>
@@ -807,7 +815,7 @@ export default class dashboard extends React.Component {
                                     本月新增
                                 </span>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                     </div>
                 </div>
