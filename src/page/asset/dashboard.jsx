@@ -323,7 +323,7 @@ export default class dashboard extends React.Component {
             series: [
                 {
                     // 图表名称
-                    name: '地区',
+                    name: '基站',
                     // 图表类型
                     type: 'pie',
                     // 南丁格尔玫瑰图 有两个圆  内圆半径10%  外圆半径70%
