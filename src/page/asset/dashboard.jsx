@@ -641,7 +641,7 @@ export default class dashboard extends React.Component {
                 containLabel: true // 包含刻度文字在内
             },
             series: [{
-                name: '资产原值',
+                name: '资产原值(万元)',
                 // 数据                                  
                 data: this.state.assetCJCost,
                 // 图表类型                                  
