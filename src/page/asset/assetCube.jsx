@@ -69,7 +69,7 @@ class assetCube extends React.Component {
 
         return (
             <div>
-                <Card title={<b>资产分析</b>} extra={<span>
+                <Card title={<b>资产结构分析</b>} bodyStyle={{padding:'0px'}}  extra={<span>
                     <Button style={{ marginLeft: '10px' }} type="primary" onClick={() => this.onSearchClick()}>查询</Button>
                     <Button style={{ marginLeft: '10px' }} onClick={() => this.refreshClick()}>重置</Button>
                     <Button onClick={() => this.excel()} style={{ marginLeft: '10px' }}>导出</Button>
