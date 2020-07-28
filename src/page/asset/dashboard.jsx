@@ -606,7 +606,7 @@ export default class dashboard extends React.Component {
                 axisLine: {
                     show: false//去除轴线  
                 },
-                boundaryGap: false//去除轴内间距
+                boundaryGap: true//去除轴内间距
             },
             yAxis: {
                 // 数据作为刻度文字                                  
@@ -620,7 +620,7 @@ export default class dashboard extends React.Component {
                 axisLine: {
                     show: false//去除轴线  
                 },
-                boundaryGap: false//去除轴内间距
+                boundaryGap: true//去除轴内间距
             },
             //图例组件
             legend: {
