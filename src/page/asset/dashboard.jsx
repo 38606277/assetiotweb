@@ -73,40 +73,10 @@ export default class dashboard extends React.Component {
             twog:'',
             threeg:'',
             fourg:'',
-            city_data: [{
-                name: '邯郸市',
-                value: 2
-            }, {
-                name: '邢台市',
-                value: 0
-            }, {
-                name: '衡水市',
-                value: 0
-            }, {
-                name: '石家庄市',
-                value: 0
-            }, {
-                name: '保定市',
-                value: 0
-            }, {
-                name: '沧州市',
-                value: 0
-            }, {
-                name: '廊坊市',
-                value: 0,
-            }, {
-                name: '张家口市',
-                value: 0
-            }, {
-                name: '承德市',
-                value: 0,
-            }, {
-                name: '唐山市',
-                value: 0
-            }, {
-                name: '秦皇岛市',
-                value: 0
-            }],
+            assetCJCost:'',
+            assetTotal:'',
+            assetLocal:'',
+            
         };
     }
     componentDidMount() {
@@ -182,7 +152,18 @@ export default class dashboard extends React.Component {
                     message.error(res.message);
                  }  
              });
-            
+            //查询资产分布信息
+            HttpService.post("reportServer/assetquery/getAssetFB", JSON.stringify({}))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({ assetCJCost: res.data.cost.split(","),
+                    assetTotal:res.data.total.split(","),
+                    assetLocal:res.data.cj.split(",")
+                   });
+                }else{
+                   message.error(res.message);
+                }
+            });
 
     };
     getGugarOption = () => {
@@ -590,7 +571,7 @@ export default class dashboard extends React.Component {
                 // 类目类型                                  
                 type: 'category',
                 // x轴刻度文字                                  
-                data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                data: this.state.assetLocal,
                 axisTick: {
                     show: false//去除刻度线
                 },
@@ -637,7 +618,7 @@ export default class dashboard extends React.Component {
             series: [{
                 name: '资产原值',
                 // 数据                                  
-                data: [24, 40, 101, 134, 90, 230, 210, 230, 120, 230, 210, 120],
+                data: this.state.assetCJCost,
                 // 图表类型                                  
                 type: 'line',
                 // 圆滑连接                                  
@@ -649,7 +630,7 @@ export default class dashboard extends React.Component {
             {
                 name: '资产条数',
                 // 数据                                  
-                data: [40, 64, 191, 324, 290, 330, 310, 213, 180, 200, 180, 79],
+                data: this.state.assetTotal,
                 // 图表类型                                  
                 type: 'bar',
                 // 圆滑连接                                  
