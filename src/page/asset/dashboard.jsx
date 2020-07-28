@@ -69,43 +69,6 @@ export default class dashboard extends React.Component {
             typeName: [],
             typeNum: [],
             alarm_data: [],
-<<<<<<< HEAD
-            netTypeNum:[],
-            city_data: [{
-                name: '邯郸市',
-                value: 2
-            }, {
-                name: '邢台市',
-                value: 0
-            }, {
-                name: '衡水市',
-                value: 0
-            }, {
-                name: '石家庄市',
-                value: 0
-            }, {
-                name: '保定市',
-                value: 0
-            }, {
-                name: '沧州市',
-                value: 0
-            }, {
-                name: '廊坊市',
-                value: 0,
-            }, {
-                name: '张家口市',
-                value: 0
-            }, {
-                name: '承德市',
-                value: 0,
-            }, {
-                name: '唐山市',
-                value: 0
-            }, {
-                name: '秦皇岛市',
-                value: 0
-            }],
-=======
             twog:'',
             threeg:'',
             fourg:'',
@@ -113,7 +76,6 @@ export default class dashboard extends React.Component {
             assetTotal:'',
             assetLocal:'',
             
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
         };
     }
     componentDidMount() {
@@ -186,46 +148,15 @@ export default class dashboard extends React.Component {
                     message.error(res.message);
 
             });
-<<<<<<< HEAD
-        //查询资产异常信息
-        HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
-            .then(res => {
-                if (res.resultCode == "1000") {
-                    console.log(res.data.typeName.split(","))
-                    this.setState({
-                        typeName: res.data.typeName.split(","),
-                        typeNum: res.data.typeNum.split(",")
-=======
              //查询资产异常信息
              HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
              .then(res => {
                  if (res.resultCode == "1000") {
                     this.setState({ typeName: res.data.typeName.split(","),
                         typeNum:res.data.typeNum.split(",")
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
                     });
                 } else {
                     message.error(res.message);
-<<<<<<< HEAD
-                }
-
-
-            });
-
-             //查询网络类型信息
-        HttpService.post("reportServer/assetquery/getNetTypeNum", JSON.stringify({}))
-        .then(res => {
-            if (res.resultCode == "1000") {
-                this.setState({
-                    netTypeNum: res.data,
-                });
-            } else {
-                message.error(res.message);
-            }
-
-
-        });
-=======
                  }
              });
 
@@ -253,7 +184,6 @@ export default class dashboard extends React.Component {
                    message.error(res.message);
                 }
             });
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
 
     };
     getGugarOption = () => {
@@ -399,17 +329,6 @@ export default class dashboard extends React.Component {
             color:['#f6da22','#bbe2e8','#6cacde'],
             series: [
                 {
-<<<<<<< HEAD
-                    name: '',
-                    type: 'pie',
-                    data: this.state.netTypeNum,
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-=======
                     // 图表名称
                     name: '基站',
                     // 图表类型
@@ -435,7 +354,6 @@ export default class dashboard extends React.Component {
                     labelLine: {
                         length: 8,
                         length2: 10
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
                     }
                 }
             ]
@@ -678,11 +596,7 @@ export default class dashboard extends React.Component {
                 // 类目类型                                  
                 type: 'category',
                 // x轴刻度文字                                  
-<<<<<<< HEAD
-                data: ['火车站', '商场', '学校', '公园', '铁路', '公路', '山地', '野外', '社区', '村庄', '景点', '办公场所'],
-=======
                 data: this.state.assetLocal,
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
                 axisTick: {
                     show: false//去除刻度线
                 },
@@ -888,14 +802,6 @@ export default class dashboard extends React.Component {
 
                         </div>
                     </div>
-<<<<<<< HEAD
-                    <div class="users panel">
-                        <h3>基站网络类型统计</h3>
-                        <div class="chart">
-                            <ReactEcharts style={{ width: '400px', height: '200px' }} option={this.getOption()} />
-                            
-                        </div>
-=======
                     <div class="panel">
                             <div><h3>基站网络类型统计</h3></div>
                             <div class="chart">
@@ -917,7 +823,6 @@ export default class dashboard extends React.Component {
                                     </div>
                                 </div> */}
                             </div>
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
                     </div>
                 </div>
                 <div class="column">
