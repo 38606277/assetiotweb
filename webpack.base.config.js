@@ -7,6 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const devMode = process.env.NODE_ENV !== 'production';
 
+const version=new Date().getTime();
 
 module.exports = {
 
@@ -17,7 +18,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, './build'),
-        filename: '[name].js',
+        filename:'[name].'+version+'.js',
         // publicPath:"/build/"
     },
     module: {

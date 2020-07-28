@@ -6,6 +6,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const webpackConfigDev = {
     devtool: 'source-map',
     mode: 'development',
+    
 
     devServer: {
         port: 8086,

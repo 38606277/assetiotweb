@@ -7,6 +7,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 const webpackConfigProd = {
     mode: "production",
+
     plugins:[
         new  CleanWebpackPlugin(["build"],{
         root: path.join(__dirname,"../")

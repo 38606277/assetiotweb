@@ -26,6 +26,11 @@ const assetCube = Loadable({
     loading: loading,
     delay: 3000
 });
+const assetCube1 = Loadable({
+    loader: () => import(/* webpackChunkName: "assetCube1" */ './assetCube1.jsx'),
+    loading: loading,
+    delay: 3000
+});
 
 const assetmapGaoDe = Loadable({
     loader: () => import(/* webpackChunkName: "assetmapGaoDe" */ './assetmapGaoDe.jsx'),
@@ -83,38 +88,6 @@ const assetInventory = Loadable({
     delay: 3000
 });
 
-// import gatewayManagementOld from './gatewayManagementOld.jsx';
-
-
-
-// const gatewayManagementOld = Loadable({
-//     loader: () => import(/* webpackChunkName: "gatewayManagementOld" */ './gatewayManagementOld.jsx'),
-//     loading: loading,
-//     delay: 3000
-// });
-// const assetInventory = Loadable({
-//     loader: () => import(/* webpackChunkName: "assetInventory" */ './assetInventory.jsx'),
-//     loading: loading,
-//     delay: 3000
-// });
-
-// const assetMonitoring = Loadable({
-//     loader: () => import(/* webpackChunkName: "assetMonitoring" */ './assetMonitoring.jsx'),
-//     loading: loading,
-//     delay: 3000
-// });
-
-// const gatewayManagement = Loadable({
-//     loader: () => import(/* webpackChunkName: "gatewayManagement" */ './gatewayManagement.jsx'),
-//     loading: loading,
-//     delay: 3000
-// });
-
-// const addGateway = Loadable({
-//     loader: () => import(/* webpackChunkName: "addGateway" */ './addGateway.jsx'),
-//     loading: loading,
-//     delay: 3000
-// });
 
 
 
@@ -135,6 +108,7 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/assetInventory" component={assetInventory} />
 
               <Route path="/asset/assetCube" component={assetCube} />
+              <Route path="/asset/assetCube1" component={assetCube1} />
                 
            
                   {/* <Route path="/assetMonitoring" component={assetMonitoring} />
