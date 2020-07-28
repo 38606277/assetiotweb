@@ -17,15 +17,17 @@ class assetCube1 extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            assetCube: []
+            assetCube: [],
+            cityList: [],
+
 
 
         }
 
     }
     componentDidMount() {
-
-        let url = "reportServer/area/getCityByProvince";
+        // 查询地市
+        let url = "reportServer/assetquery/getCityCode";
         HttpService.post(url, JSON.stringify({ parentCode: '13' }))
             .then(res => {
                 if (res.resultCode == "1000") {
@@ -37,8 +39,30 @@ class assetCube1 extends React.Component {
 
             });
 
-        let url = "reportServer/assetquery/getAssetCube1";
-        HttpService.post(url, JSON.stringify({}))
+       
+
+    }
+
+    selectChange(value) {
+        this.setState({
+            cityCode: value
+        }, () => {
+
+        });
+        this.props.form.setFieldsValue({ cityCode: value });
+    }
+    // 搜索
+    onSearchClick() {
+            this.loadAssetCube1();
+    }
+
+    loadAssetCube1() {
+        let param = {};
+        param.cityCode = this.state.cityCode == '' ? '' : this.state.cityCode.join(",");
+        // }
+       
+        let url1 = "reportServer/assetquery/getAssetCube1";
+        HttpService.post(url1, JSON.stringify(param))
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.setState({
@@ -50,10 +74,7 @@ class assetCube1 extends React.Component {
                 }
 
             });
-
     }
-
-
 
 
 
@@ -82,7 +103,7 @@ class assetCube1 extends React.Component {
 
         return (
             <div>
-                <Card title={<b>资产效益分析</b>}  extra={<span>
+                <Card title={<b>资产效益分析</b>} bodyStyle={{padding:'0px'}} extra={<span>
                     <Button style={{ marginLeft: '10px' }} type="primary" onClick={() => this.onSearchClick()}>查询</Button>
                     <Button style={{ marginLeft: '10px' }} onClick={() => this.refreshClick()}>重置</Button>
                     <Button onClick={() => this.excel()} style={{ marginLeft: '10px' }}>导出</Button>
@@ -98,7 +119,7 @@ class assetCube1 extends React.Component {
                                 <Col xs={24} sm={8}>
                                     <FormItem {...formItemLayout} label="选择地市">
                                         {getFieldDecorator('cityCode', {
-                                            rules: [{ required: true, message: '选择地市!' }],
+                                            rules: [],
                                         })(
                                             <Select
                                                 mode="multiple"
@@ -108,28 +129,15 @@ class assetCube1 extends React.Component {
                                             >
 
                                                 {this.state.cityList.map(city => (
-                                                    <Option value={city.code}>{city.name}</Option>
+                                                    <Option value={city.city_code}>{city.city_code}</Option>
                                                 ))}
-
-
-                                            </Select>,
-
 
 
                                             </Select>
                                         )}
                                     </FormItem>
                                 </Col>
-                                <Col xs={24} sm={8}>
-                                    <FormItem {...formItemLayout} label="选择盘点时间">
-                                        {getFieldDecorator('receiveTime', {
-                                            rules: [],
-                                        })(
-                                            <DatePicker format={'YYYY-MM-DD'} name='receiveTime'
-                                                onChange={(date, dateString) => this.onChangeDate(date, dateString)} />
-                                        )}
-                                    </FormItem>
-                                </Col>
+                                
 
 
                             </Row>
