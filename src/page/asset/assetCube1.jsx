@@ -24,6 +24,19 @@ class assetCube1 extends React.Component {
 
     }
     componentDidMount() {
+
+        let url = "reportServer/area/getCityByProvince";
+        HttpService.post(url, JSON.stringify({ parentCode: '13' }))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({ cityList: res.data });
+                }
+                else {
+                    message.error(res.message);
+                }
+
+            });
+
         let url = "reportServer/assetquery/getAssetCube1";
         HttpService.post(url, JSON.stringify({}))
             .then(res => {
@@ -69,12 +82,12 @@ class assetCube1 extends React.Component {
 
         return (
             <div>
-                <Card title={<b>资产效益分析</b>} bodyStyle={{padding:'0px'}}  extra={<span>
+                <Card title={<b>资产效益分析</b>}  extra={<span>
                     <Button style={{ marginLeft: '10px' }} type="primary" onClick={() => this.onSearchClick()}>查询</Button>
                     <Button style={{ marginLeft: '10px' }} onClick={() => this.refreshClick()}>重置</Button>
                     <Button onClick={() => this.excel()} style={{ marginLeft: '10px' }}>导出</Button>
                 </span>} >
-                    {/* <Row>
+                    <Row>
                         <Form >
                             <FormItem style={{ display: 'none' }}>
                                 {getFieldDecorator('asset_id')(
@@ -83,9 +96,9 @@ class assetCube1 extends React.Component {
                             </FormItem>
                             <Row>
                                 <Col xs={24} sm={8}>
-                                    <FormItem {...formItemLayout} label="选择盘点单位">
+                                    <FormItem {...formItemLayout} label="选择地市">
                                         {getFieldDecorator('cityCode', {
-                                            rules: [{ required: true, message: '选择盘点单位!' }],
+                                            rules: [{ required: true, message: '选择地市!' }],
                                         })(
                                             <Select
                                                 mode="multiple"
@@ -93,6 +106,13 @@ class assetCube1 extends React.Component {
                                                 placeholder="Please select"
                                                 onChange={(value) => this.selectChange(value)}
                                             >
+
+                                                {this.state.cityList.map(city => (
+                                                    <Option value={city.code}>{city.name}</Option>
+                                                ))}
+
+
+                                            </Select>,
 
 
 
@@ -114,7 +134,7 @@ class assetCube1 extends React.Component {
 
                             </Row>
                         </Form>
-                    </Row> */}
+                    </Row>
 
                 </Card>
                 <PivotTableUI

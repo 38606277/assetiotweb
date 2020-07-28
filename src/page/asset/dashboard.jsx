@@ -660,7 +660,7 @@ export default class dashboard extends React.Component {
                 type: 'bar',
                 // 圆滑连接                                  
                 // smooth: true,
-                barWidth: '40%',
+                barWidth: '20px',
                 itemStyle: {
                     color: '#ed3f35'  // 线颜色
                 }
