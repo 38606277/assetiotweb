@@ -307,8 +307,8 @@ class assetampGaoDe extends React.Component {
                                             </a>
                                             <div style={{ marginTop: '5px' }}><Icon type='bank' style={{ marginRight: '8px' }} />{this.state.gateway.address}</div>
                                             <div>资产数：{this.state.gateway.assetCount}</div>
-                                            <div>总原值：{this.state.gateway.cost}</div>
-                                            <div>总净额：{this.state.gateway.netQuota}</div>
+                                            <div>总原值：{this.state.gateway.cost}万</div>
+                                            <div>总净额：{this.state.gateway.netQuota}万</div>
                                             <div >
                                                 经度:{this.state.gateway.lng} &nbsp;&nbsp;&nbsp;&nbsp; 纬度:{this.state.gateway.rng}
                                             </div>
@@ -342,7 +342,8 @@ class assetampGaoDe extends React.Component {
                                                                         {item.asset_name}
                                                                     </a>
 
-                                                                    <Tag style={{ float: 'right' }} color={item.tag_id == null ? 'gray' : 'green'}>{item.tag_id == null ? '未关联' : '正常'}</Tag>
+                                                                    {/* <Tag style={{ float: 'right' }} color={item.tag_id == null ? 'gray' : 'green'}>{item.tag_id == null ? '未关联' : '正常'}</Tag> */}
+                                                                    <Tag style={{ float: 'right' }} color='green'>正常</Tag>
                                                                     {/* <img src={require("./../../asset/wifi.png")}></img> */}
                                                                 </div>
                                                             }
