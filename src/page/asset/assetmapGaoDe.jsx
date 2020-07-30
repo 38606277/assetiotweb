@@ -298,16 +298,18 @@ class assetampGaoDe extends React.Component {
                                                 // }} 
                                                 src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.gateway.image}`} style={{ height: '100px', width: '100%' }} /></Col>
                                         </Row>
-                                        <Row style={{ height: '40px', marginTop: '10px', marginLeft: '10px' }}>
+                                        <Row style={{ paddingTop: '10px', paddingLeft: '10px' }}>
 
 
 
                                             <a href={`#/asset/gatewayEdit/update/${this.state.gateway.gateway_id}`}>
-                                                {this.state.gateway.gateway_name}
-
+                                                {this.state.gateway.gateway_name} ({this.state.gateway.gateway_id})
                                             </a>
                                             <div style={{ marginTop: '5px' }}><Icon type='bank' style={{ marginRight: '8px' }} />{this.state.gateway.address}</div>
-                                            <div style={{ marginTop: '5px' }}>
+                                            <div>资产数：{this.state.gateway.assetCount}</div>
+                                            <div>总原值：{this.state.gateway.cost}</div>
+                                            <div>总净额：{this.state.gateway.netQuota}</div>
+                                            <div >
                                                 经度:{this.state.gateway.lng} &nbsp;&nbsp;&nbsp;&nbsp; 纬度:{this.state.gateway.rng}
                                             </div>
 
@@ -320,7 +322,7 @@ class assetampGaoDe extends React.Component {
                                             <Col span={8}><Icon type='pushpin' style={{ marginRight: '8px' }} onClick={() => this.props.history.push('/asset/assetEdit/create/0')} />新增</Col>
                                         </Row> */}
 
-                                        <div style={{ marginTop: '30px', height: '350px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
+                                        <div style={{ marginTop: '10px', height: '350px', overflow: 'auto' }} ref={(ref) => this.scrollParentRef = ref} >
                                             <List
                                                 bodyStyle={{ padding: '5px', fontSize: '14px', backgroundColor: '#ffffcc' }}
                                                 style={{ padding: '5px' }}
@@ -397,7 +399,7 @@ class assetampGaoDe extends React.Component {
                                                         }
                                                         description={<div>
                                                             网关编号：{item.gateway_id}<br />
-                                                            关联资产数：{item.assetCount}<br />
+                                                            总净额：：{item.netQuota}<br />
                                                             {item.address}
                                                         </div>
                                                         }
