@@ -89,6 +89,18 @@ const assetInventory = Loadable({
 });
 
 
+const gatewayListTest = Loadable({
+    loader: () => import(/* webpackChunkName: "gatewayListTest" */ './gatewayListTest.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
+const gatewayEditTest = Loadable({
+    loader: () => import(/* webpackChunkName: "gatewayEditTest" */ './gatewayEditTest.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
 
 
 export default class assetRouter extends React.Component {
@@ -107,11 +119,14 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/gatewayMonitor" component={gatewayMonitor} />
                 <Route path="/asset/assetInventory" component={assetInventory} />
 
-              <Route path="/asset/assetCube" component={assetCube} />
-              <Route path="/asset/assetCube1" component={assetCube1} />
-                
-           
-                  {/* <Route path="/assetMonitoring" component={assetMonitoring} />
+                <Route path="/asset/assetCube" component={assetCube} />
+                <Route path="/asset/assetCube1" component={assetCube1} />
+
+                <Route path="/asset/gatewayListTest" component={gatewayListTest} />
+                <Route path="/asset/gatewayEditTest/:action/:id" component={gatewayEditTest} />
+
+
+                {/* <Route path="/assetMonitoring" component={assetMonitoring} />
                 <Route path="/gatewayManagement" component={gatewayManagement} />
                 <Route path="/addGateway/:name" component={addGateway} />
                 <Route path="/assetmapGaoDe" component={assetmapGaoDe} />
