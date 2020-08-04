@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Table, Input, message, Divider, Upload, DatePicker, Select, Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
+import { Table,Spin,Input, message, Divider, Upload, DatePicker, Select, Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
 import 'antd/dist/antd.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -19,6 +19,7 @@ class assetCube1 extends React.Component {
         this.state = {
             assetCube: [],
             cityList: [],
+            loading: false
 
 
 
@@ -62,15 +63,20 @@ class assetCube1 extends React.Component {
         // }
        
         let url1 = "reportServer/assetquery/getAssetCube1";
+        this.setState({loading:true});
         HttpService.post(url1, JSON.stringify(param))
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.setState({
                         assetCube: res.data,
+                        loading:false
                     });
                 }
                 else {
                     message.error(res.message);
+                    this.setState({
+                        loading:false
+                    });
                 }
 
             });
@@ -145,11 +151,13 @@ class assetCube1 extends React.Component {
                     </Row>
 
                 </Card>
-                <PivotTableUI
-                    data={this.state.assetCube}
-                    onChange={s => this.setState(s)}
-                    {...this.state}
-                />
+                <Spin spinning={this.state.loading} delay={500}>
+                    <PivotTableUI
+                        data={this.state.assetCube}
+                        onChange={s => this.setState(s)}
+                        {...this.state}
+                    />
+                  </Spin>
             </div>
         );
     }
