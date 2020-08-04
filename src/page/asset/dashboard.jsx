@@ -707,7 +707,7 @@ export default class dashboard extends React.Component {
                                     </span>
                                 </div>
                                 <div class="item">
-                                    <h4><a href="#/asset/assetInventory">{this.state.assetNumber}</a></h4>
+                                    <h4><a href="#/asset/assetInventory">{this.state.asset_num}</a></h4>
                                     <span>
                                         <i class="icon-dot"></i>
                                         资产条数
@@ -732,7 +732,7 @@ export default class dashboard extends React.Component {
                                     </span>
                                 </div>
                                 <div class="item">
-                                    <h4><a href="#/asset/assetInventory">{this.state.pendAssetAlarmNumber}</a></h4>
+                                    <h4><a href="#/asset/assetAlarmList">{this.state.pendAssetAlarmNumber}</a></h4>
                                     <span>
                                         <i class="icon-dot"></i>
                                         待处理
