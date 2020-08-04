@@ -59,7 +59,7 @@ export default class dashboard extends React.Component {
             latitude: null,
             asset_num: 0,
             assetCost: 0,
-            baseStationNum:0,
+            baseStationNum: 0,
             assetNumber: 0,
             normal_num: 0,
             abnormal_num: 0,
@@ -69,16 +69,19 @@ export default class dashboard extends React.Component {
             typeName: [],
             typeNum: [],
             alarm_data: [],
-            twog:'',
-            threeg:'',
-            fourg:'',
-            assetCJCost:'',
-            assetTotal:'',
-            assetLocal:'',
-            
+            twog: '',
+            threeg: '',
+            fourg: '',
+            assetCJCost: '',
+            assetTotal: '',
+            assetLocal: '',
+
         };
     }
     componentDidMount() {
+
+        echarts.registerMap("河北", require('./../../asset/河北省.json'));
+
         window.collapsedToggle(true);
         //查询资产总数
         // from='';
@@ -89,7 +92,7 @@ export default class dashboard extends React.Component {
                         asset_num: res.data.asset_num,
                         normal_num: res.data.normal_num,
                         abnormal_num: res.data.abnormal_num,
-                        baseStationNum:res.data.baseStationNum,    
+                        baseStationNum: res.data.baseStationNum,
                         assetCost: numFormat(res.data.assetCost == null ? 0 : res.data.assetCost),
                         assetNumber: res.data.assetNumber
                     })
@@ -109,10 +112,10 @@ export default class dashboard extends React.Component {
         //        } else {
         //            message.error(res.message);
         //        }
-   
-   
+
+
         //    });
-           
+
 
         //查询资产上线按城市
         HttpService.post("reportServer/assetquery/getAssetNumByCity", JSON.stringify({}))
@@ -148,40 +151,43 @@ export default class dashboard extends React.Component {
                     message.error(res.message);
 
             });
-             //查询资产异常信息
-             HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
-             .then(res => {
-                 if (res.resultCode == "1000") {
-                    this.setState({ typeName: res.data.typeName.split(","),
-                        typeNum:res.data.typeNum.split(",")
+        //查询资产异常信息
+        HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({
+                        typeName: res.data.typeName.split(","),
+                        typeNum: res.data.typeNum.split(",")
                     });
                 } else {
                     message.error(res.message);
-                 }
-             });
+                }
+            });
 
-             //查询资产异常信息
-             HttpService.post("reportServer/assetquery/getAssetJZType", JSON.stringify({}))
-             .then(res => {
-                 if (res.resultCode == "1000") {
-                    this.setState({ twog: res.data[0].total,
-                        threeg:res.data[1].total,
-                        fourg:res.data[2].total
-                    });
-                 }else{
-                    message.error(res.message);
-                 }  
-             });
-            //查询资产分布信息
-            HttpService.post("reportServer/assetquery/getAssetFB", JSON.stringify({}))
+        //查询资产异常信息
+        HttpService.post("reportServer/assetquery/getAssetJZType", JSON.stringify({}))
             .then(res => {
                 if (res.resultCode == "1000") {
-                    this.setState({ assetCJCost: res.data.cost.split(","),
-                    assetTotal:res.data.total.split(","),
-                    assetLocal:res.data.cj.split(",")
-                   });
-                }else{
-                   message.error(res.message);
+                    this.setState({
+                        twog: res.data[0].total,
+                        threeg: res.data[1].total,
+                        fourg: res.data[2].total
+                    });
+                } else {
+                    message.error(res.message);
+                }
+            });
+        //查询资产分布信息
+        HttpService.post("reportServer/assetquery/getAssetFB", JSON.stringify({}))
+            .then(res => {
+                if (res.resultCode == "1000") {
+                    this.setState({
+                        assetCJCost: res.data.cost.split(","),
+                        assetTotal: res.data.total.split(","),
+                        assetLocal: res.data.cj.split(",")
+                    });
+                } else {
+                    message.error(res.message);
                 }
             });
 
@@ -312,7 +318,7 @@ export default class dashboard extends React.Component {
 
     getOption = () => {
         let option = {
-           
+
             tooltip: {
                 trigger: 'item',
                 formatter: '{b} <br/> {c} ({d}%)'
@@ -320,13 +326,13 @@ export default class dashboard extends React.Component {
             legend: {
                 orient: 'vertical',
                 left: 'right',
-                textStyle:{//图例文字的样式
-                    color:'#ccc',
-                    fontSize:16
+                textStyle: {//图例文字的样式
+                    color: '#ccc',
+                    fontSize: 16
                 },
                 data: ['2G', '3G', '4G', '5G']
             },
-            color:['#f6da22','#bbe2e8','#6cacde'],
+            color: ['#f6da22', '#bbe2e8', '#6cacde'],
             series: [
                 {
                     // 图表名称
@@ -803,10 +809,10 @@ export default class dashboard extends React.Component {
                         </div>
                     </div>
                     <div class="panel">
-                            <div><h3>基站网络类型统计</h3></div>
-                            <div class="chart">
-                                <ReactEcharts style={{ width: '400px', height: '200px' }} option={this.getOption()} />
-                                {/* <div class="data">
+                        <div><h3>基站网络类型统计</h3></div>
+                        <div class="chart">
+                            <ReactEcharts style={{ width: '400px', height: '200px' }} option={this.getOption()} />
+                            {/* <div class="data">
                                     <div class="item">
                                         <h4>120,899</h4>
                                         <span>
@@ -822,7 +828,7 @@ export default class dashboard extends React.Component {
                                 </span>
                                     </div>
                                 </div> */}
-                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="column">
