@@ -355,7 +355,7 @@ class assetEdit extends React.Component {
               </Col>
 
               <Col xs={24} sm={8}>
-                <FormItem {...formItemLayout} label="使用编码">
+                <FormItem {...formItemLayout} label="使用人编码">
                   {getFieldDecorator('userCode', {
                     rules: [{}],
                   })(
