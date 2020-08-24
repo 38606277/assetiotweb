@@ -279,7 +279,8 @@ class gatewayEdit extends React.Component {
       selectAddress: '',
       visibleAreaModal: false,
       address_id: '',
-      merger_name: ''
+      merger_name: '',
+      isAuto: '1' //自动获取
     };
 
 
@@ -664,6 +665,23 @@ class gatewayEdit extends React.Component {
     });
   };
 
+  //编辑字段对应值
+  onSelectChange(name, value) {
+    this.setState({ [name]: value });
+    this.props.form.setFieldsValue({ [name]: value });
+  }
+
+
+
+  isDisabled() {
+    if (this.state.isReadOnly) { //只读为true  则无需控制Disabled属性默认为false
+      return false;
+    }
+    let isAuto = this.state.isAuto == '1'; //自动获取 disable为true
+    return isAuto;
+  }
+
+
   render() {
 
     const asset_rowSelection = {
@@ -766,12 +784,12 @@ class gatewayEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="网关编号">
                   {getFieldDecorator('gateway_id', {
-                    rules: [{ required: true, message: '请输入网关编号!' }],
+                    rules: [{ required: true, message: '请输入网关编号' }],
                   })
                     (
                       <Search
                         type='text'
-                        enterButton={(<Button type="primary" disabled={this.state.isReadOnly} >自动获取</Button>)}
+                        enterButton={(<Button type="primary" disabled={this.state.isReadOnly || this.isDisabled()} >获取位置</Button>)}
                         onSearch={(value) => {
                           this.getGatewayStatus(value);
                         }}
@@ -780,40 +798,55 @@ class gatewayEdit extends React.Component {
                     )}
                 </FormItem>
               </Col>
+
+
+              <Col xs={24} sm={12}>
+                <FormItem {...formItemLayout} label='自动初始化' >
+                  <Select name='isAuto' value={this.state.isAuto.toString()} style={{ width: 120 }} disabled={this.state.isReadOnly} onChange={(value) => this.onSelectChange('isAuto', value)}>
+                    <Option value='1' >是</Option>
+                    <Option value='0' >否</Option>
+                  </Select>
+                </FormItem>
+              </Col>
+
+            </Row>
+            <Row>
+
+
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="地址">
                   {getFieldDecorator('address', {
-                    rules: [{ required: true, message: '请输入网关地址' }],
+                    rules: [{ required: false, message: '请输入网关地址' }],
                   })(
 
                     <Search
                       type='text'
-
-                      enterButton={(<Button type="primary" disabled={this.state.isReadOnly} >选择</Button>)}
+                      enterButton={(<Button type="primary" disabled={this.state.isReadOnly || this.isDisabled()} >选择</Button>)}
                       onSearch={(value) => {
                         this.showSelectAddress();
                       }}
                       readOnly={this.state.isReadOnly}
+                      disabled={this.isDisabled()}
                     />
                   )}
                 </FormItem>
               </Col>
-            </Row>
-            <Row>
+
               <Col xs={24} sm={12}>
 
                 <FormItem {...formItemLayout} label="网关位置">
                   {getFieldDecorator('merger_name', {
-                    rules: [{ required: true, message: '请输入网关地址' }],
+                    rules: [{ required: false, message: '请选择网关位置' }],
                   })(
                     <Search
                       readOnly
                       type='text'
-                      enterButton={(<Button type="primary" disabled={this.state.isReadOnly} >选择</Button>)}
+                      enterButton={(<Button type="primary" disabled={this.state.isReadOnly || this.isDisabled()} >选择</Button>)}
                       onSearch={(value) => {
                         this.showSelectArea();
                       }}
-                      readOnly
+                      readOnly={this.state.isReadOnly}
+                      disabled={this.isDisabled()}
                     />
                   )}
                 </FormItem>
@@ -840,18 +873,18 @@ class gatewayEdit extends React.Component {
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="经度">
                   {getFieldDecorator('lng', {
-                    rules: [{ required: true, message: '请输入网关编号!' }],
+                    rules: [{ required: false, message: '请输入网关经度!' }],
                   })(
-                    <Input type='text' readOnly={this.state.isReadOnly} />
+                    <Input type='text' disabled={this.isDisabled()} readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
               <Col xs={24} sm={12}>
                 <FormItem {...formItemLayout} label="纬度">
                   {getFieldDecorator('rng', {
-                    rules: [{ required: true, message: '请输入网关地址' }],
+                    rules: [{ required: false, message: '请输入网关纬度' }],
                   })(
-                    <Input type='text' readOnly={this.state.isReadOnly} />
+                    <Input type='text' disabled={this.isDisabled()} readOnly={this.state.isReadOnly} />
                   )}
                 </FormItem>
               </Col>
@@ -863,7 +896,7 @@ class gatewayEdit extends React.Component {
                 <FormItem {...formItemLayout} label='网关图片' >
 
                   {getFieldDecorator('gateway_img', {
-                    rules: [{ type: 'object', required: false, message: '请选择网关图片!', validator: this.checkImage }],
+                    rules: [{ type: 'object', required: false, message: '请选择网关图片', validator: this.checkImage }],
                   })(
                     <Upload
                       name="file"
