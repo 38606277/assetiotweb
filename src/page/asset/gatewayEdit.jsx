@@ -438,6 +438,10 @@ class gatewayEdit extends React.Component {
   }
 
   showModal = (assetListType) => {
+    //类型不同则需要由第一页加载
+    if (this.state.assetListType != assetListType) {
+      this.state.pageNum = 1;
+    }
     this.state.assetListType = assetListType;
     this.loadAssetList();
     this.setState({

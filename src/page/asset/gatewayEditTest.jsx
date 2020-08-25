@@ -231,6 +231,11 @@ class gatewayEdit extends React.Component {
   }
 
   showModal = (assetListType) => {
+
+    //类型不同则需要由第一页加载
+    if (this.state.assetListType != assetListType) {
+      this.state.pageNum = 1;
+    }
     this.state.assetListType = assetListType;
     this.loadAssetList();
     this.setState({
@@ -403,193 +408,193 @@ class gatewayEdit extends React.Component {
       {
         sheetData: this.state.dataList,
         sheetName: 'sheet',
-        sheetHeader: ['接收时间','标签号','电压','信号强度','网关编号'],
+        sheetHeader: ['接收时间', '标签号', '电压', '信号强度', '网关编号'],
       }
     ];
     var toExcel = new ExportJsonExcel(option); //new
     toExcel.saveExcel();
-  
-
-}
 
 
-
-getGatewayStatus = value => {
-  if (value == '') {
-    message.error('请输入网关编号');
-    return;
   }
 
-  HttpService.post("reportServer/test/gateway/queryGatewayStatusByGatewayId", JSON.stringify({ gateway_id: value }))
-    .then(res => {
-      if (res.resultCode == "1000") {
-        this.setState({
-          merger_name: res.data.merger_name,
-          address_id: res.data.code
-        });
-        this.props.form.setFieldsValue(res.data);
-        console.log("网关状态", res)
+
+
+  getGatewayStatus = value => {
+    if (value == '') {
+      message.error('请输入网关编号');
+      return;
+    }
+
+    HttpService.post("reportServer/test/gateway/queryGatewayStatusByGatewayId", JSON.stringify({ gateway_id: value }))
+      .then(res => {
+        if (res.resultCode == "1000") {
+          this.setState({
+            merger_name: res.data.merger_name,
+            address_id: res.data.code
+          });
+          this.props.form.setFieldsValue(res.data);
+          console.log("网关状态", res)
+        }
+        else
+          message.error(res.message);
+      });
+
+  }
+
+  removeAssetSelectedRowsByAssetId(asset_id) {
+    for (let i in this.state.asset_selectedRows) {
+      if (this.state.asset_selectedRows[i].asset_id == asset_id) {
+        this.state.asset_selectedRows.splice(i, 1)
+        break;
       }
-      else
-        message.error(res.message);
-    });
-
-}
-
-removeAssetSelectedRowsByAssetId(asset_id) {
-  for (let i in this.state.asset_selectedRows) {
-    if (this.state.asset_selectedRows[i].asset_id == asset_id) {
-      this.state.asset_selectedRows.splice(i, 1)
-      break;
     }
   }
-}
 
-handlePreviewCancel = () => this.setState({ previewVisible: false });
+  handlePreviewCancel = () => this.setState({ previewVisible: false });
 
-handlePreview = imageName => {
-  this.setState({
-    previewImage: `${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
-    previewVisible: true,
-  });
-};
+  handlePreview = imageName => {
+    this.setState({
+      previewImage: `${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
+      previewVisible: true,
+    });
+  };
 
-render() {
+  render() {
 
-  const asset_rowSelection = {
-    selectedRowKeys: this.state.asset_selectedRowKeys,
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
-      //this.setState({ asset_selectedRowKeys: selectedRowKeys, asset_selectedRows: selectedRows });
-      this.setState({ asset_selectedRowKeys: selectedRowKeys });
-    },
-    //选择操作
-    onSelect: (record, selected, selectedRows, nativeEvent) => {
-      if (selected) {
-        console.log('onSelect 添加', record);
-        this.state.asset_selectedRows.push(record)
-      } else {
-        this.removeAssetSelectedRowsByAssetId(record.asset_id)
-        console.log('onSelect 移除', record);
-      }
-      //  console.log('onSelect', record, selected, selectedRows, nativeEvent);
-    },
-    //全选
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      if (selected) {
-        for (let i in changeRows) {
-          this.state.asset_selectedRows.push(changeRows[i])
+    const asset_rowSelection = {
+      selectedRowKeys: this.state.asset_selectedRowKeys,
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log('selectedRowKeys changed: ', selectedRowKeys);
+        //this.setState({ asset_selectedRowKeys: selectedRowKeys, asset_selectedRows: selectedRows });
+        this.setState({ asset_selectedRowKeys: selectedRowKeys });
+      },
+      //选择操作
+      onSelect: (record, selected, selectedRows, nativeEvent) => {
+        if (selected) {
+          console.log('onSelect 添加', record);
+          this.state.asset_selectedRows.push(record)
+        } else {
+          this.removeAssetSelectedRowsByAssetId(record.asset_id)
+          console.log('onSelect 移除', record);
+        }
+        //  console.log('onSelect', record, selected, selectedRows, nativeEvent);
+      },
+      //全选
+      onSelectAll: (selected, selectedRows, changeRows) => {
+        if (selected) {
+          for (let i in changeRows) {
+            this.state.asset_selectedRows.push(changeRows[i])
+          }
+
+          console.log('onSelectAll 添加', changeRows);
+        } else {
+
+          for (let i in changeRows) {
+            this.removeAssetSelectedRowsByAssetId(changeRows[i].asset_id)
+          }
+          console.log('onSelectAll 移除', changeRows);
         }
 
-        console.log('onSelectAll 添加', changeRows);
-      } else {
 
-        for (let i in changeRows) {
-          this.removeAssetSelectedRowsByAssetId(changeRows[i].asset_id)
-        }
-        console.log('onSelectAll 移除', changeRows);
-      }
-
-
-      console.log('onSelectAll', selected, selectedRows, changeRows);
-    },
-    //反全选
-    // onSelectInvert: (selectedRows) => {
-    //   console.log('onSelectInvert', selectedRows);
-    // }
-  };
-
-  const gateway_rowSelection = {
-    selectedRowKeys: this.state.selectedRowKeys,
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
-      this.setState({ selectedRowKeys: selectedRowKeys, selectedRows: selectedRows });
-    },
-  };
-
-  const { getFieldDecorator } = this.props.form;
-
-  const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 8 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 12 },
-    },
-  };
-  const tailFormItemLayout = {
-    wrapperCol: {
-      xs: {
-        span: 24,
-        offset: 0,
+        console.log('onSelectAll', selected, selectedRows, changeRows);
       },
-      sm: {
-        span: 16,
-        offset: 8,
+      //反全选
+      // onSelectInvert: (selectedRows) => {
+      //   console.log('onSelectInvert', selectedRows);
+      // }
+    };
+
+    const gateway_rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log('selectedRowKeys changed: ', selectedRowKeys);
+        this.setState({ selectedRowKeys: selectedRowKeys, selectedRows: selectedRows });
       },
-    },
-  };
-  const uploadButton = (
-    <div>
-      <Icon type={this.state.loading ? 'loading' : 'plus'} />
-      <div className="ant-upload-text">Upload</div>
-    </div>
-  );
-  const { imageUrl } = this.state;
+    };
 
-  return (
-    <div id="page-wrapper">
-      <Card title={<b>{this.state.isReadOnly ? '网关详情' : this.state.action == 'update' ? '编辑网关' : '新建网关'}</b>} bordered={false} extra={<span>
-        <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(true)} disabled={this.state.isReadOnly}>保存并关闭</Button>
-        <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(false)} disabled={this.state.isReadOnly}>保存</Button>
-        <Button onClick={() => this.excel()} style={{ marginLeft: '10px' }}>导出</Button>
-        <Button href="#/asset/gatewayListTest" style={{ marginLeft: '10px' }}>返回</Button>
-      </span>} bodyStyle={{ paddingBottom: '0px' }}>
-        <Form >
-          <Row>
-            <Col xs={24} sm={12}>
-              <FormItem {...formItemLayout} label="网关编号">
-                {getFieldDecorator('gateway_id', {
-                  rules: [{ required: true, message: '请输入网关编号!' }],
-                })
-                  (
-                    <Input type='text' readOnly={this.state.isReadOnly} />
-                  )}
-              </FormItem>
-            </Col>
-          </Row>
-        </Form>
-      </Card>
-      <div style={{ padding: '16px' }}>
-        <Table dataSource={this.state.dataList} rowSelection={gateway_rowSelection} rowKey={"gateWay_id"} pagination={false} >
+    const { getFieldDecorator } = this.props.form;
 
-          <Column
-            title="序号"
-            width="100px"
-            render={(text, record, index) => `${index + 1}`}
-          />
-          <Column
-            title="物联网标签号"
-            dataIndex="tag_id"
-          />
-          <Column
-            title="更新时间"
-            dataIndex="receive_time"
-          />
-          <Column
-            title="电压"
-            dataIndex="electricity"
-          />
-          <Column
-            title="信号强度"
-            dataIndex="signalIntensity"
-          />
-        </Table>
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 12 },
+      },
+    };
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 16,
+          offset: 8,
+        },
+      },
+    };
+    const uploadButton = (
+      <div>
+        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <div className="ant-upload-text">Upload</div>
       </div>
-    </div >
-  );
-}
+    );
+    const { imageUrl } = this.state;
+
+    return (
+      <div id="page-wrapper">
+        <Card title={<b>{this.state.isReadOnly ? '网关详情' : this.state.action == 'update' ? '编辑网关' : '新建网关'}</b>} bordered={false} extra={<span>
+          <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(true)} disabled={this.state.isReadOnly}>保存并关闭</Button>
+          <Button style={{ marginLeft: '10px' }} onClick={() => this.onSaveClick(false)} disabled={this.state.isReadOnly}>保存</Button>
+          <Button onClick={() => this.excel()} style={{ marginLeft: '10px' }}>导出</Button>
+          <Button href="#/asset/gatewayListTest" style={{ marginLeft: '10px' }}>返回</Button>
+        </span>} bodyStyle={{ paddingBottom: '0px' }}>
+          <Form >
+            <Row>
+              <Col xs={24} sm={12}>
+                <FormItem {...formItemLayout} label="网关编号">
+                  {getFieldDecorator('gateway_id', {
+                    rules: [{ required: true, message: '请输入网关编号!' }],
+                  })
+                    (
+                      <Input type='text' readOnly={this.state.isReadOnly} />
+                    )}
+                </FormItem>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
+        <div style={{ padding: '16px' }}>
+          <Table dataSource={this.state.dataList} rowSelection={gateway_rowSelection} rowKey={"gateWay_id"} pagination={false} >
+
+            <Column
+              title="序号"
+              width="100px"
+              render={(text, record, index) => `${index + 1}`}
+            />
+            <Column
+              title="物联网标签号"
+              dataIndex="tag_id"
+            />
+            <Column
+              title="更新时间"
+              dataIndex="receive_time"
+            />
+            <Column
+              title="电压"
+              dataIndex="electricity"
+            />
+            <Column
+              title="信号强度"
+              dataIndex="signalIntensity"
+            />
+          </Table>
+        </div>
+      </div >
+    );
+  }
 }
 export default Form.create()(gatewayEdit);
