@@ -530,7 +530,7 @@ class assetEdit extends React.Component {
                       disabled={this.state.isReadOnly}
                     >
 
-                      {imageUrl ? < img src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                      {imageUrl ? < img src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=thumbnail_${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
 
                     </Upload>
                   )}

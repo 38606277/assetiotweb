@@ -189,7 +189,7 @@ export default class assetList extends React.Component {
                             title="资产图片"
                             render={(text, record) => (
                                 <span>
-                                    <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                                    <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=thumbnail_${record.image}`} />
                                 </span>
                             )}
                         />

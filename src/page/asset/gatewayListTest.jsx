@@ -101,7 +101,7 @@ export default class gatewayListTest extends React.Component {
 
     handlePreview = imageName => {
         this.setState({
-            previewImage: `${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageName}`,
+            previewImage: `${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=thumbnail_${imageName}`,
             previewVisible: true,
         });
     };

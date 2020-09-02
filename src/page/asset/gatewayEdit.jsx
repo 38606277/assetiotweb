@@ -11,6 +11,10 @@ import './asset.css';
 
 import AssetService from '../../service/AssetService.jsx';
 import { each } from 'lodash';
+
+import { imageCompress } from '../../js/ImageUtils.js'
+
+
 const _assetService = new AssetService();
 
 const { Column, ColumnGroup } = Table;
@@ -34,6 +38,8 @@ function beforeUpload(file) {
   if (!isLt20M) {
     message.error('Image must smaller than 20MB!');
   }
+
+  console.log('beforeUpload - ', file)
   return isJpgOrPng && isLt20M;
 }
 
@@ -514,7 +520,7 @@ class gatewayEdit extends React.Component {
 
 
   handleChange = info => {
-    console.log("info", info)
+    console.log("handleChange - info", info)
     if (info.file.status === 'uploading') {
       this.setState({ loading: true });
       return;
@@ -533,6 +539,19 @@ class gatewayEdit extends React.Component {
         loading: false,
       });
     }
+  }
+
+  //压缩
+  transformFile = (file) => {
+    console.log('transformFile - file', file)
+    return new Promise(resolve => {
+      // eslint-disable-next-line no-undef
+      imageCompress(file, (50 * 1024)).then(blob => {
+        let newFile = new File([blob], file.name);
+        console.log('newFile - ', newFile)
+        resolve(newFile);
+      })
+    });
   }
 
 
@@ -911,9 +930,10 @@ class gatewayEdit extends React.Component {
                       beforeUpload={beforeUpload}
                       onChange={this.handleChange}
                       disabled={this.state.isReadOnly}
+                    // 图片压缩 transformFile={this.transformFile}
                     >
 
-                      {imageUrl ? < img src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                      {imageUrl ? < img src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=thumbnail_${imageUrl}`} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
 
                     </Upload>
                   )}
@@ -938,7 +958,7 @@ class gatewayEdit extends React.Component {
               title="资产图片"
               render={(text, record) => (
                 <span>
-                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=thumbnail_${record.image}`} />
                 </span>
               )}
             />
@@ -978,7 +998,7 @@ class gatewayEdit extends React.Component {
               title="资产图片"
               render={(text, record) => (
                 <span>
-                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${record.image}`} />
+                  <img onClick={() => this.handlePreview(record.image)} style={{ width: '50px', height: '50px' }} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=thumbnail_${record.image}`} />
                 </span>
               )}
             />
@@ -1011,7 +1031,6 @@ class gatewayEdit extends React.Component {
           onCancel={this.handleAddressCancel}
         >
           <SelectAddressModal
-
             onSelectAddress={(lnglat) => this.onSelectAddress(lnglat)} />
 
         </Modal>

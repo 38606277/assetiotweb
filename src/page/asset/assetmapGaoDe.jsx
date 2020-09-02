@@ -296,7 +296,7 @@ class assetampGaoDe extends React.Component {
                                                 // onClick={() => {
                                                 //     window.location.href = `#/asset/gatewayEdit/update/${this.state.gateway.gateway_id}`
                                                 // }} 
-                                                src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${this.state.gateway.image}`} style={{ height: '100px', width: '100%' }} /></Col>
+                                                src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=thumbnail_${this.state.gateway.image}`} style={{ height: '100px', width: '100%' }} /></Col>
                                         </Row>
                                         <Row style={{ paddingTop: '10px', paddingLeft: '10px' }}>
 
@@ -334,7 +334,7 @@ class assetampGaoDe extends React.Component {
                                                     >
                                                         <List.Item.Meta style={{ fontSize: '12px' }}
                                                             avatar={
-                                                                <Avatar onClick={() => this.handlePreview(item.image)} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`} />
+                                                                <Avatar onClick={() => this.handlePreview(item.image)} src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=thumbnail_${item.image}`} />
                                                             }
                                                             title={
                                                                 <div>
@@ -386,7 +386,7 @@ class assetampGaoDe extends React.Component {
                                                         <img
                                                             width={80}
                                                             alt="image"
-                                                            src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=${item.image}`}
+                                                            src={`${window.getServerUrl()}reportServer/uploadAssetImg/downloadAssetImg?fileName=thumbnail_${item.image}`}
                                                             onClick={() => this.handlePreview(item.image)}
                                                         />
                                                     }
