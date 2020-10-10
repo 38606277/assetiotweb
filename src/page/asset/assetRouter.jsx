@@ -101,6 +101,13 @@ const gatewayEditTest = Loadable({
     delay: 3000
 });
 
+const assetClassification = Loadable({
+    loader: () => import(/* webpackChunkName: "assetClassification" */ './assetClassification.jsx'),
+    loading: loading,
+    delay: 3000
+});
+
+
 
 
 export default class assetRouter extends React.Component {
@@ -125,6 +132,7 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/gatewayListTest" component={gatewayListTest} />
                 <Route path="/asset/gatewayEditTest/:action/:id" component={gatewayEditTest} />
 
+                <Route path="/asset/assetClassification" component={assetClassification} />
 
                 {/* <Route path="/assetMonitoring" component={assetMonitoring} />
                 <Route path="/gatewayManagement" component={gatewayManagement} />
