@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Input, Select, Button, Card, Row, Col, Tree, message, Icon, Table, Divider, Modal, TreeSelect } from 'antd';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 import HttpService from '../../util/HttpService.jsx';
-import "./assetClassification.css"
+import "./assetCategory.css"
 const localStorge = new LocalStorge();
 const FormItem = Form.Item;
 const { TreeNode } = Tree;
@@ -33,45 +33,82 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
         }
 
         render() {
-            const { visible, onCancel, onCreate, form, treeData, parent_code } = this.props;
+            const formItemLayout = {
+                labelCol: {
+                    xs: { span: 24 },
+                    sm: { span: 8 },
+                },
+                wrapperCol: {
+                    xs: { span: 24 },
+                    sm: { span: 12 },
+                },
+            };
+            const { visible, onCancel, onCreate, onEdit, form, edit, treeData } = this.props;
             const { getFieldDecorator } = form;
-
-            var mTreeData = []
+            let mTreeData = [{
+                title: '无上级（一级）',
+                value: '0'
+            }]
             if (typeof treeData != 'undefined') {
-                mTreeData = this.parseJson(treeData)
+                mTreeData = mTreeData.concat(this.parseJson(treeData));
             }
+            console.log('form', form);
             console.log('render', mTreeData)
+
+
+
+
             return (
                 <Modal
                     visible={visible}
-                    title="新增分类"
+                    title={edit ? '编辑分类' : '新增分类'}
                     okText="保存"
                     cancelText="取消"
                     onCancel={onCancel}
-                    onOk={onCreate}
+                    onOk={edit ? onEdit : onCreate}
                 >
-                    <FormItem label="分类编号">
+
+
+
+                    <FormItem label="" style={{ display: "none" }}>
+                        {getFieldDecorator('id', {
+                            rules: [{ required: false, message: '' }],
+                        })(
+                            <Input type='text' name='id' />
+                        )}
+                    </FormItem>
+
+
+                    <FormItem {...formItemLayout} label="" style={{ display: "none" }}>
+                        {getFieldDecorator('old_code', {
+                            rules: [{ required: false, message: '' }],
+                        })(
+                            <Input type='text' name='old_code' />
+                        )}
+                    </FormItem>
+
+
+                    <FormItem {...formItemLayout} label="分类编号">
                         {getFieldDecorator('code', {
                             rules: [{ required: true, message: '请输入分类编号' }],
                         })(
                             <Input type='text' name='code' />
                         )}
                     </FormItem>
-                    <FormItem label="分类名称">
+                    <FormItem {...formItemLayout} label="分类名称">
                         {getFieldDecorator('name', {
                             rules: [{ required: true, message: '请输入分类名称' }],
                         })(
                             <Input type='text' name='name' />
                         )}
                     </FormItem>
-                    <FormItem label="上级分类">
+                    <FormItem {...formItemLayout} label="上级分类">
                         {getFieldDecorator('parent_code', {
-                            rules: [{ required: false, message: '请选择上级分类' }],
+                            rules: [{ required: true, message: '请选择上级分类' }],
                         })(
                             <TreeSelect
                                 allowClear="true"
                                 style={{ width: '100%' }}
-                                value={parent_code}
                                 dropdownStyle={{ maxHeight: 260, overflow: 'auto' }}
                                 treeData={mTreeData}
                                 placeholder="请选择上级分类"
@@ -80,16 +117,16 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
                             />
                         )}
                     </FormItem>
-                    <FormItem label="预计使用期限">
+                    <FormItem {...formItemLayout} label="预计使用期限">
                         {getFieldDecorator('life', {
-                            rules: [{ required: true, message: '请输入预计使用期限' }],
+                            rules: [{ required: false, message: '请输入预计使用期限' }],
                         })(
                             <Input type='text' name='life' />
                         )}
                     </FormItem>
-                    <FormItem label="单位">
+                    <FormItem {...formItemLayout} label="单位">
                         {getFieldDecorator('unit', {
-                            rules: [{ required: true, message: '请输入单位' }],
+                            rules: [{ required: false, message: '请输入单位' }],
                         })(
                             <Input type='text' name='unit' />
                         )}
@@ -102,7 +139,7 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
 
 
 
-class AssetClassificationManager extends React.Component {
+class AssetCategoryManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -118,7 +155,7 @@ class AssetClassificationManager extends React.Component {
     }
 
     getAllChildrenRecursionByCode() {
-        HttpService.post('reportServer/classification/getAllChildrenRecursionByCode', JSON.stringify({ parent_code: '0' }))
+        HttpService.post('reportServer/assetCategory/getAllChildrenRecursionByCode', JSON.stringify({ parent_code: '0' }))
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.setState({
@@ -137,7 +174,7 @@ class AssetClassificationManager extends React.Component {
             let param = {
                 code: selectedKeys[0]
             }
-            HttpService.post('reportServer/classification/getAllChildrenListByCode', JSON.stringify(param))
+            HttpService.post('reportServer/assetCategory/getAllChildrenListByCode', JSON.stringify(param))
                 .then(res => {
                     if (res.resultCode == "1000") {
                         this.setState({
@@ -158,7 +195,7 @@ class AssetClassificationManager extends React.Component {
             keyword: keyword
         }
 
-        HttpService.post('reportServer/classification/getByKeyword', JSON.stringify(param))
+        HttpService.post('reportServer/assetCategory/getByKeyword', JSON.stringify(param))
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.setState({
@@ -171,16 +208,16 @@ class AssetClassificationManager extends React.Component {
             });
     }
 
-    onDeleteClickListener(classification) {
+    onDeleteClickListener(category) {
         let _this = this;
         confirm({
             title: '温馨提示',
-            content: `您确定要删除${classification.name}及全部下级分类吗？`,
+            content: `您确定要删除${category.name}及全部下级分类吗？`,
             okText: '确定',
             cancelText: '取消',
             okType: 'danger',
             onOk() {
-                _this.deleteByCode(classification);
+                _this.deleteByCode(category);
             },
             onCancel() {
 
@@ -189,8 +226,8 @@ class AssetClassificationManager extends React.Component {
 
     }
 
-    deleteByCode(classification) {
-        HttpService.post('reportServer/classification/deleteByCode', JSON.stringify(classification))
+    deleteByCode(category) {
+        HttpService.post('reportServer/assetCategory/deleteByCode', JSON.stringify(category))
             .then(res => {
                 if (res.resultCode == "1000") {
                     this.getAllChildrenRecursionByCode();
@@ -238,7 +275,9 @@ class AssetClassificationManager extends React.Component {
                     }}></Icon>
                 </span>
                 <span class="element">
-                    <Icon type="edit" color="#1890ff"></Icon>
+                    <Icon type="edit" color="#1890ff" onClick={() => {
+                        this.onEditClickListener(item);
+                    }}></Icon>
                 </span>
             </div>} isLeaf={true} dataRef={item} />);
         });
@@ -246,7 +285,7 @@ class AssetClassificationManager extends React.Component {
 
 
     showModal = () => {
-        this.setState({ visible: true });
+        this.setState({ visible: true, edit: false });
     };
 
     handleCancel = () => {
@@ -260,7 +299,7 @@ class AssetClassificationManager extends React.Component {
             if (err) {
                 return;
             }
-            HttpService.post('reportServer/classification/add', JSON.stringify(values))
+            HttpService.post('reportServer/assetCategory/add', JSON.stringify(values))
                 .then(res => {
                     if (res.resultCode == "1000") {
                         form.resetFields();
@@ -273,6 +312,34 @@ class AssetClassificationManager extends React.Component {
                 });
         });
     };
+
+    onEditClickListener = (category) => {
+        const { form } = this.formRef.props;
+        category.old_code = category.code;
+        form.setFieldsValue(category)
+        this.setState({ visible: true, edit: true });
+        console.log('onEditClickListener', category)
+    }
+
+    handleEdit = () => {
+        const { form } = this.formRef.props;
+        form.validateFields((err, values) => {
+            if (err) {
+                return;
+            }
+            HttpService.post('reportServer/assetCategory/updateByCode', JSON.stringify(values))
+                .then(res => {
+                    if (res.resultCode == "1000") {
+                        form.resetFields();
+                        this.setState({ visible: false });
+                        this.getAllChildrenRecursionByCode();
+                        this.getByKeyword('');
+                    } else {
+                        message.error(res.message);
+                    }
+                });
+        });
+    }
 
     saveFormRef = formRef => {
         this.formRef = formRef;
@@ -299,6 +366,9 @@ class AssetClassificationManager extends React.Component {
                     <div style={{ marginTop: '16px' }}>
                         <Col xs={24} sm={6}>
                             <Tree
+                                autoExpandParent
+                                defaultExpandParent={true}
+                                defaultExpandAll={true}
                                 style={{ width: "100%" }}
                                 showLine={true}
                                 onSelect={this.onTreeSelect}
@@ -335,7 +405,9 @@ class AssetClassificationManager extends React.Component {
                                 <Column
                                     title="操作"
                                     render={(text, record) => (
-                                        <div > <span style={{ color: "#1890ff" }}>
+                                        <div > <span style={{ color: "#1890ff" }} onClick={() => {
+                                            this.onEditClickListener(record);
+                                        }}>
                                             编辑
                                         </span>
                                             <Divider type="vertical"></Divider>
@@ -357,7 +429,9 @@ class AssetClassificationManager extends React.Component {
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     onCreate={this.handleCreate}
+                    onEdit={this.handleEdit}
                     treeData={this.state.treeData}
+                    edit={this.state.edit}
                 />
 
             </div>
@@ -366,7 +440,7 @@ class AssetClassificationManager extends React.Component {
 
 
 }
-export default AssetClassificationManager;
+export default AssetCategoryManager;
 
 
 
