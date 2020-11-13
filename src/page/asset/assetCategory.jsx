@@ -10,9 +10,6 @@ const { Column, ColumnGroup } = Table;
 const Search = Input.Search;
 const { confirm } = Modal;
 
-
-
-
 const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
     // eslint-disable-next-line
     class extends React.Component {
@@ -136,7 +133,6 @@ const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(
         }
     },
 );
-
 
 
 class AssetCategoryManager extends React.Component {
@@ -284,7 +280,7 @@ class AssetCategoryManager extends React.Component {
 
 
 
-    showModal = () => {
+    onAddClickListener = () => {
         this.setState({ visible: true, edit: false });
     };
 
@@ -327,7 +323,7 @@ class AssetCategoryManager extends React.Component {
             if (err) {
                 return;
             }
-            HttpService.post('reportServer/assetCategory/updateByCode', JSON.stringify(values))
+            HttpService.post('reportServer/assetCategory/updateById', JSON.stringify(values))
                 .then(res => {
                     if (res.resultCode == "1000") {
                         form.resetFields();
@@ -353,8 +349,8 @@ class AssetCategoryManager extends React.Component {
                 <Card title="资产分类" style={{ height: '100%' }}>
 
                     <div>
-                        <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.showModal()}>新增分类</Button>
-                        <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onAddOrgClick()}>批量导入</Button>
+                        <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onAddClickListener()}>新增分类</Button>
+                        <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => this.onImportClickListener()}>批量导入</Button>
 
                         <Search
                             placeholder="搜索分类名称编号"
@@ -366,9 +362,8 @@ class AssetCategoryManager extends React.Component {
                     <div style={{ marginTop: '16px' }}>
                         <Col xs={24} sm={6}>
                             <Tree
-                                autoExpandParent
-                                defaultExpandParent={true}
                                 defaultExpandAll={true}
+                                autoExpandParent={true}
                                 style={{ width: "100%" }}
                                 showLine={true}
                                 onSelect={this.onTreeSelect}

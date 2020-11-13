@@ -106,6 +106,11 @@ const assetCategory = Loadable({
     loading: loading,
     delay: 3000
 });
+const assetCategoryExtension = Loadable({
+    loader: () => import(/* webpackChunkName: "assetCategoryExtension" */ './assetCategoryExtension.jsx'),
+    loading: loading,
+    delay: 3000
+});
 
 
 
@@ -133,6 +138,9 @@ export default class assetRouter extends React.Component {
                 <Route path="/asset/gatewayEditTest/:action/:id" component={gatewayEditTest} />
 
                 <Route path="/asset/assetCategory" component={assetCategory} />
+                <Route path="/asset/assetCategoryExtension" component={assetCategoryExtension} />
+
+
 
                 {/* <Route path="/assetMonitoring" component={assetMonitoring} />
                 <Route path="/gatewayManagement" component={gatewayManagement} />

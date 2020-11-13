@@ -184,7 +184,7 @@ export default class assetList extends React.Component {
 
                         </Col>
                     </Row>
-                    <Table dataSource={this.state.dataList} rowSelection={rowSelection} rowKey={"asset_id"} pagination={false} >
+                    <Table dataSource={this.state.dataList} rowSelection={rowSelection} rowKey={"asset_id"} pagination={{ position: 'top' }} >
                         <Column
                             title="资产图片"
                             render={(text, record) => (
