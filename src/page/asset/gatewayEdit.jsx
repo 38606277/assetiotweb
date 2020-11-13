@@ -1,5 +1,22 @@
 import React from 'react';
-import { Table, Form, Input, Divider, Select, Button, Modal, Pagination, Icon, Card, Row, Col, message, Cascader, Upload, Tree } from 'antd';
+import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import {
+  Table,
+  Input,
+  Divider,
+  Select,
+  Button,
+  Modal,
+  Pagination,
+  Card,
+  Row,
+  Col,
+  message,
+  Cascader,
+  Upload,
+  Tree,
+} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import AMapLoader from '@amap/amap-jsapi-loader';
@@ -784,7 +801,7 @@ class gatewayEdit extends React.Component {
     };
     const uploadButton = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <LegacyIcon type={this.state.loading ? 'loading' : 'plus'} />
         <div className="ant-upload-text">Upload</div>
       </div>
     );

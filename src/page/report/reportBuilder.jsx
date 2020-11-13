@@ -1,5 +1,22 @@
 import React from 'react';
-import { Card, Button, Table, Input, Select, List, Avatar, Form, FormItem, Icon, Row, Col, Divider, Dropdown, Menu } from 'antd';
+import { BarChartOutlined, LineChartOutlined, ProfileOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import {
+    Card,
+    Button,
+    Table,
+    Input,
+    Select,
+    List,
+    Avatar,
+    FormItem,
+    Row,
+    Col,
+    Divider,
+    Dropdown,
+    Menu,
+} from 'antd';
 
 import HttpService from '../../util/HttpService.jsx';
 
@@ -38,9 +55,9 @@ export default class reportBuilder extends React.Component {
                     <Button style={{ marginRight: "10px" }} type="primary">保存</Button>
 
 
-                    <Button icon="profile" draggable="true" onDragStart={(event) => this.drag(event, 1)} />
-                    <Button icon="bar-chart" draggable="true" onDragStart={(event) => this.drag(event, 2)} />
-                    <Button icon="line-chart" draggable="true" onDragStart={(event) => this.drag(event, 3)} />
+                    <Button icon={<ProfileOutlined />} draggable="true" onDragStart={(event) => this.drag(event, 1)} />
+                    <Button icon={<BarChartOutlined />} draggable="true" onDragStart={(event) => this.drag(event, 2)} />
+                    <Button icon={<LineChartOutlined />} draggable="true" onDragStart={(event) => this.drag(event, 3)} />
 
                     <Select setValue={this.form} style={{ minWidth: '300px' }}>
                         <Option kye="1" value="1">一行一列</Option>
@@ -155,8 +172,6 @@ export default class reportBuilder extends React.Component {
                     </Card>
                 </Card>
             </div>
-
-
-        )
+        );
     }
 }

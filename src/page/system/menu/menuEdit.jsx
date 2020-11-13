@@ -1,5 +1,7 @@
 import React from 'react';
-import { Form, Input, Select, Button, Icon, Card, Row, Col, message, Upload, Divider } from 'antd';
+import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Select, Button, Card, Row, Col, message, Upload, Divider } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -133,7 +135,7 @@ class menuEdit extends React.Component {
 
     const uploadButton = (
       <div>
-        <Icon type={this.state.loading ? 'loading' : 'plus'} />
+        <LegacyIcon type={this.state.loading ? 'loading' : 'plus'} />
         <div className="ant-upload-text">Upload</div>
       </div>
     );

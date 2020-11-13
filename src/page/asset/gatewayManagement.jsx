@@ -1,8 +1,23 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Select, Row, Col, Table, Button, Card, Input, Tree, Badge, Pagination, Modal, Divider } from 'antd';
-import { PlusCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import {
+    Select,
+    Row,
+    Col,
+    Table,
+    Button,
+    Card,
+    Input,
+    Tree,
+    Badge,
+    Pagination,
+    Modal,
+    Divider,
+} from 'antd';
+import { DatabaseOutlined, MinusCircleTwoTone, PlusCircleTwoTone, SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import echarts from 'echarts'
@@ -250,13 +265,13 @@ class TreeTest extends React.Component {
 
                             <Col xs={24} sm={12}>
                                 <FormItem {...tailFormItemLayout} >
-                                    <Button onClick={this.showModal} type="primary" icon="search">搜索</Button>
+                                    <Button onClick={this.showModal} type="primary" icon={<SearchOutlined />}>搜索</Button>
                                 </FormItem>
                             </Col>
                         </Row>
                     </Form>
 
-                    <Button href="#/addGateway/null" type="primary" icon="database" style={{ marginBottom: '10px' }}>新增网关</Button>
+                    <Button href="#/addGateway/null" type="primary" icon={<DatabaseOutlined />} style={{ marginBottom: '10px' }}>新增网关</Button>
 
                     <Table columns={columns} dataSource={this.state.dataList} bordered pagination={false} />
                     <Pagination
@@ -268,7 +283,7 @@ class TreeTest extends React.Component {
                 </Card>
 
             </div >
-        )
+        );
     }
 }
 export default Form.create()(TreeTest);

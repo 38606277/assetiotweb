@@ -1,6 +1,18 @@
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { List, Avatar, Icon, Tooltip, Button, Card, Popover } from 'antd';
+
+import {
+    BellOutlined,
+    KeyOutlined,
+    LogoutOutlined,
+    MailOutlined,
+    SettingOutlined,
+    UserAddOutlined,
+    UserOutlined,
+} from '@ant-design/icons';
+
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { List, Avatar, Tooltip, Button, Card, Popover } from 'antd';
 //import './Layout.scss';
 import { Widget, addResponseMessage, toggleWidget, dropMessages, addLinkSnippet, addUserMessage, renderCustomComponent } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
@@ -307,7 +319,7 @@ export default class TopBar extends React.Component {
                         <a className="list-group-item" href="javascript:void(0)" style={{ cursor: 'pointer' }}>
                             <div className="media">
                                 <div className="pull-left">
-                                    <Icon type='user-add' style={{ fontSize: '30px', color: '#29b6f6' }} />
+                                    <UserAddOutlined style={{ fontSize: '30px', color: '#29b6f6' }} />
                                 </div>
                                 <div className="media-body clearfix">
                                     <div className="media-heading">新用户注册</div>
@@ -321,7 +333,7 @@ export default class TopBar extends React.Component {
                         <a className="list-group-item" href="javascript:void(0)" style={{ cursor: 'pointer' }}>
                             <div className="media">
                                 <div className="pull-left">
-                                    <Icon type="mail" theme="outlined" style={{ fontSize: '30px', color: '#1e88e5' }} />
+                                    <MailOutlined style={{ fontSize: '30px', color: '#1e88e5' }} />
                                 </div>
                                 <div className="media-body clearfix">
                                     <div className="media-heading">新闻设置</div>
@@ -335,7 +347,7 @@ export default class TopBar extends React.Component {
                         <a className="list-group-item" href="javascript:void(0)" style={{ cursor: 'pointer' }}>
                             <div className="media">
                                 <div className="pull-left">
-                                    <Icon type="bell" style={{ fontSize: '30px', color: '#ef5350' }} />
+                                    <BellOutlined style={{ fontSize: '30px', color: '#ef5350' }} />
                                 </div>
                                 <div className="media-body clearfix">
                                     <div className="media-heading">更新</div>
@@ -365,18 +377,18 @@ export default class TopBar extends React.Component {
                 <ul className="dropdown-menu">
                     <li style={{ margin: '10px' }}>
                         <Link to={"/user/userView/" + this.state.userid}>
-                            <Icon type="user" theme="outlined" style={{ color: '#0a0a0a' }} />
+                            <UserOutlined style={{ color: '#0a0a0a' }} />
                             <span style={{ marginLeft: '5px', color: '#0a0a0a' }}>个人信息</span>
                         </Link>
                     </li>
                     <li style={{ margin: '10px' }}><Link to={"/user/UpdatePwd/" + this.state.userid}>
-                        <Icon type="key" theme="outlined" style={{ color: '#0a0a0a' }} />
+                        <KeyOutlined style={{ color: '#0a0a0a' }} />
                         <span style={{ marginLeft: '5px', color: '#0a0a0a' }}>密码修改</span></Link>
                     </li>
-                    <li style={{ margin: '10px' }} ><a href="javascript:void(0)"><Icon type="setting" theme="outlined" style={{ color: '#0a0a0a' }} />
+                    <li style={{ margin: '10px' }} ><a href="javascript:void(0)"><SettingOutlined style={{ color: '#0a0a0a' }} />
                         <span style={{ marginLeft: '5px', color: '#0a0a0a' }}>设置</span></a>
                     </li>
-                    <li style={{ margin: '10px' }} ><a onClick={() => { this.onLogout() }}><Icon type="logout" theme="outlined" style={{ color: '#0a0a0a' }} />
+                    <li style={{ margin: '10px' }} ><a onClick={() => { this.onLogout() }}><LogoutOutlined style={{ color: '#0a0a0a' }} />
                         <span style={{ marginLeft: '5px', color: '#0a0a0a' }}>退出</span> </a>
                     </li>
                 </ul>
@@ -398,7 +410,7 @@ export default class TopBar extends React.Component {
                             <Icon type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'} />
                         </Button>  */}
                     <Tooltip title='缩回'>
-                        <Icon
+                        <LegacyIcon
                             className="trigger"
                             type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                             onClick={this.toggle}
@@ -425,11 +437,11 @@ export default class TopBar extends React.Component {
                         >
 
                             <Button type="primary" style={{ background: 'transparent', borderColor: 'transparent' }} onClick={() => this.onselect('2')}>
-                                <Icon type="bell" style={{ fontSize: '18px', color: '#ffffff', background: 'transparent' }} />
+                                <BellOutlined style={{ fontSize: '18px', color: '#ffffff', background: 'transparent' }} />
                             </Button>
 
                             <Button type="primary" onClick={() => this.onselect('4')} style={{ background: 'transparent', borderColor: 'transparent' }}>
-                                <Avatar size="{32}" icon="user" />
+                                <Avatar size="{32}" icon={<UserOutlined />} />
                             </Button>
                         </Popover>
 

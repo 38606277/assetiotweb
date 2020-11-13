@@ -1,5 +1,21 @@
 import React from 'react';
-import { Form, Input, Select, Button, Card, Row, Col, Tree, message, Icon, Table, Divider, Modal, TreeSelect } from 'antd';
+import { Form, Icon as LegacyIcon } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {
+    Input,
+    Select,
+    Button,
+    Card,
+    Row,
+    Col,
+    Tree,
+    message,
+    Table,
+    Divider,
+    Modal,
+    TreeSelect,
+} from 'antd';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 import HttpService from '../../util/HttpService.jsx';
 import "./assetCategory.css"
@@ -243,15 +259,17 @@ class AssetCategoryManager extends React.Component {
                             {item.name}
 
                             <span class="element" >
-                                <Icon type="new" color="#1890ff"></Icon>
+                                <LegacyIcon color="#1890ff"></LegacyIcon>
                             </span>
                             <span class="element" >
-                                <Icon type="delete" color="#1890ff" onClick={() => {
-                                    this.onDeleteClickListener(item);
-                                }}></Icon>
+                                <DeleteOutlined
+                                    color="#1890ff"
+                                    onClick={() => {
+                                        this.onDeleteClickListener(item);
+                                    }}></DeleteOutlined>
                             </span>
                             <span class="element">
-                                <Icon type="edit" color="#1890ff"></Icon>
+                                <EditOutlined color="#1890ff"></EditOutlined>
                             </span>
                         </div>
 
@@ -260,22 +278,28 @@ class AssetCategoryManager extends React.Component {
                     </TreeNode>
                 );
             }
-            return (<TreeNode style={{ width: "100%" }} key={item.code} title={<div class="father" style={{ width: "100%" }}>
-                {item.name}
-                <span class="element" >
-                    <Icon type="new" color="#1890ff"></Icon>
-                </span>
-                <span class="element" >
-                    <Icon type="delete" color="#1890ff" onClick={() => {
-                        this.onDeleteClickListener(item);
-                    }}></Icon>
-                </span>
-                <span class="element">
-                    <Icon type="edit" color="#1890ff" onClick={() => {
-                        this.onEditClickListener(item);
-                    }}></Icon>
-                </span>
-            </div>} isLeaf={true} dataRef={item} />);
+            return (
+                <TreeNode style={{ width: "100%" }} key={item.code} title={<div class="father" style={{ width: "100%" }}>
+                    {item.name}
+                    <span class="element" >
+                        <LegacyIcon color="#1890ff"></LegacyIcon>
+                    </span>
+                    <span class="element" >
+                        <DeleteOutlined
+                            color="#1890ff"
+                            onClick={() => {
+                                this.onDeleteClickListener(item);
+                            }}></DeleteOutlined>
+                    </span>
+                    <span class="element">
+                        <EditOutlined
+                            color="#1890ff"
+                            onClick={() => {
+                                this.onEditClickListener(item);
+                            }}></EditOutlined>
+                    </span>
+                </div>} isLeaf={true} dataRef={item} />
+            );
         });
 
 

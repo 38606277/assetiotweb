@@ -1,7 +1,21 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Input, message, Upload, Form, Pagination, Row, Col, Button, Card, Modal, Divider } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import {
+    Table,
+    Input,
+    message,
+    Upload,
+    Pagination,
+    Row,
+    Col,
+    Button,
+    Card,
+    Modal,
+    Divider,
+} from 'antd';
 import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();

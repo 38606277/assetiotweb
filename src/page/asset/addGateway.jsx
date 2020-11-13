@@ -1,5 +1,7 @@
 import React from 'react';
-import { Form, Input, Select, Button, Card, Row, Col, Cascader } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Select, Button, Card, Row, Col, Cascader } from 'antd';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 import TextArea from 'antd/lib/input/TextArea';
 const localStorge = new LocalStorge();

@@ -1,7 +1,26 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Select, Row, Col, Table, Divider, Button, Card, Input, Tree, Dropdown, Badge, Menu, Icon, message, Modal, Radio, Pagination } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import {
+    Select,
+    Row,
+    Col,
+    Table,
+    Divider,
+    Button,
+    Card,
+    Input,
+    Tree,
+    Dropdown,
+    Badge,
+    Menu,
+    message,
+    Modal,
+    Radio,
+    Pagination,
+} from 'antd';
 import { PlusCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
 import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';

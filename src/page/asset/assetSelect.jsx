@@ -1,5 +1,7 @@
 import React from 'react';
-import { Table, Form, Input, Divider, Select, Button, Icon, Card, Row, Col, message, Cascader } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Table, Input, Divider, Select, Button, Card, Row, Col, message, Cascader } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 import AssetService from '../../service/AssetService.jsx';

@@ -1,8 +1,26 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Select, Row, Col, Table, Divider, Button, Card, Input, Tree, Dropdown, Badge, Menu, Icon, message, Modal, Radio } from 'antd';
-import { PlusCircleTwoTone, MinusCircleTwoTone } from "@ant-design/icons";
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import {
+    Select,
+    Row,
+    Col,
+    Table,
+    Divider,
+    Button,
+    Card,
+    Input,
+    Tree,
+    Dropdown,
+    Badge,
+    Menu,
+    message,
+    Modal,
+    Radio,
+} from 'antd';
+import { DatabaseOutlined, MinusCircleTwoTone, PlusCircleTwoTone, SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 
@@ -378,13 +396,13 @@ class TreeTest extends React.Component {
 
                                     <Col xs={24} sm={12}>
                                         <FormItem {...tailFormItemLayout} >
-                                            <Button onClick={this.showModal} type="primary" icon="search">搜索</Button>
+                                            <Button onClick={this.showModal} type="primary" icon={<SearchOutlined />}>搜索</Button>
                                         </FormItem>
                                     </Col>
                                 </Row>
                             </Form>
 
-                            <Button onClick={this.showModal} type="primary" icon="database" style={{ marginBottom: '10px' }}>新增</Button>
+                            <Button onClick={this.showModal} type="primary" icon={<DatabaseOutlined />} style={{ marginBottom: '10px' }}>新增</Button>
 
                             <CollectionCreateForm
                                 wrappedComponentRef={this.saveFormRef}
@@ -403,7 +421,7 @@ class TreeTest extends React.Component {
                     </Col>
                 </Row>
             </div >
-        )
+        );
     }
 }
 export default Form.create()(TreeTest);

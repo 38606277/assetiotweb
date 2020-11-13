@@ -1,5 +1,20 @@
 import React, { Component } from 'react';
-import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Popover, Progress, Tag, Modal, Form } from 'antd';
+import { BankOutlined, SearchOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import {
+    Card,
+    Row,
+    Col,
+    Skeleton,
+    Avatar,
+    Input,
+    Button,
+    Popover,
+    Progress,
+    Tag,
+    Modal,
+} from 'antd';
 import { List, Typography } from 'antd';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import './assetmap.css';
@@ -267,8 +282,8 @@ class assetampGaoDe extends React.Component {
                         <Col span={24}>
                             <Input name='searchContent' onChange={(e) => this.onValueChange(e)} addonAfter={
                                 <span>
-                                    <Button style={{ width: '40px', border: '0px', borderRadius: '0px' }} onClick={this.togglePanel} icon="thunderbolt" />
-                                    <Button type="primary" style={{ width: '40px', border: '0px', borderRadius: '0px' }} icon="search" onClick={() => this.onSearch(this.state.searchContent)} />
+                                    <Button style={{ width: '40px', border: '0px', borderRadius: '0px' }} onClick={this.togglePanel} icon={<ThunderboltOutlined />} />
+                                    <Button type="primary" style={{ width: '40px', border: '0px', borderRadius: '0px' }} icon={<SearchOutlined />} onClick={() => this.onSearch(this.state.searchContent)} />
                                 </span>
                             }></Input>
                         </Col>
@@ -305,7 +320,7 @@ class assetampGaoDe extends React.Component {
                                             <a href={`#/asset/gatewayEdit/update/${this.state.gateway.gateway_id}`}>
                                                 {this.state.gateway.gateway_name} ({this.state.gateway.gateway_id})
                                             </a>
-                                            <div style={{ marginTop: '5px' }}><Icon type='bank' style={{ marginRight: '8px' }} />{this.state.gateway.address}</div>
+                                            <div style={{ marginTop: '5px' }}><BankOutlined style={{ marginRight: '8px' }} />{this.state.gateway.address}</div>
                                             <div>资产数：{this.state.gateway.assetCount}</div>
                                             <div>总原值：{this.state.gateway.cost}万</div>
                                             <div>总净额：{this.state.gateway.netQuota}万</div>
@@ -423,7 +438,7 @@ class assetampGaoDe extends React.Component {
                 </Modal>
 
             </div >
-        )
+        );
     }
 }
 export default Form.create()(assetampGaoDe);

@@ -1,6 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Table, Input, message, Divider, Upload, DatePicker, Select, Icon, Form, Pagination, Row, Col, Button, Card } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import {
+    Table,
+    Input,
+    message,
+    Divider,
+    Upload,
+    DatePicker,
+    Select,
+    Pagination,
+    Row,
+    Col,
+    Button,
+    Card,
+} from 'antd';
 import 'antd/dist/antd.css';
 const FormItem = Form.Item;
 const Option = Select.Option;

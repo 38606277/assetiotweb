@@ -1,5 +1,21 @@
 import React from 'react';
-import { Form, Input, Select, Button, Card, Row, Col, Tree, message, Icon, Table, Divider, Modal, TreeSelect, Cascader } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import {
+    Input,
+    Select,
+    Button,
+    Card,
+    Row,
+    Col,
+    Tree,
+    message,
+    Table,
+    Divider,
+    Modal,
+    TreeSelect,
+    Cascader,
+} from 'antd';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 import HttpService from '../../util/HttpService.jsx';
 

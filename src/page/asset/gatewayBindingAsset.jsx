@@ -1,6 +1,8 @@
 
 import React from 'react';
-import { Table, Input, InputNumber, Popconfirm, Form, Pagination, Card, Row, Col, Button } from 'antd';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Table, Input, InputNumber, Popconfirm, Pagination, Card, Row, Col, Button } from 'antd';
 import 'antd/dist/antd.css';
 import LocalStorge from '../../util/LogcalStorge.jsx';
 import AssetService from '../../service/AssetService.jsx';

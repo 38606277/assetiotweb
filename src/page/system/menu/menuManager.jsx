@@ -1,5 +1,19 @@
 import React from 'react';
-import { Card, Row, Col, Icon, Skeleton, Avatar, Input, Button, Table, Tabs, message, Divider, Modal } from 'antd';
+import { CloseOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  Card,
+  Row,
+  Col,
+  Skeleton,
+  Avatar,
+  Input,
+  Button,
+  Table,
+  Tabs,
+  message,
+  Divider,
+  Modal,
+} from 'antd';
 import { DndProvider, DragSource, DropTarget } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import update from 'immutability-helper';
@@ -406,12 +420,16 @@ export default class MenuManager extends React.Component {
 
       items.push(<TabPane tab={(<div>
         {item.func_name}
-        <Icon h onClick={() => {
-          window.location.href = `#/menu/menuEdit/update/${item.func_id}`
-        }} style={{ marginLeft: '6px' }} type="edit" />
-        <Icon type="close" onClick={() => {
-          this.onDeleteMenuClick(item)
-        }} />
+        <EditOutlined
+          h
+          onClick={() => {
+            window.location.href = `#/menu/menuEdit/update/${item.func_id}`
+          }}
+          style={{ marginLeft: '6px' }} />
+        <CloseOutlined
+          onClick={() => {
+            this.onDeleteMenuClick(item)
+          }} />
       </div>)} key={i}>
         <DragSortingTable
           columns={this.state.columns}

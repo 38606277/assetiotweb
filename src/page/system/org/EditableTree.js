@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Tree, Icon} from 'antd';
+import { CheckOutlined, CloseOutlined, EditOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Tree } from 'antd';
 import styles from './EditableTree.less';
 const {TreeNode} = Tree;
 
@@ -40,8 +41,10 @@ class EditableTree extends Component {
                         className={styles.inputField}
                         value={item.value}
                         onChange={(e) => this.onChange(e, item.key)} />
-                    <Icon type='close' style={{ marginLeft: 10 }} onClick={() => this.onClose(item.key, item.defaultValue)} />
-                    <Icon type='check' style={{ marginLeft: 10 }} onClick={() => this.onSave(item.key)} />
+                    <CloseOutlined
+                      style={{ marginLeft: 10 }}
+                      onClick={() => this.onClose(item.key, item.defaultValue)} />
+                    <CheckOutlined style={{ marginLeft: 10 }} onClick={() => this.onSave(item.key)} />
                 </div>
             );
         } else {
@@ -51,9 +54,9 @@ class EditableTree extends Component {
                         {item.value}
                     </span>
                     <span className={styles.operationField} >
-                        <Icon style={{ marginLeft: 10 }} type='edit' onClick={() => this.onEdit(item.key)} />
-                        <Icon style={{ marginLeft: 10 }} type='plus' onClick={() => this.onAdd(item.key)} />
-                        {item.parentKey === '0' ? null : (<Icon style={{ marginLeft: 10 }} type='minus' onClick={() => this.onDelete(item.key)} />)}
+                        <EditOutlined style={{ marginLeft: 10 }} onClick={() => this.onEdit(item.key)} />
+                        <PlusOutlined style={{ marginLeft: 10 }} onClick={() => this.onAdd(item.key)} />
+                        {item.parentKey === '0' ? null : (<MinusOutlined style={{ marginLeft: 10 }} onClick={() => this.onDelete(item.key)} />)}
                     </span>
                 </div>
             )
