@@ -59,7 +59,7 @@ export default class dashboard extends React.Component {
             latitude: null,
             asset_num: 0,
             assetCost: 0,
-            baseStationNum:0,
+            baseStationNum: 0,
             assetNumber: 0,
             normal_num: 0,
             abnormal_num: 0,
@@ -69,8 +69,7 @@ export default class dashboard extends React.Component {
             typeName: [],
             typeNum: [],
             alarm_data: [],
-<<<<<<< HEAD
-            netTypeNum:[],
+            netTypeNum: [],
             city_data: [{
                 name: '邯郸市',
                 value: 2
@@ -105,15 +104,6 @@ export default class dashboard extends React.Component {
                 name: '秦皇岛市',
                 value: 0
             }],
-=======
-            twog:'',
-            threeg:'',
-            fourg:'',
-            assetCJCost:'',
-            assetTotal:'',
-            assetLocal:'',
-            
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
         };
     }
     componentDidMount() {
@@ -127,7 +117,7 @@ export default class dashboard extends React.Component {
                         asset_num: res.data.asset_num,
                         normal_num: res.data.normal_num,
                         abnormal_num: res.data.abnormal_num,
-                        baseStationNum:res.data.baseStationNum,    
+                        baseStationNum: res.data.baseStationNum,
                         assetCost: numFormat(res.data.assetCost == null ? 0 : res.data.assetCost),
                         assetNumber: res.data.assetNumber
                     })
@@ -147,10 +137,10 @@ export default class dashboard extends React.Component {
         //        } else {
         //            message.error(res.message);
         //        }
-   
-   
+
+
         //    });
-           
+
 
         //查询资产上线按城市
         HttpService.post("reportServer/assetquery/getAssetNumByCity", JSON.stringify({}))
@@ -186,7 +176,6 @@ export default class dashboard extends React.Component {
                     message.error(res.message);
 
             });
-<<<<<<< HEAD
         //查询资产异常信息
         HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
             .then(res => {
@@ -195,65 +184,28 @@ export default class dashboard extends React.Component {
                     this.setState({
                         typeName: res.data.typeName.split(","),
                         typeNum: res.data.typeNum.split(",")
-=======
-             //查询资产异常信息
-             HttpService.post("reportServer/assetquery/getAssetTypeNum", JSON.stringify({}))
-             .then(res => {
-                 if (res.resultCode == "1000") {
-                    this.setState({ typeName: res.data.typeName.split(","),
-                        typeNum:res.data.typeNum.split(",")
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
                     });
                 } else {
                     message.error(res.message);
-<<<<<<< HEAD
+
                 }
 
 
             });
 
-             //查询网络类型信息
+        //查询网络类型信息
         HttpService.post("reportServer/assetquery/getNetTypeNum", JSON.stringify({}))
-        .then(res => {
-            if (res.resultCode == "1000") {
-                this.setState({
-                    netTypeNum: res.data,
-                });
-            } else {
-                message.error(res.message);
-            }
-
-
-        });
-=======
-                 }
-             });
-
-             //查询资产异常信息
-             HttpService.post("reportServer/assetquery/getAssetJZType", JSON.stringify({}))
-             .then(res => {
-                 if (res.resultCode == "1000") {
-                    this.setState({ twog: res.data[0].total,
-                        threeg:res.data[1].total,
-                        fourg:res.data[2].total
-                    });
-                 }else{
-                    message.error(res.message);
-                 }  
-             });
-            //查询资产分布信息
-            HttpService.post("reportServer/assetquery/getAssetFB", JSON.stringify({}))
             .then(res => {
                 if (res.resultCode == "1000") {
-                    this.setState({ assetCJCost: res.data.cost.split(","),
-                    assetTotal:res.data.total.split(","),
-                    assetLocal:res.data.cj.split(",")
-                   });
-                }else{
-                   message.error(res.message);
+                    this.setState({
+                        netTypeNum: res.data,
+                    });
+                } else {
+                    message.error(res.message);
                 }
+
+
             });
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
 
     };
     getGugarOption = () => {
@@ -382,7 +334,7 @@ export default class dashboard extends React.Component {
 
     getOption = () => {
         let option = {
-           
+
             tooltip: {
                 trigger: 'item',
                 formatter: '{b} <br/> {c} ({d}%)'
@@ -390,16 +342,15 @@ export default class dashboard extends React.Component {
             legend: {
                 orient: 'vertical',
                 left: 'right',
-                textStyle:{//图例文字的样式
-                    color:'#ccc',
-                    fontSize:16
+                textStyle: {//图例文字的样式
+                    color: '#ccc',
+                    fontSize: 16
                 },
                 data: ['2G', '3G', '4G', '5G']
             },
-            color:['#f6da22','#bbe2e8','#6cacde'],
+            color: ['#f6da22', '#bbe2e8', '#6cacde'],
             series: [
                 {
-<<<<<<< HEAD
                     name: '',
                     type: 'pie',
                     data: this.state.netTypeNum,
@@ -409,33 +360,6 @@ export default class dashboard extends React.Component {
                             shadowOffsetX: 0,
                             shadowColor: 'rgba(0, 0, 0, 0.5)'
                         }
-=======
-                    // 图表名称
-                    name: '基站',
-                    // 图表类型
-                    type: 'pie',
-                    // 南丁格尔玫瑰图 有两个圆  内圆半径10%  外圆半径70%
-                    // 百分比基于  图表DOM容器的半径
-                    radius: '50%',
-                    // 图表中心位置 left 50%  top 50% 距离图表DOM容器
-                    center: ['50%', '50%'],
-                    // 半径模式，另外一种是 area 面积模式
-                    //roseType: 'radius',
-                    // 数据集 value 数据的值 name 数据的名称
-                    data: [
-                        { value: this.state.twog, name: '2G' },
-                        { value: this.state.threeg, name: '3G' },
-                        { value: this.state.fourg, name: '4G' }
-                    ],
-                    //文字调整
-                    label: {
-                        fontSize: 10
-                    },
-                    //引导线
-                    labelLine: {
-                        length: 8,
-                        length2: 10
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
                     }
                 }
             ]
@@ -678,11 +602,7 @@ export default class dashboard extends React.Component {
                 // 类目类型                                  
                 type: 'category',
                 // x轴刻度文字                                  
-<<<<<<< HEAD
                 data: ['火车站', '商场', '学校', '公园', '铁路', '公路', '山地', '野外', '社区', '村庄', '景点', '办公场所'],
-=======
-                data: this.state.assetLocal,
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
                 axisTick: {
                     show: false//去除刻度线
                 },
@@ -888,36 +808,13 @@ export default class dashboard extends React.Component {
 
                         </div>
                     </div>
-<<<<<<< HEAD
                     <div class="users panel">
                         <h3>基站网络类型统计</h3>
                         <div class="chart">
                             <ReactEcharts style={{ width: '400px', height: '200px' }} option={this.getOption()} />
-                            
+
                         </div>
-=======
-                    <div class="panel">
-                            <div><h3>基站网络类型统计</h3></div>
-                            <div class="chart">
-                                <ReactEcharts style={{ width: '400px', height: '200px' }} option={this.getOption()} />
-                                {/* <div class="data">
-                                    <div class="item">
-                                        <h4>120,899</h4>
-                                        <span>
-                                            <i class="icon-dot" style={{ color: '#ed3f35' }}></i>
-                                    用户总量
-                                </span>
-                                    </div>
-                                    <div class="item">
-                                        <h4>248</h4>
-                                        <span>
-                                            <i class="icon-dot" style={{ color: '#eacf19' }}></i>
-                                    本月新增
-                                </span>
-                                    </div>
-                                </div> */}
-                            </div>
->>>>>>> d9cd253d19eedf5803359bfc2aef0e1945b0acb7
+
                     </div>
                 </div>
                 <div class="column">
