@@ -48,7 +48,9 @@
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^0.0.1",
+    "@ant-design/compatible": "^1.0.8",
     "@ant-design/icons": "^4.0.0",
+    "@babel/runtime": "^7.12.5",
     "@react-dnd/invariant": "^2.0.0",
     "antd": "^4.0.0",
     "babel-polyfill": "^6.26.0",
