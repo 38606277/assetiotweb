@@ -349,7 +349,6 @@ const AssetCategoryManager = () => {
         } else {
             setVisible(false)
         }
-
     }
 
     return (
