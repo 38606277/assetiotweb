@@ -1,6 +1,6 @@
 /* 元素默认是隐藏的 */
 .element{
-    display:none;
+    display:block;
     float: right; 
 }
 
