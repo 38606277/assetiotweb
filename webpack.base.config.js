@@ -7,7 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const devMode = process.env.NODE_ENV !== 'production';
 
-const version=new Date().getTime();
+const version = new Date().getTime();
 
 module.exports = {
 
@@ -18,7 +18,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, './build'),
-        filename:'[name].'+version+'.js',
+        filename: '[name].' + version + '.js',
         // publicPath:"/build/"
     },
     module: {
@@ -157,8 +157,8 @@ module.exports = {
                     priority: 0,
                     enforce: true,
                 },
-              
-                react1:{
+
+                react1: {
                     name: 'react1',
                     test: module => /react-pivottable|react-grid-layout|react-chat-widget|react-codemirror|react-trend|d3|map-box|_sortablejs@1.10.2@sortablejs|_react-dnd@11.1.3/.test(module.context),
                     chunks: 'async',
@@ -172,10 +172,10 @@ module.exports = {
                     priority: 11,
                     enforce: true,
                 },
-                   excel: {
+                excel: {
                     name: 'excel',
                     test: (module) => {
-                        return  /_js-export-excel@1.1.3@js-export-excel|_zrender@4.3.1@zrender/.test(module.context)
+                        return /_js-export-excel@1.1.3@js-export-excel|_zrender@4.3.1@zrender/.test(module.context)
                     },
                     chunks: 'async',
                     priority: 13,
@@ -184,13 +184,13 @@ module.exports = {
                 reactdraggable: {
                     name: 'reactdraggable',
                     test: (module) => {
-                        return  /_core-js@2.6.11@core-js|_react-draggable@4.4.3@react-draggable|_react-draggable@4.4.3@react-draggable|_core-js@2.6.11@core-js/.test(module.context)
+                        return /_core-js@2.6.11@core-js|_react-draggable@4.4.3@react-draggable|_react-draggable@4.4.3@react-draggable|_core-js@2.6.11@core-js/.test(module.context)
                     },
                     chunks: 'async',
                     priority: 13,
                     enforce: true,
                 },
-                plotly:{
+                plotly: {
                     name: 'plotly',
                     test: module => /plotly/.test(module.context),
                     chunks: 'async',
@@ -252,7 +252,7 @@ module.exports = {
                     priority: 13,
                     enforce: true,
                 },
-                
+
                 antv: {
                     name: '@antv',
                     test: (module) => {

@@ -4,7 +4,7 @@ import { HashRouter as Router, Switch, Redirect, Route } from 'react-router-dom'
 
 import Loadable from 'react-loadable';
 import loading from './util/loading.jsx'
-import 'antd/dist/antd.less';
+import 'antd/dist/antd.css';
 import './App.css'
 import LocalStorge from './util/LogcalStorge.jsx';
 const localStorge = new LocalStorge();
@@ -67,9 +67,6 @@ const AuthTypeRouter = Loadable({
     delay: 3000
 });
 
-
-
-
 const assetRouter = Loadable({
     loader: () => import(/* webpackChunkName: "assetRouter" */ './page/asset/assetRouter.jsx'),
     loading: loading,
@@ -89,6 +86,11 @@ const MenuManagerRouter = Loadable({
     delay: 3000
 });
 
+const StorageRouter = Loadable({
+    loader: () => import(/* webpackChunkName: "StorageRouter" */ './page/storage/storageRouter.jsx'),
+    loading: loading,
+    delay: 3000
+});
 
 
 const LayoutRouter = (nextState, replace) => {
@@ -106,6 +108,7 @@ const LayoutRouter = (nextState, replace) => {
                     <Route path="/asset" component={assetRouter} />
                     <Route path="/org" component={OrgManagerRouter} />
                     <Route path="/menu" component={MenuManagerRouter} />
+                    <Route path="/storage" component={StorageRouter} />
                 </Switch>
             </Layout>
         );

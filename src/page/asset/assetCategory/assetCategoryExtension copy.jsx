@@ -5,14 +5,13 @@ import {
     Select,
     Button,
     Card,
-    Row,
-    Col,
     Tree,
     message,
     Table,
     Modal
 
 } from 'antd';
+import ProTable, { ProColumns, TableDropdown } from '@ant-design/pro-table';
 
 import HttpService from '../../util/HttpService.jsx';
 const { TreeNode } = Tree;
@@ -21,14 +20,11 @@ const Search = Input.Search;
 const { confirm } = Modal;
 
 const CreateAssetCategoryExtension = ({ visible, initData, onActionCallBack, edit }) => {
-    console.log("CreateAssetCategoryExtension", '初始化')
+
     //初始化state
     const [treeData, setTreeData] = useState([]);
     const [checkedKeys, setCheckedKeys] = useState([]);
     const [form] = Form.useForm();//获取form 在布局进行绑定
-
-    form.resetFields();
-    form.setFieldsValue(initData);
 
     const formItemLayout = {
         labelCol: {
@@ -46,13 +42,29 @@ const CreateAssetCategoryExtension = ({ visible, initData, onActionCallBack, edi
         form.setFieldsValue({
             parent_code_list: checkedKeys
         });
-        console.log("setCheckedKeys")
         setCheckedKeys(checkedKeys)
     };
 
+
+    //由第二个参数控制 ， visible修改后 会更新
+    useEffect(() => {
+        form.resetFields();
+        if (visible) {
+            setCheckedKeys([initData.code])
+            console.log('useEffect init data checkedKeys', checkedKeys)
+            if (initData.is_required == 1) {
+                initData.is_required_label = '是'
+            } else {
+                initData.is_required_label = '否'
+            }
+            form.setFieldsValue(initData);
+
+        }
+    }, [visible])
+
+
     //对应 componentDidMount 
     useEffect(() => {
-        console.log('useEffect')
         getAllChildrenRecursionByCode();
     }, [])
 
@@ -65,7 +77,7 @@ const CreateAssetCategoryExtension = ({ visible, initData, onActionCallBack, edi
                         {
                             "path": "",
                             "unit": "",
-                            "code": "0",
+                            "code": 0,
                             "level": 1,
                             "children": res.data,
                             "name": "所有资产分类（全局）",
@@ -80,10 +92,6 @@ const CreateAssetCategoryExtension = ({ visible, initData, onActionCallBack, edi
                 }
             });
     }
-
-
-
-
 
     const renderTreeNodes = data => {
         return data.map(item => {
@@ -126,15 +134,18 @@ const CreateAssetCategoryExtension = ({ visible, initData, onActionCallBack, edi
         //edit ? onEdit : onCreate
         console.log('okListener')
         form.submit();
+
     }
 
     const onCancelListener = () => {
         onActionCallBack('cancel', {});
+
     }
 
     const onFinish = (values) => {
         console.log('onFinish:', values);
         onActionCallBack(edit ? 'edit' : 'create', values);
+
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -154,7 +165,8 @@ const CreateAssetCategoryExtension = ({ visible, initData, onActionCallBack, edi
             <Form form={form}
                 name="assetCategoryExtensionDialog"
                 onFinish={onFinish}
-                onFinishFailed={onFinishFailed}  >
+                onFinishFailed={onFinishFailed}
+            >
                 <Form.Item label="" name="id" style={{ display: "none" }}
                     rules={[{ required: false, message: '' }]}
                 >
@@ -180,7 +192,8 @@ const CreateAssetCategoryExtension = ({ visible, initData, onActionCallBack, edi
                     </Tree>
                 </Form.Item>
 
-                <Form.Item {...formItemLayout} label="是否必填" name="is_required"
+
+                <Form.Item {...formItemLayout} label="是否必填" name="is_required_label"
                     rules={[{ required: true, message: '请选择是否必填' }]}>
                     <Select
                         defaultValue="0"
@@ -188,16 +201,14 @@ const CreateAssetCategoryExtension = ({ visible, initData, onActionCallBack, edi
                         placeholder="请选择是否必填"
                         onChange={handleSelectChange}
                     >
-                        <Option value="0">否</Option>
-                        <Option value="1">是</Option>
+                        <Option value='0'>否</Option>
+                        <Option value='1'>是</Option>
                     </Select>
                 </Form.Item>
             </Form>
         </Modal >
     );
 };
-
-
 
 const assetCategoryExtensionManager = () => {
 
@@ -231,6 +242,7 @@ const assetCategoryExtensionManager = () => {
     }
 
     const onAddClickListener = () => {
+        setInitData([])
         showModal();
     }
 
@@ -292,6 +304,7 @@ const assetCategoryExtensionManager = () => {
     };
 
     const onEditClickListener = () => {
+        console.log('onEditClickListener : ', selectedRows)
         //获取勾选的内容 判断是否只有一条
         if (selectedRows.length < 1) {
             message.error('请选择需要修改的内容');
@@ -302,9 +315,11 @@ const assetCategoryExtensionManager = () => {
             message.error('请选择单条数据修改');
             return;
         }
+        console.log('onEditClickListener', selectedRows[0])
         setInitData(selectedRows[0]);
         setVisible(true);
         setEdit(true);
+
     }
 
     const handleEdit = (values) => {

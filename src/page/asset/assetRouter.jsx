@@ -107,7 +107,7 @@ const assetCategory = Loadable({
     delay: 3000
 });
 const assetCategoryExtension = Loadable({
-    loader: () => import(/* webpackChunkName: "assetCategoryExtension" */ './assetCategoryExtension.jsx'),
+    loader: () => import(/* webpackChunkName: "assetCategoryExtension" */ './assetCategory/assetCategoryExtension.jsx'),
     loading: loading,
     delay: 3000
 });
