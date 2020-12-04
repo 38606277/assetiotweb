@@ -105,24 +105,21 @@ export default () => {
         },
         {
             title: '仓库类型',
-            dataIndex: 'type',
+            dataIndex: 'type_name',
             valueType: 'select',
-            filters: true,
-            fieldProps: {
-                options: [
-                    {
-                        value: '成品仓库',
-                        label: '成品仓库',
-                    },
-                    {
-                        value: '半成品仓库',
-                        label: '半成品仓库',
-                    },
-                    {
-                        value: '原料仓库',
-                        label: '原料仓库',
-                    },
-                ],
+            key: 'type',
+            request: async () => {
+
+                const result = await HttpService.post('reportServer/baseData/listBaseDataByType', JSON.stringify({
+                    type: 'storage_type'
+                }));
+
+                if (result.resultCode == '1000') {
+                    return Promise.resolve(result.data);
+                } else {
+                    message.error('数据获取失败')
+                    return Promise.resolve([]);
+                }
             }
         },
         {
